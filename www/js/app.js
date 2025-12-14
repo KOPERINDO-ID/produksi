@@ -33,7 +33,7 @@ var app = new Framework7({
   },
   root: '#app', // App root element
   id: 'id.vertice.tasindosalesapp', // App bundle ID
-  name: 'Sales App', // App name
+  name: 'Produksi App', // App name
   theme: 'md', // Automatic theme detection
   // App root data
   data: function () {
