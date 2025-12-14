@@ -1,0 +1,133 @@
+<div class="page" data-name="laporan_cabang" class="theme-dark">
+
+  <div class="page-content theme-dark">
+    <div class="popup item-detail-gambar">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Foto</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="backbutton" class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top bg-dark-gray-medium">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card" id="item_detail_gambar">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card ">
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+        <div class="col col-border  text-bold"><a class="text-add-colour-white" href="/produksi">SPK</a></div>
+        <div onclick="chooseDataProduksiCabangRedirect('pusat');"
+          class="col col-border text-bold surabayaFilterCabangBtn bg-dark-gray-medium"><a class="text-add-colour-white"
+            href="/cabang">XTRA</a></div>
+        <div onclick="chooseDataProduksiCabangRedirect('extra');" class="col col-border text-bold extraFilterCabangBtn">
+          <a class="text-add-colour-white">GROSIR</a>
+        </div>
+        <div class="col col-border text-bold bg-dark-gray-medium"><a class="text-add-colour-white"
+            href="/laporan_cabang">PARTNER</a></div>
+      </div>
+      <div class="card">
+        <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+          <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
+              href="/laporan">Laporan</a></div>
+          <div class="col col-border text-bold"><a class="text-add-colour-gray" href="/purchasing">Partner</a></div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="width:98%;">
+      <table width="98%;" cellspacing="0" cellpadding="1" style="border-color:gray; margin-bottom:10px;">
+        <tr class="bg-dark-gray-young">
+          <th style="padding:4px;" colspan="8" align="left">
+            Data Laporan
+
+          </th>
+          <th style="padding-right:20px;" align="right">
+
+          </th>
+        </tr>
+      </table>
+
+    </div>
+    <div class="card-content" style="overflow-x:auto;  height:415px; width:96%; margin-top:-12px; margin-left:8px;">
+      <table cellspacing="1" cellpadding="1" style="border-collapse: collapse; border:1px solid gray;" width="825px">
+        <thead class="bg-dark-gray-medium text-align-center">
+          <tr>
+            <th colspan="2" style="padding:5px;">
+              <center>
+                <input onkeyup="doSearchPartnerLaporan()" type="text"
+                  style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
+                  id="partner_laporan_filter_search" name="partner_laporan_filter_search" placeholder="Cari Partner">
+              </center>
+
+            </th>
+            <th colspan="2" style="padding:5px;">
+              <center>
+                <input onkeyup="doSearchCustomerLaporan()" type="text"
+                  style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
+                  id="partner_customer_filter_search" name="partner_customer_filter_search" placeholder="Cari Customer">
+              </center>
+
+            </th>
+            <th colspan="7" style="padding:5px;">
+
+            </th>
+          </tr>
+          <tr>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="5%">No</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Spk</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
+              Partner</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Customer</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Item</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="6%">
+              Jumlah</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
+              Tanggal</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
+              Deadline</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
+              Selesai</th>
+          </tr>
+        </thead>
+        <tbody class="text-align-center" id="partner_data_laporan">
+        </tbody>
+      </table>
+      <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
+      </div>
+    </div>
+  </div>
+</div>
+</div>

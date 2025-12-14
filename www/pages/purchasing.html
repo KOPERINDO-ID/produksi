@@ -1,0 +1,196 @@
+<div class="page" data-name="purchasing" class="theme-dark">
+  <!-- Scrollable page content-->
+  <div class="popup tambah-partner">
+    <div class="view view-init">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner bg-dark-gray-medium">
+            <div class="title">Tambah Partner</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <p id="backbutton" class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                  class="f7-icons">xmark_rectangle_fill</i></p>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="card card-outline margin-top bg-dark-gray-medium">
+            <div class="card-content">
+              <div class="row">
+                <div class="col-100">
+                  <div class="card">
+                    <div class="card-content">
+                      <div class="list no-hairlines-md">
+                        <form id="tambah_partner_form">
+                          <div class="list">
+                            <ul>
+
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <label style="height:17px; margin-top:-9px;"><b>Nama</b></label>
+                                  <div class="item-input-wrap">
+                                    <label></label>
+                                    <input type="text" id="nama_partner" name="nama_partner" placeholder="Nama" value=""
+                                      required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <label style="height:17px; margin-top:-9px;"><b>Pic</b></label>
+                                  <div class="item-input-wrap">
+                                    <label></label>
+                                    <input type="text" id="pic" name="pic" placeholder="PIC" value="" required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <label style="height:17px; margin-top:-9px;"><b>No Hp</b></label>
+                                  <div class="item-input-wrap">
+                                    <label></label>
+                                    <input type="number" id="no_hp" name="no_hp" placeholder="No Hp" value="" required
+                                      validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <label style="height:17px; margin-top:-9px;"><b>Kota</b></label>
+                                  <div class="item-input-wrap">
+                                    <label></label>
+                                    <input type="text" id="kota" name="kota" placeholder="Kota" value="" required
+                                      validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <label style="height:17px; margin-top:-9px;"><b>Alamat</b></label>
+                                  <div class="item-input-wrap">
+                                    <label></label>
+                                    <input type="text" id="alamat" name="alamat" placeholder="Alamat" value="" required
+                                      validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+
+
+                            </ul>
+                          </div>
+                        </form>
+                        <center>
+                          <br><br>
+                          <button onclick="tambahPartnerProses();" style="width:25%;"
+                            class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                            id="performa_button_save">Simpan
+                          </button>
+                        </center>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content theme-dark">
+    <div class="card ">
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+        <div class="col col-border  text-bold"><a class="text-add-colour-white" href="/produksi_pusat">SPK</a></div>
+        <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-makasar.digiseminar.id/api');"
+          class="col col-border text-bold jakartaFilterCabangBtn"><a class="text-add-colour-white"
+            href="/cabang_pusat">IND-BAR</a></div>
+        <!-- <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-palembang.digiseminar.id/api');"
+          class="col col-border text-bold palembangFilterCabangBtn"><a class="text-add-colour-white"
+            href="/cabang">PLB</a></div> -->
+        <div class="col col-border text-bold bg-dark-gray-medium"><a class="text-add-colour-white"
+            href="/laporan">PARTNER</a></div>
+      </div>
+      <div class="card">
+        <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+          <div class="col col-border text-bold"><a class="text-add-colour-gray" href="/Laporan">Laporan</a></div>
+          <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
+              href="/purchasing">Partner</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="width:98%;">
+      <table width="98%;" cellspacing="0" cellpadding="1" style="border-color:gray; margin-bottom:10px;">
+        <tr class="bg-dark-gray-young">
+          <th style="padding:4px;" colspan="8" align="left">
+            Data Patrner
+
+          </th>
+          <th style="padding-right:20px;" align="right">
+            <i class="text-align-right f7-icons popup-open" data-popup=".tambah-partner"
+              style="font-size:30px; color:white; margin-right:-9px;">plus_rectangle_fill</i>
+          </th>
+        </tr>
+      </table>
+
+    </div>
+    <div class="card-content" style="overflow-x:auto;  height:415px; width:96%; margin-top:-12px; margin-left:8px;">
+      <table cellspacing="1" cellpadding="1" style=" border-collapse: collapse; border-color:gray;" width="670px">
+        <thead class="bg-dark-gray-medium text-align-center">
+          <tr>
+            <th colspan="2" style="padding:5px;">
+              <center>
+                <input onkeyup="doSearchPartner()" type="text"
+                  style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
+                  id="partner_filter_search" name="partner_filter_search" placeholder="Cari Partner">
+              </center>
+
+            </th>
+            <th colspan="9" style="padding:5px;">
+
+            </th>
+          </tr>
+          <tr>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="5%">No</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="20%">
+              Nama</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              No Hp</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Pic</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Kota</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="15%">Alamat</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="10%">Opsi</th>
+
+          </tr>
+        </thead>
+        <tbody class="text-align-center" id="partner_data">
+        </tbody>
+      </table>
+      <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
+      </div>
+    </div>
+  </div>
+</div>
+</div>

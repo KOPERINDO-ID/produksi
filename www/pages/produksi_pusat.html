@@ -1,0 +1,1578 @@
+<div class="page" data-name="produksi-pusat" class="theme-dark">
+  <!-- Scrollable page content-->
+  <div class="page-content theme-dark">
+
+    <div class="popup point-produksi">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Point Produksi : Surabaya
+              </div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white">
+                  <i class="f7-icons" onclick="downloadPointProduksiPdf();">arrow_down_doc_fill</i>
+                  <i style="margin-right:5px;" class="f7-icons link popup-close">xmark_rectangle_fill</i>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <table cellspacing="1" cellpadding="1" width="750px" style="padding:10px;">
+              <thead class="bg-dark-gray-medium text-align-center">
+                <tr>
+                  <th colspan="4" class="label-cell bg-dark-gray-young"
+                    style="padding:5px; font-size:20px; font-weight:bold;">
+                    <center>
+                      <input type="hidden" name="karyawan_id_hidden" id="karyawan_id_hidden">
+                      <input type="hidden" name="karyawan_nama_hidden" id="karyawan_nama_hidden">
+                      <select onchange="pointProduksi()" style="font-weight:bold;" name="point_bulan" id="point_bulan">
+                        <option value="" selected>Pilih Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                      </select>
+                    </center>
+                  </th>
+                  <th colspan="4" class="label-cell bg-dark-gray-young"
+                    style="padding:5px; font-size:16px; font-weight:bold;">
+                    <center>
+                      <select onchange="pointProduksi()" class="point_years_produksi" style="font-weight:bold;"
+                        name="point_year_produksi" id="point_year_produksi">
+                        <option value="" selected>Pilih Tahun</option>
+                      </select>
+                    </center>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="13%">Tgl</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="21%">SPK</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="22%">Perusahaan</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="21%">Jenis</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="10%">Cabang</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="7%">Point</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="9%">Qty</th>
+                  <th class="label-cell" style="border-bottom:1px solid gray;" width="13%">Total</th>
+
+                </tr>
+              </thead>
+              <tbody class="text-align-center" id="point_popup">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup produksi-selesai-popup">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Produksi Selesai</div>
+              <div class="right">
+                <!-- Link to close popup -->
+
+                <table width="100%">
+                  <tr>
+                    <td>
+                      <button onclick="donwloadProduksiSelesaiPopup();"
+                        style=" background-color: white; font-weight:bold; border-radius: 4px; padding:5px; color:gray; margin-right:7px;">Download</button>
+                    </td>
+                    <td>
+                      <i style="margin-right:5px; margin-left:10px; padding-top:6px;"
+                        class="f7-icons link popup-close">xmark_rectangle_fill</i>
+                    </td>
+                  </tr>
+                </table>
+
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card-content">
+                      <table cellspacing="1" cellpadding="1" width="100%" style="margin-top:-16px;">
+                        <tr>
+                          <td colspan="2">
+                            <center>
+                              <input onkeyup="doSearchPopupProduksiByPerusahaan()" type="text"
+                                style="border-radius:3px; padding:3px; width:100%;  color:black; background-color:lightgray;"
+                                id="perusahaan_popup_produksi_filter" name="perusahaan_popup_produksi_filter"
+                                placeholder="Cari Perusahaan">
+                            </center>
+
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" style="padding:0px;" width="50%">
+                            <center>
+                              <select id="bulan_popup_produksi_selesai" name="bulan_popup_produksi_selesai"
+                                onchange="doSearchPopupBulanProduksiSelesai()"
+                                style="border-radius:3px; padding:3px; width:100%; color:gray; background-color:lightgray;">
+                                <option value="" selected>Pilih Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                              </select>
+                            </center>
+                          </td>
+                          <td style="padding:0px;" width="50%">
+                            <center>
+                              <select onchange="doSearchPopupYearProduksiSelesai()"
+                                class="year_popup_produksi_selesai_pusat"
+                                style="border-radius:3px; padding:3px; width:100%; color:gray; background-color:lightgray;"
+                                name="year_popup_produksi_selesai_pusat" id="year_popup_produksi_selesai_pusat">
+                                <option value="" selected>Pilih Tahun</option>
+                              </select>
+                            </center>
+                          </td>
+                        </tr>
+                      </table>
+                      <div class="card-content" style="overflow-x:auto;  height:415px; width:100%;">
+                        <table cellspacing="1" cellpadding="1" style=" border-collapse: collapse; border-color:gray;"
+                          width="500px">
+                          <thead class="text-align-center bg-dark-gray-medium">
+                            <tr>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center" width="3%">No</th>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                width="5%">
+                                Tgl</th>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                width="13%">
+                                SPK</th>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                width="14%">
+                                Nama</th>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                width="10%">
+                                Type</th>
+                              <th class="label-cell"
+                                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                width="3%">Jumlah</th>
+                            </tr>
+                          </thead>
+                          <tbody class="text-align-center" id="produksi_selesai_popup_data">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup produksi-selesai-foto-pusat">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Foto Produksi</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card-content">
+
+                      <table align="center" width="100%">
+                        <tr>
+                          <td>
+                            <center>
+                              <h3>Foto Produksi</h3>
+                            </center>
+
+                            <center>
+                              <img onclick="zoom_view(this.src);" width="100px" style="border-radius:10px;"
+                                id="file_foto_produksi_view_now_pusat" />
+                              <br>
+                            </center>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <table width="450px">
+                        <tbody>
+                          <div class="card">
+                            <form id="upload_foto_produksi_selesai">
+                              <input type="hidden" id="penjualan_detail_performa_id_foto_produksi_selesai_pusat"
+                                name="penjualan_detail_performa_id_foto_produksi_selesai_pusat" />
+                              <input type="hidden" name="status_produksi_pusat"
+                                id="status_produksi_pusat" />
+                              <input type="hidden" name="penjualan_id_produksi_pusat"
+                                id="penjualan_id_produksi_pusat" />
+                              <center>
+                                <input type="file" style="width:90%;" name="file_foto_produksi_pusat"
+                                  id="file_foto_produksi_pusat" />
+                              </center>
+                            </form>
+                            <br>
+                            <button id="btn_upload_foto_selesai"
+                              onclick="updateFotoProduksiSelesaiProcessPusat();"
+                              class="text-add-colour-black-soft bg-dark-gray-young button-small col button popup-open text-bold">Simpan</button>
+                          </div>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup get-logo-purchase">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Logo Selesai</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card-content">
+
+                      <table align="center" width="100%">
+                        <tr>
+                          <td>
+                            <center>
+                              <br>
+                              <img onclick="zoom_view(this.src);" width="100px" style="border-radius:10px; "
+                                id="file_foto_purchase_view_now" />
+
+                            </center>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <table width="450px">
+                        <tbody>
+                          <div class="card">
+                            <form id="upload_foto_purchase_logo">
+                              <input type="hidden" id="penjualan_detail_performa_id_foto_purchasing_logo"
+                                name="penjualan_detail_performa_id_foto_purchasing_logo" value="">
+
+
+                              <center>
+
+                                <img width="100px" style="border-radius:10px; " id="file_foto_purchase_view" />
+
+                              </center>
+
+                            </form>
+
+                          </div>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup proses-purchase">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Proses</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+
+                    <div class="card">
+
+                      <table align="center" width="100%" style=" border-collapse: collapse; border:1px solid gray;"
+                        border="1">
+                        <thead class="bg-dark-gray-medium text-align-center">
+                          <tr>
+                            <td
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center" width="30%">
+                              Invoice
+                            </td>
+                            <td
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center" width="31%">
+                              Type
+                            </td>
+                            <td
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center" width="13%">
+                              Total
+                            </td>
+                            <td
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center" width="13%">
+                              Selesai
+                            </td>
+                            <td
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center" width="13%">
+                              Sisa
+                            </td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <td class="label-cell text-align-left" id="invoice_purchase_tbl"></td>
+                          <td class="label-cell text-align-left" id="type_purchase_tbl"></td>
+                          <td class="label-cell text-align-right" id="qty_purchase_tbl"></td>
+                          <td class="label-cell text-align-right" id="selesai_purchase_tbl"></td>
+                          <td class="label-cell text-align-right" id="sisa_purchase_tbl"></td>
+                        </tbody>
+                      </table>
+                      <br>
+                      <div class="list no-hairlines-md">
+                        <form id="purchase_form">
+                          <div class="list">
+                            <input type="hidden" id="item_purchase" name="item_purchase" placeholder="Item" value=""
+                              required validate readonly>
+                            <input type="hidden" id="penjualan_detail_performa_id_purchase"
+                              name="penjualan_detail_performa_id_purchase" placeholder="" value="" required validate>
+                            <ul>
+                              <li>
+                                <a class="item-link smart-select smart-select-init partner-smart-select"
+                                  data-close-on-select="true" data-open-in="popup" data-searchbar="true"
+                                  data-searchbar-placeholder="Cari Partner">
+                                  <select name="nama_partner_purchase" id="nama_partner_purchase" required validate>
+                                  </select>
+                                  <div class="item-content">
+                                    <div class="item-inner">
+                                      <div class="item-title">Partner</div>
+                                    </div>
+                                  </div>
+                                </a>
+                              </li>
+
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="hidden" id="qty_total_input" name="qty_total_input" placeholder=""
+                                      value="" required validate>
+                                    <label>Qty</label>
+                                    <input type="number" id="qty_purchase" name="qty_purchase" placeholder="" value=""
+                                      required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <label>Deadline</label>
+                                    <input type="date" id="tgl_deadline_purchase" name="tgl_deadline_purchase"
+                                      placeholder="Tanggal Deadline" value="" required validate>
+
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+
+                        </form>
+                        <br>
+                        <center>
+                          <button onclick="PurchaseProces();" style="width:25%;"
+                            class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                            id="performa_button_save">Simpan
+                          </button>
+                        </center>
+                        <br>
+                      </div>
+                      <div class="card-content" style="overflow-x:auto; width:100%;">
+                        <table align="center" width="750px" style="border-collapse: collapse; border:1px solid gray;"
+                          border="1">
+                          <thead class="bg-dark-gray-medium text-align-center">
+                            <tr>
+                              <td
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center" width="7%">
+                                No
+                              </td>
+                              <td width="17%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Nama
+                              </td>
+                              <td width="17%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Item
+                              </td>
+                              <td width="7%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Jumlah
+                              </td>
+                              <td width="14%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Tanggal
+                              </td>
+                              <td width="14%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Deadline
+                              </td>
+                              <td width="14%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Selesai
+                              </td>
+                              <td colspan="2" width="12%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Opsi
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody id="data_partner_purchasing">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup detail-sales-produksi">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Detail SPK</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card-content" style="overflow-x:auto; width:100%;">
+                      <table width="450px">
+                        <tbody>
+                          <div class="card" id="detail_sales_data_produksi">
+                          </div>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup material">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Material Produksi</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+
+                    <div class="card">
+                      <center><b>INVOICE</b> : <font id="invoice_material_popup"></font>
+                      </center>
+                      <div class="list no-hairlines-md">
+                        <form id="material_form">
+                          <div class="list">
+                            <ul>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="hidden" id="penjualan_id_material" name="penjualan_id_material"
+                                      placeholder="Nama Material" value="" required validate>
+                                    <input type="text" id="nama_material" name="nama_material"
+                                      placeholder="Nama Material" value="" required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="text" id="warna_material" name="warna_material" placeholder="Warna"
+                                      value="" required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="number" id="qty_material" name="qty_material" placeholder="Qty"
+                                      value="" required validate>
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="text" id="keterangan_material" name="keterangan_material"
+                                      placeholder="Keterangan" value="">
+                                    <span class="input-clear-button"></span>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+
+                        </form>
+                        <br>
+                        <center>
+                          <button onclick="materialProcess();" style="width:25%;"
+                            class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                            id="performa_button_save">Simpan
+                          </button>
+                        </center>
+                        <br>
+                      </div>
+                      <div class="card-content" style="overflow-x:auto; width:100%;">
+                        <table align="center" width="500px" style="border-collapse: collapse; border:1px solid gray;"
+                          border="1">
+                          <thead class="bg-dark-gray-medium text-align-center">
+                            <tr>
+                              <td
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center" width="7%">
+                                No
+                              </td>
+                              <td width="22%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Nama
+                              </td>
+                              <td width="8%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Qty/Set
+                              </td>
+                              <td width="22%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Warna
+                              </td>
+                              <td width="22%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Keterangan
+                              </td>
+                              <td width="14%"
+                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                                align="center">
+                                Opsi
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody id="data_material">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup detail-keterangan">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="backbutton" class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top bg-dark-gray-medium">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+                      <h3 class="text-align-center">Keterangan<div id="product-detail-id"></div>
+                      </h3>
+                      <div class="card-content" style="overflow-x:auto; width:100%;">
+                        <table align="center" width="700px" border="0" style="border-collapse: collapse;">
+                          <tbody>
+                            <tr>
+                              <td id="detail_keterangan">
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup detail-custom-keterangan">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="backbutton" class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top bg-dark-gray-medium">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+                      <h3 class="text-align-center">Spesifikasi<div id="product-detail-id"></div>
+                      </h3>
+                      <div class="card-content" style="overflow-x:auto; width:100%;">
+                        <table align="center" width="700px" border="0" style="border-collapse: collapse;">
+                          <tbody>
+                            <tr>
+                              <td id="detail_custom_keterangan">
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup popup-status status-view-produksi" data-close-on-escape="false" data-swipe-to-close="false"
+      data-close-on-select="true" data-routable-modals="false" data-close-by-backdrop-click="false">
+      <div class="view">
+        <div class="page">
+          <div class="views tabs">
+            <div class="toolbar tabbar toolbar-top">
+              <div class="toolbar-inner">
+                <a href="#view-sales" class="tab-link tab-link-active" id="merah-sales">
+                  SALES
+                </a>
+              </div>
+            </div>
+            <div id="view-sales" class="view view-main tab tab-active">
+              <div class="page-content">
+                <div class="card card-outline margin-top">
+                  <div class="card-content">
+                    <h3 style="text-align: center;">Data Sales</h3>
+                    <div style="overflow-x:auto; width:100%;">
+                      <table align="center" width="800px" border="0"
+                        style="border-collapse: collapse; border:1px solid gray;">
+                        <tr>
+                          <td align="center" width="5%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">No</td>
+                          <td align="center" width="25%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">SPK</td>
+                          <td align="center" width="25%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">Client</td>
+                          <td align="center" width="20%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">Sales</td>
+                          <td align="center" width="8%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">PO</td>
+                          <!-- <td align="center" width="8%"
+                          style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                          class="label-cell bg-dark-gray-young">Kota</td> -->
+                          <td align="left" width="8%"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">Wilayah</td>
+                          <td align="center" width="8%" colspan="2"
+                            style="border-left:1px solid gray;  border-right:1px solid gray; border-bottom:1px solid gray;"
+                            class="label-cell bg-dark-gray-young">OPSI</td>
+                        </tr>
+                        <tbody id="data_status_view_manager">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup edit-penjualan">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Edit Penjualan</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="backbutton" data-popup=".edit-penjualan" class="text-add-colour-white link popup-close"><i
+                    style="margin-right:5px;" class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top bg-dark-gray-medium">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+                      <div class="card-content">
+                        <div class="list no-hairlines-md">
+                          <form id="edit_penjualan_form">
+                            <input type="hidden" id="id_penjualan_edit" name="id_penjualan_edit" value="">
+                            <div class="list">
+                              <ul>
+
+                                <li>
+                                  <a href="#" class="item-link smart-select" data-searchbar="true">
+                                    <select onchange="changeLabel();" name="client_id_edit_penjualan"
+                                      id="client_id_edit_penjualan">
+
+                                    </select>
+                                    <div class="item-content">
+                                      <div class="item-inner">
+                                        <div class="item-title-edit-penjualan">Client</div>
+                                      </div>
+                                    </div>
+                                  </a>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Tanggal Order</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <input type="date" id="penjualan_tanggal_edit" name="penjualan_tanggal_edit"
+                                        placeholder="Posisi" value="" required validate>
+                                      <span class="input-clear-button"></span>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Tanggal Kirim</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <input type="date" id="penjualan_tanggal_kirim_edit"
+                                        name="penjualan_tanggal_kirim_edit" placeholder="Posisi" value="" required
+                                        validate>
+                                      <span class="input-clear-button"></span>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </form>
+                          <div class="bg-dark-gray-medium">
+                            <button class="button popup-open"
+                              style="padding-top:6px;color:blanchedalmond;text-align: right;"
+                              data-popup=".tambah-header-penjualan-popup"><i class="f7-icons">plus_app_fill</i></button>
+                          </div>
+                          <div class="card-content" style="overflow-x:auto; width:100%;">
+                            <table cellspacing="1" cellpadding="1" width="100%">
+
+                              <thead class="bg-dark-gray-medium text-align-center">
+                                <tr>
+
+                                  <th class="label-cell" style="border-bottom:1px solid gray;" width="20%">Jenis</th>
+                                  <th class="label-cell" style="border-bottom:1px solid gray;" width="7%">Qty</th>
+                                  <th class="label-cell" style="border-bottom:1px solid gray;" width="15%">Harga</th>
+                                  <th class="label-cell" style="border-bottom:1px solid gray;" width="15%">Total</th>
+                                  <th class="label-cell" style="border-bottom:1px solid gray;" colspan="2" width="8%">
+                                    Opsi</th>
+                                </tr>
+                              </thead>
+                              <tbody class="text-align-center" id="detail_penjualan_val">
+                              </tbody>
+                            </table>
+
+                          </div>
+                          <center>
+                            <br><br>
+                            <button onclick="editPenjualanProses();" style="width:25%;"
+                              class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                              id="performa_button_save">Simpan
+                            </button>
+                            <br>
+                          </center>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup tambah-header-penjualan-popup">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Tambah Penjualan Data</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="back_button_tambah_penjualan" data-popup=".tambah-header-penjualan-popup"
+                  class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="list no-hairlines-md">
+                  <form id="tambah_header_penjualan_popup">
+                    <div class="list">
+                      <ul>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <label style="height:17px; margin-top:-2px;"><b>Jenis</b></label>
+                            <div class="item-input-wrap">
+                              <div class="row no-gap" style="margin-top: 5px;">
+                                <div class="margin-8 col-100" id="type_penjualan_tambah_1">
+                                  <div>
+                                    <input oninput="this.value = this.value.toUpperCase()"
+                                      onkeyup="doSearchByTypeTambahPopup();" placeholder="Type"
+                                      name="jenis_tambah_popup" id="jenis_tambah_popup"
+                                      class="penjualan-input input-item-jenis text-add-colour-black-soft bg-dark-gray-young button-small text-bold"
+                                      type="text" required validate><span style="margin-right: 78px;margin-top: -12px;"
+                                      id="input-clear-button-type" class="input-clear-button"></span>
+                                  </div>
+                                  <input type="hidden" id="openPopupTambah_1" class="popup-open"
+                                    data-popup=".katalog-popup-tambah" name="openPopupTambah_1">
+                                  <input type="hidden" id="penjualan_produk_detail_tambah_id_1"
+                                    name="penjualan_produk_detail_tambah_id_1">
+                                  <input type="hidden" id="penjualan_produk_id_tambah_1"
+                                    name="penjualan_produk_tambah_id_1">
+                                </div>
+                                <div class="margin-8 col-30" id="color_penjualan_tambah_1" style="display: none;">
+                                  <div style="height:8px;">
+                                    <div id="color_tambah_popup_1"
+                                      style="border-radius: 5px;width: 55px;margin-left: 17px;">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="margin-16 col-20" id="gambar_penjualan_tambah_1"
+                                  style="display: none;margin-left: 0px;padding-left: 0px;">
+                                  <div>
+                                    <br>
+                                    <center>
+                                      <label style="width:100%;height:27px;  float:left; margin-bottom:10px;"
+                                        for="file_tambah_1" id="value_penjualan_tambah_1"
+                                        class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold custom-file-upload value_penjualan">
+                                        <i class="f7-icons">photo_fill</i>
+                                      </label>
+                                      <input
+                                        class="penjualan-input input-item-file text-add-colour-black-soft bg-dark-gray-young button-small col button popup-open text-bold"
+                                        type="file" style="display:none;" onchange="gambarPenjualanTambahPopup(1);"
+                                        name="file_tambah_1" id="file_tambah_1" accept="image/*;capture=camera">
+                                    </center>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <label style="height:17px; margin-top:-9px;"><b>Qty</b></label>
+                            <div class="item-input-wrap">
+                              <label></label>
+                              <input type="number" id="qty_tambah_popup" name="qty_tambah_popup" placeholder="0"
+                                value="" required validate>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <label style="height:17px; margin-top:-9px;"><b>Harga</b></label>
+                            <div class="item-input-wrap">
+                              <label></label>
+                              <input class="input-item-price" type="text" id="price_tambah_popup"
+                                name="price_tambah_popup" placeholder="0" value="" required validate>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <label style="height:17px; margin-top:-9px;"><b>Material / Warna</b></label>
+                            <div class="item-input-wrap">
+                              <label></label>
+                              <input type="text" id="keterangan_full_tambah_popup" placeholder="Detail"
+                                name="keterangan_full_tambah_popup" value="" required validate>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <label style="height:17px; margin-top:-9px;"><b>Keterangan</b></label>
+                            <div class="item-input-wrap">
+                              <label></label>
+                              <input type="text" id="keterangan_singkat_tambah_popup" placeholder="Keterangan"
+                                name="keterangan_singkat_tambah_popup" value="" required validate>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </form>
+                  <center style=" padding:10px; margin-top:-50px;">
+                    <br><br>
+                    <button onclick="tambaHeaderPenjualanProses();" style="width:30%;"
+                      class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                      id="tambah_performa_button_save">Simpan
+                    </button>
+                  </center>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup edit-detail-manager-penjualan">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Edit Penjualan</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="backbutton_owner" data-popup=".edit-detail-manager-penjualan"
+                  class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
+                    class="f7-icons">xmark_rectangle_fill</i></p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="card card-outline margin-top bg-dark-gray-medium">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+                      <div class="card-content">
+                        <div class="list no-hairlines-md">
+                          <form id="edit_penjualan_detail_manager_form">
+                            <input type="hidden" id="penjualan_detail_performa_id_edit"
+                              name="penjualan_detail_performa_id_edit" value="">
+                            <input type="hidden" id="penjualan_id_edit_2" name="penjualan_id_edit_2" value="">
+                            <div class="list">
+                              <ul>
+
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-2px;"><b>Jenis</b></label>
+                                    <div class="item-input-wrap">
+                                      <div class="row no-gap" style="margin-top: 5px;">
+                                        <div class="margin-8 col-100" id="type_penjualan_edit_1">
+                                          <div>
+                                            <input oninput="this.value = this.value.toUpperCase()"
+                                              onkeyup="doSearchByTypeEdit();" placeholder="Type" name="jenis_edit_popup"
+                                              id="jenis_edit_popup"
+                                              class="penjualan-input input-item-jenis text-add-colour-black-soft bg-dark-gray-young button-small text-bold"
+                                              type="text" required validate><span
+                                              style="margin-right: 78px;margin-top: -12px;" id="input-clear-button-type"
+                                              class="input-clear-button"></span>
+                                          </div>
+                                          <input type="hidden" id="openPopupEdit_1" class="popup-open"
+                                            data-popup=".katalog-popup-edit" name="openPopupEdit_1">
+                                          <input type="hidden" id="penjualan_produk_detail_edit_id_1"
+                                            name="penjualan_produk_detail_edit_id_1">
+                                          <input type="hidden" id="penjualan_produk_id_edit_1"
+                                            name="penjualan_produk_edit_id_1">
+                                        </div>
+                                        <div class="margin-8 col-30" id="color_penjualan_edit_1" style="display: none;">
+                                          <div style="height:8px;">
+                                            <div id="color_edit_1"
+                                              style="border-radius: 5px;width: 55px;margin-left: 17px;">
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="margin-16 col-20" id="gambar_penjualan_edit_1"
+                                          style="display: none;margin-left: 0px;padding-left: 0px;">
+                                          <div>
+                                            <br>
+                                            <center>
+                                              <label style="width:100%;height:27px;  float:left; margin-bottom:10px;"
+                                                for="file_edit_1" id="value_penjualan_edit_1"
+                                                class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold custom-file-upload value_enjualan">
+                                                <i class="f7-icons">photo_fill</i>
+                                              </label>
+                                              <input
+                                                class="penjualan-input input-item-file text-add-colour-black-soft bg-dark-gray-young button-small col button popup-open text-bold"
+                                                type="file" style="display:none;" onchange="gambarPenjualanEdit(1);"
+                                                name="file_edit_1" id="file_edit_1" accept="image/*;capture=camera">
+                                            </center>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Qty</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <input type="number" id="penjualan_qty_edit" name="penjualan_qty_edit"
+                                        placeholder="Qty" value="" required validate>
+                                      <span class="input-clear-button"></span>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Harga</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <input type="text" id="penjualan_harga_edit" name="penjualan_harga_edit"
+                                        placeholder="Harga" value="" required validate>
+                                      <span class="input-clear-button"></span>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Material / Warna</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <textarea id="produk_keterangan_custom_edit" name="produk_keterangan_custom_edit"
+                                        rows="2" cols="20"></textarea>
+
+
+                                    </div>
+                                  </div>
+                                </li>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <label style="height:17px; margin-top:-9px;"><b>Keterangan</b></label>
+                                    <div class="item-input-wrap">
+                                      <label></label>
+                                      <textarea id="keterangan_edit" name="keterangan_edit" rows="2"
+                                        cols="20"></textarea>
+
+
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </form>
+
+                          <center>
+                            <br><br>
+                            <button onclick="editDetailOwnerPenjualanProses();" style="width:30%;"
+                              class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                              id="performa_button_save">Simpan
+                            </button><br>
+                          </center>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup katalog-popup-edit">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Katalog</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white">
+                <table>
+                  <tr>
+                    <td>
+                      <i class="f7-icons  link popup-close" data-popup=".katalog-popup-edit"
+                        id="close-katalog-popup-edit">xmark_rectangle_fill</i>
+                    </td>
+                  </tr>
+                </table>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div>
+              <div class="row" style="padding:5px; font-size:20px;" id="katalog_data_edit">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup katalog-popup-tambah">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Katalog</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white">
+                <table>
+                  <tr>
+                    <td>
+                      <i class="f7-icons  link popup-close" data-popup=".katalog-popup-tambah"
+                        id="close-katalog-popup-tambah">xmark_rectangle_fill</i>
+                    </td>
+                  </tr>
+                </table>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div>
+              <div class="row" style="padding:5px; font-size:20px;" id="katalog_data_tambah">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup detail-spk-po-produksi">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">SPK PO <span id="nama_invoice_po"></span></div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p class="text-add-colour-white">
+                <table>
+                  <tr>
+                    <td>
+                      <i class="f7-icons link popup-close" data-popup=".detail-spk-po-produksi"
+                        id="close-detail-spk-po-produksi">xmark_rectangle_fill</i>
+                    </td>
+                  </tr>
+                </table>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div>
+              <div class="row">
+                <h4 id="no_invoice_po"></h4>
+                <input type="hidden" id="penjualan_id_eye" name="penjualan_id_eye" value="">
+              </div>
+              <div class="row" id="data-detail-spk-po">
+              </div>
+            </div>
+            <center>
+              <br><br>
+              <button onclick="updateStatusViewProduksiSpk();" style="width:30%;"
+                class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
+                id="updateEyeViewProduksiSpk">Confirm
+              </button><br>
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="popup input-alamat-kirim-pusat">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Shipment</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <p id="back-input-alamat-kirim-pusat" class="text-add-colour-white link popup-close"
+                  data-popup=".input-alamat-kirim-pusat">
+                  <i style="margin-right:5px;" class="f7-icons">xmark_rectangle_fill</i>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <form id="input_alamat_kirim_pusat_popup">
+              <div class="list" style="margin-top: 10px;">
+                <ul style="padding: 10px;">
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <label style="height:17px; margin-top:-9px;"><b>Nama Customer</b></label>
+                      <div class="item-input-wrap">
+                        <label></label>
+                        <input type="text" id="nama_pusat_popup" name="nama_pusat_popup" required readonly disabled
+                          validate>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <label style="height:17px; margin-top:-9px;"><b>No Hp.</b></label>
+                      <div class="item-input-wrap">
+                        <label></label>
+                        <input type="text" id="hp_pusat_alamat" name="hp_pusat_alamat" required readonly disabled
+                          validate>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="item-content item-input">
+                    <div class="item-inner">
+                      <label style="height:17px; margin-top:-9px;"><b>Alamat Kirim</b></label>
+                      <div class="item-input-wrap">
+                        <label></label>
+                        <textarea type="text" value="" id="alamat_kirim_pusat_popup" readonly disabled
+                          name="alamat_kirim_pusat_popup" required validate></textarea>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- In data-popup attribute we specify CSS selector of popup we need to open -->
+    <!-- And somewhere in DOM -->
+
+    <div class="card table-color-red border-actived" style="height:30px;">
+      <marquee direction="left" style="vertical-align:middle; " id="data_produksi_telat">
+      </marquee>
+    </div>
+    <div class="card margin-3">
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+        <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
+            href="/produksi_pusat">SPK</a></div>
+        <div onclick="chooseDataProduksiCabangRedirect();" class="col col-border text-bold jakartaFilterCabangBtnPusat">
+          <a class="text-add-colour-white" href="/cabang_pusat">IND-BAR</a>
+        </div>
+        <div class="col col-border text-bold"><a class="text-add-colour-white" href="/laporan">PARTNER</a></div>
+      </div>
+
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young nav-surabaya">
+        <div class="col col-border text-bold bg-dark-gray-medium dataFilterCabangBtn" onclick="choosePabrikSby('Sby');">
+          <a class="text-add-colour-white">Data</a>
+        </div>
+        <div onclick="choosePabrikSby('Pusat');" class="col col-border text-bold sbyFilterCabangBtn"><a
+            class="text-add-colour-white">Pusat</a>
+        </div>
+      </div>
+    </div>
+    <div class="card" style=" width:98%; margin-top:-6px;">
+      <table width="98%;" cellspacing="0" cellpadding="1" style="border-color:gray; margin-bottom:10px;">
+        <tr class="bg-dark-gray-young">
+          <th style="padding:4px;" colspan="7" align="left" width="60%">
+            Data Produksi
+
+          </th>
+
+          <th align="right" width="15%">
+
+            <button data-popup=".produksi-selesai-popup" class="popup-open" onclick="produksiSelesaiPopup();"
+              style="background-color: #4242d6; font-weight:bold; border-radius: 4px; color:white;">Selesai</button>
+          </th>
+          <th align="center" width="10%">
+            <i data-popup=".point-produksi" class="text-align-right f7-icons popup-open" onclick="pointProduksi();"
+              style="font-size:30px; color:white; margin-right:-9px;">arrow_down_doc_fill</i>
+          </th>
+          <th style="padding-right:20px;" align="right" width="15%">
+
+            <i class="text-align-right f7-icons" onclick="getDataProduksi();"
+              style="font-size:30px; color:white; margin-right:-9px;">arrow_2_circlepath_circle_fill</i>
+          </th>
+        </tr>
+      </table>
+
+    </div>
+    <table cellspacing="1" cellpadding="1" width="100%" style="margin-top:-10px;">
+      <tr>
+        <th colspan="1" style="padding-left:8px;">
+          <center>
+            <input onkeyup="doSearchProduksiByPerusahaan()" type="text"
+              style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
+              id="perusahaan_produksi_filter" name="perusahaan_produksi_filter" placeholder="Cari Perusahaan">
+          </center>
+
+        </th>
+        <th colspan="1" style="padding:0px;">
+          <center>
+            <input onkeyup="doSearchProduksiType()" type="text" placeholder="Cari Type"
+              style="border-radius:3px; padding:6px; width:100%; color:black; background-color:lightgray;"
+              id="type_produksi_filter" name="type_produksi_filter" />
+          </center>
+        </th>
+        <th colspan="1" style="padding-right:8px;">
+          <center>
+            <input onkeyup="doSearchProduksiWarna()" type="text" placeholder="Cari Warna"
+              style="border-radius:3px; padding:6px; width:100%; color:black; background-color:lightgray;"
+              id="warna_produksi_filter" name="warna_produksi_filter" />
+          </center>
+        </th>
+      </tr>
+    </table>
+    <div class="card-content" style="overflow-x:auto;width:96%; margin-left:8px;" id="spk_data">
+      <table cellspacing="0" cellpadding="0" style=" border-collapse: collapse; border-color:gray;" width="1210px">
+        <thead class="bg-dark-gray-medium text-align-center">
+          <tr>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="6%">Shipment</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="4%">No</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="4%">
+              Dateline</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="12%">
+              SPK</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="13%">
+              Nama</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="9%">
+              Type</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="5%">Jumlah</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="5%">Stok</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="5%">Sisa</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="8%">Spesifikasi</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="23%">Keterangan</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="6%">Jenis</th>
+            <!-- <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="6%">Shipment</th> -->
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="6%">Bantuan</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="6%">Logo</th>
+          </tr>
+        </thead>
+        <tbody class="text-align-center" id="produk_data">
+        </tbody>
+      </table>
+      <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
+      </div>
+    </div>
+    <div class="card-content" style="overflow-x:auto;width:96%; margin-left:8px;" id="pusat_data">
+      <table cellspacing="0" cellpadding="0" style=" border-collapse: collapse; border-color:gray;" width="1070px">
+        <thead class="bg-dark-gray-medium text-align-center">
+          <tr>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="8%">Shipment</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              align="center" width="4%">No</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="9%">
+              Dateline</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="13%">
+              SPK</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
+              Nama</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
+              Type</th>
+            <th class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="5%">Jumlah</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="16%">Spesifikasi</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="16%">Keterangan</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="14%">Sisa</th>
+            <!-- <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="14%">Wilayah</th> -->
+            <!-- <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="14%">SJC</th> -->
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="16%">Bantuan</th>
+            <th align="center" class="label-cell"
+              style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+              width="14%">Cabang</th>
+          </tr>
+        </thead>
+        <tbody class="text-align-center" id="produk_data_cabang_pusat_spk">
+        </tbody>
+      </table>
+      <div style="margin:5px; font-size:20px;" id="pagination_button_spk" class="text-align-center">
+      </div>
+    </div>
+  </div>
+</div>
+</div>
