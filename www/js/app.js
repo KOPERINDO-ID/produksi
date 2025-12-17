@@ -70,6 +70,8 @@ var app = new Framework7({
         }, 300);
       } else {
 
+        initNotificationManager();
+
         var lower_api = localStorage.getItem("lokasi_pabrik").toLowerCase();
 
         if (lower_api == 'pusat') {
@@ -302,4 +304,59 @@ $$(document).on('page:afterin', '.page[data-name="penjualan_input_non_performa"]
   checkConnection();
 });
 
+/**
+ * Inisialisasi NotificationManager
+ * Dipanggil setelah login berhasil
+ */
+function initNotificationManager() {
+  var userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    console.log('[App] No user_id found, skipping notification init');
+    return;
+  }
+
+  // Tunggu device ready jika belum
+  if (typeof cordova !== 'undefined' && document.readyState !== 'complete') {
+    document.addEventListener('deviceready', function () {
+      _doInitNotification(userId);
+    }, false);
+  } else {
+    // Delay sedikit untuk memastikan semua script loaded
+    setTimeout(function () {
+      _doInitNotification(userId);
+    }, 500);
+  }
+}
+
+function _doInitNotification(userId) {
+  if (typeof NotificationManager === 'undefined') {
+    console.warn('[App] NotificationManager not loaded');
+    return;
+  }
+
+  // Update API URL sesuai dengan BASE_API
+  if (typeof BASE_API !== 'undefined') {
+    NotificationManager.config.apiUrl = BASE_API;
+  }
+
+  // Inisialisasi
+  NotificationManager.init(userId);
+  console.log('[App] NotificationManager initialized for user:', userId);
+}
+
+/**
+ * Cleanup NotificationManager sebelum logout
+ * Panggil ini di fungsi logOut()
+ */
+function cleanupNotificationManager(callback) {
+  if (typeof NotificationManager !== 'undefined' && NotificationManager.isInitialized) {
+    NotificationManager.cleanup(function () {
+      console.log('[App] NotificationManager cleaned up');
+      if (callback) callback();
+    });
+  } else {
+    if (callback) callback();
+  }
+}
 

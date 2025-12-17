@@ -7,7 +7,7 @@
     content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
   <meta name="viewport"
     content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-  <meta name="theme-color" content="#007aff">
+  <meta name="theme-color" content="#ff6b35">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <title>Produksi App</title>
@@ -25,11 +25,9 @@
 
     .navbar-inner {
       position: relative;
-      /* penting untuk anchor absolute */
       padding: 0 10px;
     }
 
-    /* kiri */
     #box_internet,
     #header_name {
       float: left;
@@ -43,11 +41,9 @@
       font-size: 18px;
     }
 
-    /* kanan selalu nempel */
     #nav-right {
       position: absolute;
       right: 10px;
-      /* menempel kanan */
       display: flex;
       align-items: center;
       gap: 10px;
@@ -63,6 +59,173 @@
     #logout_logo {
       cursor: pointer;
     }
+
+    /* ========== NOTIFICATION STYLES ========== */
+    #notifIcon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    #notifIcon i {
+      color: #fff;
+      font-size: 22px;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -5px;
+      right: -8px;
+      background: #ff6b35;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    #notifPanel {
+      position: fixed;
+      top: 50px;
+      right: 5px;
+      width: 320px;
+      max-height: 70vh;
+      background: #1a1a2e;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      z-index: 99998;
+      overflow: hidden;
+    }
+
+    .notif-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      background: #050609;
+      border-bottom: 1px solid #1b1b2f;
+    }
+
+    .notif-panel-header button i {
+      font-size: 20px;
+    }
+
+    .notif-panel-body {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    #notifList {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #notifList .notification-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid #2d3a4f;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #notifList .notification-item:hover {
+      background: #2d3a4f;
+    }
+
+    /* Unread: background oranye transparan dengan border kiri */
+    #notifList .notification-item.unread {
+      background: rgba(255, 107, 53, 0.15);
+      border-left: 3px solid #ff6b35;
+    }
+
+    #notifList .notif-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    #notifList .notif-body {
+      font-size: 12px;
+      color: #a0a0a0;
+      margin-bottom: 4px;
+    }
+
+    /* Item yang sudah dibaca */
+    #notifList .notification-item:not(.unread) .notif-body {
+      color: #666;
+    }
+
+    #notifList .notif-time {
+      font-size: 11px;
+      color: #ff6b35;
+    }
+
+    #notifList .empty-notification {
+      padding: 40px 20px;
+      text-align: center;
+      color: #666;
+    }
+
+    #notifList .empty-notification p {
+      margin: 0;
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      top: 60px;
+      right: 10px;
+      z-index: 99999;
+      background: linear-gradient(135deg, #ea480a 0%, #ff6b35 100%);
+      border-radius: 12px;
+      padding: 15px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 320px;
+      min-width: 260px;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .toast-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .toast-text h4 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .toast-text p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.4;
+    }
   </style>
 </head>
 
@@ -72,47 +235,72 @@
       <div class="navbar">
         <div class="navbar-bg"></div>
         <div class="navbar-inner bg-dark-gray-medium">
-          <!-- kiri -->
           <div class="kotak" id="box_internet"></div>
           <h4 id="header_name">Produksi</h4>
-
-          <!-- kanan: jam + logout, selalu menempel kanan -->
           <div id="nav-right">
+            <!-- Notification Icon -->
+            <div id="notifIcon">
+              <i class="f7-icons">bell_fill</i>
+              <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+            </div>
             <div id="clock_view">15:05:44<br>7/Oct/2025</div>
             <img onclick="logOut();" id="logout_logo" src="img/logo/logout.png" width="45" />
           </div>
         </div>
       </div>
       <div class="page page-main" data-name="home">
-        <!-- Top Navbar -->
-        <!-- Scrollable page content-->
         <div class="page-content">
-          <!-- In data-popup attribute we specify CSS selector of popup we need to open -->
-          <!-- And somewhere in DOM -->
         </div>
       </div>
     </div>
   </div>
+
+  <!-- ========== NOTIFICATION PANEL ========== -->
+  <div id="notifPanel" style="display: none;">
+    <div class="notif-panel-header">
+      <h4 style="margin: 0; color: #fff;">Notifikasi</h4>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="markAllRead" style="background: none; border: none; color: #3498db; cursor: pointer;"
+          title="Tandai Semua Dibaca">
+          <i class="f7-icons">checkmark_circle</i>
+        </button>
+        <button id="clearAllNotif" style="background: none; border: none; color: #e74c3c; cursor: pointer;"
+          title="Hapus Semua">
+          <i class="f7-icons">trash_circle</i>
+        </button>
+        <button id="closePanel" style="background: none; border: none; color: #fff; cursor: pointer;" title="Tutup">
+          <i class="f7-icons">multiply_circle</i>
+        </button>
+      </div>
+    </div>
+    <div class="notif-panel-body">
+      <ul id="notifList"></ul>
+    </div>
+  </div>
+
+  <!-- ========== TOAST NOTIFICATION ========== -->
+  <div class="toast-notification" id="toastNotif" style="display: none;">
+    <div class="toast-content">
+      <div class="toast-icon">🔔</div>
+      <div class="toast-text">
+        <h4 id="toastTitle">Judul</h4>
+        <p id="toastBody">Pesan notifikasi</p>
+      </div>
+    </div>
+  </div>
+
   <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
-  <!-- Framework7 library -->
   <!-- Cordova APIs -->
   <script src="js/cordova-app.js"></script>
 
-
-  <!-- End Cordova APIs -->
-
   <!-- App routes -->
   <script src="js/routes.js"></script>
-  <!-- End App routes -->
 
   <!-- App scripts -->
-
   <script src="js/lib/jquery-2.1.3.min.js"></script>
   <script src="js/lib/chart.bundle.min.js"></script>
   <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-
   <script src="framework7/js/framework7.bundle.min.js"></script>
-  <!-- End App scripts -->
 
   <!-- Page Additional JS -->
   <script src="js/global.js"></script>
@@ -136,15 +324,13 @@
   <script src="js/laporan.js"></script>
   <script src="js/additional/moment/moment.js"></script>
   <script src="js/additional/download.js"></script>
-  <!-- End Additional JS -->
 
   <!-- App Global JS -->
   <script src="js/app.js"></script>
-  <!-- End App Global JS -->
 
-  <!-- Firebase Notif Debug JS -->
+  <!-- Firebase Notif JS -->
+  <script src="js/notification.js"></script>
   <script src="js/debug_notif.js"></script>
-  <!-- End of Firebase Notif Debug JS -->
 
 </body>
 

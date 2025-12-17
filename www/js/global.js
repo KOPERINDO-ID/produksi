@@ -168,7 +168,15 @@ function checkLogin() {
 
 
 function logOut() {
-	localStorage.clear();
+	cleanupNotificationManager(function () {
+		localStorage.removeItem("login");
+		localStorage.removeItem("user_id");
+		localStorage.removeItem("lokasi_pabrik");
+		localStorage.removeItem("fcm_token");
+		localStorage.removeItem("token_registered");
+		localStorage.clear();
+	});
+
 	return app.views.main.router.navigate('/login');
 }
 
