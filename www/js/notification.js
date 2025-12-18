@@ -24,33 +24,40 @@ var NotificationManager = {
      * Initialize Notification Manager
      * @param {string|number} userId - User ID untuk registrasi token
      */
-    init: function (userId) {
-        var self = this;
+    init: function (userId, forceRefresh) {
+        forceRefresh = forceRefresh || false;
 
-        if (this.isInitialized && this.userId === userId) {
+        if (this.isInitialized && this.userId === userId && !forceRefresh) {
             this.log('Already initialized for user: ' + userId);
+
+            var existingToken = localStorage.getItem('fcm_token');
+            if (existingToken) {
+                this.registerTokenToServer(existingToken);
+            }
             return;
+        }
+
+        if (this.userId !== userId || forceRefresh) {
+            this.log('Resetting state for new initialization');
+            this.isInitialized = false;
+            this.fcmToken = null;
+            this.retryCount = 0;
         }
 
         this.log('Initializing Notification Manager for user: ' + userId);
         this.userId = userId;
 
-        // TAMBAHAN: Update apiUrl dari BASE_API global
         if (typeof BASE_API !== 'undefined') {
             this.config.apiUrl = BASE_API;
             this.log('API URL updated to: ' + BASE_API);
         }
 
-        // Load existing notifications from localStorage
         this.loadNotifications();
 
-        // Bind UI events
         this.bindEvents();
 
-        // Initialize Firebase Messaging
         this.initFirebaseMessaging();
 
-        // Initialize Sound
         this.initAudio();
 
         this.isInitialized = true;
@@ -212,10 +219,10 @@ var NotificationManager = {
                 fcm_token: token,
             },
             headers: this.getAuthHeaders(),
-            timeout: 30000,
+            timeout: 10000,
             success: function (response) {
                 self.log('Token registered successfully: ' + JSON.stringify(response));
-                self.retryCount = 0; // Reset retry count on success
+                self.retryCount = 0;
 
                 localStorage.setItem('token_registered', 'true');
                 localStorage.setItem('token_registered_at', new Date().toISOString());
@@ -225,7 +232,6 @@ var NotificationManager = {
                 self.logError('Failed to register token: ' + error);
                 self.logError('Response: ' + xhr.responseText);
 
-                // Retry if network error
                 if (status === 'timeout' || status === 'error') {
                     if (self.retryCount < self.maxRetries) {
                         self.retryCount++;
@@ -285,6 +291,31 @@ var NotificationManager = {
         localStorage.removeItem('token_registered');
         localStorage.removeItem('token_registered_at');
         localStorage.removeItem('token_registered_user');
+    },
+
+    /**
+     * Force refresh FCM token - panggil setelah login
+     */
+    forceRefreshToken: function () {
+        var self = this;
+
+        if (!this.isFirebaseAvailable()) {
+            this.logError('Firebase not available for refresh');
+            return;
+        }
+
+        this.log('Force refreshing FCM token...');
+
+        cordova.plugins.firebase.messaging.deleteToken().then(function () {
+            self.log('Old token deleted, getting new one...');
+            return cordova.plugins.firebase.messaging.getToken();
+        }).then(function (newToken) {
+            self.log('New token received: ' + newToken.substring(0, 30) + '...');
+            self.handleNewToken(newToken);
+        }).catch(function (error) {
+            self.logError('Error refreshing token: ' + JSON.stringify(error));
+            self.getFirebaseToken();
+        });
     },
 
     /**

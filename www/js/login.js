@@ -21,6 +21,7 @@ function getDataUser() {
 				console.log(data);
 				app.dialog.close();
 				jQuery('#logout_logo').show();
+				jQuery('#notifIcon').show();
 				startTimeMain();
 				localStorage.setItem("user_id", data.user_id);
 				localStorage.setItem("username", data.username);
@@ -33,9 +34,9 @@ function getDataUser() {
 				app.dialog.preloader('Berhasil Login');
 				$$("#header_name").html(localStorage.getItem("lokasi_pabrik"));
 				var lower_api = localStorage.getItem("lokasi_pabrik").toLowerCase();
-				if(lower_api == 'pusat'){
+				if (lower_api == 'pusat') {
 					localStorage.setItem("lower_api_pabrik", 'surabaya');
-				}else{
+				} else {
 					localStorage.setItem("lower_api_pabrik", lower_api);
 				}
 				console.log(localStorage.getItem("jabatan_kantor"));

@@ -136,7 +136,6 @@
       background: #2d3a4f;
     }
 
-    /* Unread: background oranye transparan dengan border kiri */
     #notifList .notification-item.unread {
       background: rgba(255, 107, 53, 0.15);
       border-left: 3px solid #ff6b35;
@@ -155,7 +154,6 @@
       margin-bottom: 4px;
     }
 
-    /* Item yang sudah dibaca */
     #notifList .notification-item:not(.unread) .notif-body {
       color: #666;
     }
@@ -175,7 +173,6 @@
       margin: 0;
     }
 
-    /* Toast Notification */
     .toast-notification {
       position: fixed;
       top: 60px;
@@ -238,7 +235,6 @@
           <div class="kotak" id="box_internet"></div>
           <h4 id="header_name">Produksi</h4>
           <div id="nav-right">
-            <!-- Notification Icon -->
             <div id="notifIcon">
               <i class="f7-icons">bell_fill</i>
               <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
@@ -289,48 +285,69 @@
     </div>
   </div>
 
-  <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
-  <!-- Cordova APIs -->
-  <script src="js/cordova-app.js"></script>
+  <!-- ============================================ -->
+  <!-- 1. LIBRARIES (Load First) -->
+  <!-- ============================================ -->
+  <script src="js/lib/jquery-2.1.3.min.js"></script>
+  <script src="js/additional/moment/moment.js"></script>
+  <script src="js/lib/chart.bundle.min.js"></script>
+  <script src="framework7/js/framework7.bundle.min.js"></script>
+  <script src="js/additional/jquery.mask.min.js"></script>
+  <script src="js/additional/download.js"></script>
 
-  <!-- App routes -->
+  <!-- ============================================ -->
+  <!-- 2. CORDOVA -->
+  <!-- ============================================ -->
+  <script src="js/cordova-app.js"></script>
+  <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+  <!-- ============================================ -->
+  <!-- 3. ROUTES -->
+  <!-- ============================================ -->
   <script src="js/routes.js"></script>
 
-  <!-- App scripts -->
-  <script src="js/lib/jquery-2.1.3.min.js"></script>
-  <script src="js/lib/chart.bundle.min.js"></script>
-  <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-  <script src="framework7/js/framework7.bundle.min.js"></script>
-
-  <!-- Page Additional JS -->
+  <!-- ============================================ -->
+  <!-- 4. GLOBAL & UTILITIES -->
+  <!-- ============================================ -->
   <script src="js/global.js"></script>
-  <script src="js/login.js"></script>
-  <script src="js/additional/jquery.mask.min.js"></script>
   <script src="js/main.js"></script>
+
+  <!-- ============================================ -->
+  <!-- 5. PAGE/FEATURE MODULES -->
+  <!-- ============================================ -->
+  <script src="js/login.js"></script>
   <script src="js/kunjungan.js"></script>
+  <script src="js/kunjungan_input.js"></script>
   <script src="js/penjualan.js"></script>
   <script src="js/penjualan_input.js"></script>
-  <script src="js/kunjungan_input.js"></script>
   <script src="js/performa_input.js"></script>
-  <script src="js/cabang.js"></script>
-  <script src="js/cabang_pusat.js"></script>
   <script src="js/katalog.js"></script>
   <script src="js/detail_product.js"></script>
   <script src="js/surat_jalan.js"></script>
+  <script src="js/purchasing.js"></script>
+  <script src="js/laporan.js"></script>
+
+  <!-- ============================================ -->
+  <!-- 6. PRODUKSI MODULES -->
+  <!-- ============================================ -->
   <script src="js/produksi_pusat.js"></script>
   <script src="js/produksi.js"></script>
   <script src="js/produksi_body.js"></script>
-  <script src="js/purchasing.js"></script>
-  <script src="js/laporan.js"></script>
-  <script src="js/additional/moment/moment.js"></script>
-  <script src="js/additional/download.js"></script>
+  <script src="js/cabang.js"></script>
+  <script src="js/cabang_pusat.js"></script>
 
-  <!-- App Global JS -->
+  <!-- ============================================ -->
+  <!-- 7. NOTIFICATION MODULES -->
+  <!-- ============================================ -->
+  <script src="js/notification.js"></script>
+  <!-- <script src="js/debug_notif.js"></script> -->
+
+  <!-- ============================================ -->
+  <!-- APP.JS -->
+  <!-- ============================================ -->
   <script src="js/app.js"></script>
 
-  <!-- Firebase Notif JS -->
-  <script src="js/notification.js"></script>
-  <script src="js/debug_notif.js"></script>
+  <!-- SPK Urgent Popup dibuat secara dinamis oleh global.js -->
 
 </body>
 

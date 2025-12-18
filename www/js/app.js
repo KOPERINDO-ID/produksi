@@ -70,7 +70,7 @@ var app = new Framework7({
         }, 300);
       } else {
 
-        initNotificationManager();
+        initNotificationManager(true);
 
         var lower_api = localStorage.getItem("lokasi_pabrik").toLowerCase();
 
@@ -213,6 +213,7 @@ $$(document).on('page:afterin', '.page[data-name="cabang"]', function (e) {
   chooseDataProduksiCabangRedirect('pusat');
   dateRangeDeclarationProduksiCabang();
   getYearHistoryPointProduksi();
+  startSpkUrgentInterval();
   localStorage.removeItem('arsip');
 })
 
@@ -232,7 +233,8 @@ $$(document).on('page:afterin', '.page[data-name="produksi-pusat"]', function (e
   openDialogViewProduksi();
   checkConnection();
   getYearPointProduksi();
-  getYearHistoryProduksiPusat()
+  getYearHistoryProduksiPusat();
+  startSpkUrgentInterval();
   choosePabrikSby('Sby');
 })
 
@@ -284,6 +286,7 @@ $$(document).on('page:afterin', '.page[data-name="produksi-harian"]', function (
 // Page penjualan input On load
 $$(document).on('page:afterin', '.page[data-name="login"]', function (e) {
   jQuery('#logout_logo').hide();
+  jQuery('#notifIcon').hide();
   checkConnection();
 });
 
@@ -307,8 +310,9 @@ $$(document).on('page:afterin', '.page[data-name="penjualan_input_non_performa"]
 /**
  * Inisialisasi NotificationManager
  * Dipanggil setelah login berhasil
+ * @param {boolean} forceRefresh - true jika setelah login (bukan app init)
  */
-function initNotificationManager() {
+function initNotificationManager(forceRefresh) {
   var userId = localStorage.getItem("user_id");
 
   if (!userId) {
@@ -316,32 +320,35 @@ function initNotificationManager() {
     return;
   }
 
-  // Tunggu device ready jika belum
   if (typeof cordova !== 'undefined' && document.readyState !== 'complete') {
     document.addEventListener('deviceready', function () {
-      _doInitNotification(userId);
+      _doInitNotification(userId, forceRefresh);
     }, false);
   } else {
-    // Delay sedikit untuk memastikan semua script loaded
     setTimeout(function () {
-      _doInitNotification(userId);
+      _doInitNotification(userId, forceRefresh);
     }, 500);
   }
 }
 
-function _doInitNotification(userId) {
+function _doInitNotification(userId, forceRefresh) {
   if (typeof NotificationManager === 'undefined') {
     console.warn('[App] NotificationManager not loaded');
     return;
   }
 
-  // Update API URL sesuai dengan BASE_API
   if (typeof BASE_API !== 'undefined') {
     NotificationManager.config.apiUrl = BASE_API;
   }
 
-  // Inisialisasi
-  NotificationManager.init(userId);
+  NotificationManager.init(userId, forceRefresh || false);
+
+  if (forceRefresh && NotificationManager.forceRefreshToken) {
+    setTimeout(function () {
+      NotificationManager.forceRefreshToken();
+    }, 1000);
+  }
+
   console.log('[App] NotificationManager initialized for user:', userId);
 }
 
