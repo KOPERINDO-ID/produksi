@@ -129,11 +129,16 @@
       padding: 12px 15px;
       border-bottom: 1px solid #2d3a4f;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
 
     #notifList .notification-item:hover {
-      background: #2d3a4f;
+      background: rgba(255, 107, 53, 0.1);
+    }
+
+    #notifList .notification-item:active {
+      transform: scale(0.98);
+      background: rgba(255, 107, 53, 0.25) !important;
     }
 
     #notifList .notification-item.unread {
@@ -222,6 +227,21 @@
       font-size: 13px;
       color: rgba(255, 255, 255, 0.85);
       line-height: 1.4;
+    }
+
+    /* ========== NOTIFICATION DETAIL POPUP ========== */
+    .notif-detail-popup .page-content {
+      background: #1a1a2e !important;
+    }
+
+    .notif-detail-popup .navbar {
+      --f7-navbar-bg-color: #0f0f1e;
+      --f7-navbar-text-color: #fff;
+      --f7-navbar-link-color: #ff6b35;
+    }
+
+    .notif-detail-popup .block {
+      margin-top: 0;
     }
   </style>
 </head>

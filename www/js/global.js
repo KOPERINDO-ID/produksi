@@ -27,7 +27,7 @@ function checkConnection() {
 
 
 
-var BASE_API = 'https://tasindo-sale-webservice.digiseminar.id/api';
+var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api';
 
 var BASE_API2 = 'https://tasindo-sale-webservice.digiseminar.id/api';
 var BASE_PATH_IMAGE = 'https://tasindo-sale-webservice.digiseminar.id/kunjungan';

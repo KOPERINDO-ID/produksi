@@ -41,7 +41,13 @@ function getDataUser() {
 				}
 				console.log(localStorage.getItem("jabatan_kantor"));
 
+				// ============================================
+				// TAMBAHAN: Inisialisasi FCM setelah login
+				// ============================================
+				initNotificationManagerAfterLogin();
+
 				setTimeout(function () {
+					app.dialog.close();
 					if (localStorage.getItem("lokasi_pabrik") == 'Pusat') {
 						return app.views.main.router.navigate('/produksi_pusat');
 					} else {
@@ -52,6 +58,50 @@ function getDataUser() {
 
 		},
 		error: function (xmlhttprequest, textstatus, message) {
+			app.dialog.close();
+			app.dialog.alert('Gagal login. Periksa koneksi internet.');
 		}
 	});
+}
+
+/**
+ * Inisialisasi NotificationManager setelah login berhasil
+ * Fungsi ini memastikan FCM token di-generate dan di-register ke server
+ */
+function initNotificationManagerAfterLogin() {
+	var userId = localStorage.getItem("user_id");
+
+	if (!userId) {
+		console.error('[Login] No user_id found after login');
+		return;
+	}
+
+	console.log('[Login] Initializing NotificationManager for user:', userId);
+
+	// Tunggu sedikit untuk memastikan semua localStorage sudah tersimpan
+	setTimeout(function () {
+		if (typeof NotificationManager === 'undefined') {
+			console.error('[Login] NotificationManager not loaded');
+			return;
+		}
+
+		// Update API URL
+		if (typeof BASE_API !== 'undefined') {
+			NotificationManager.config.apiUrl = BASE_API;
+		}
+
+		// Inisialisasi dengan forceRefresh = true
+		NotificationManager.init(userId, true);
+
+		// Force get FCM token setelah delay tambahan
+		setTimeout(function () {
+			if (NotificationManager.isFirebaseAvailable()) {
+				console.log('[Login] Getting FCM token...');
+				NotificationManager.getFirebaseToken();
+			} else {
+				console.warn('[Login] Firebase plugin not available');
+			}
+		}, 1500);
+
+	}, 500);
 }

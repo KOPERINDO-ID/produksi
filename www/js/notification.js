@@ -13,9 +13,9 @@ var NotificationManager = {
 
     // Configuration - SESUAIKAN DENGAN SERVER ANDA
     config: {
-        apiUrl: (typeof BASE_API !== 'undefined') ? BASE_API : 'https://tasindo-sale-webservice.digiseminar.id/api',
+        apiUrl: (typeof BASE_API !== 'undefined') ? BASE_API : 'https://tasindo-service-staging.digiseminar.id/api',
         maxNotifications: 50,
-        toastDuration: 4000,
+        toastDuration: 5000,
         retryDelay: 30000,
         debugMode: true
     },
@@ -23,6 +23,7 @@ var NotificationManager = {
     /**
      * Initialize Notification Manager
      * @param {string|number} userId - User ID untuk registrasi token
+     * @param {boolean} forceRefresh - Force refresh token dan fetch notifikasi
      */
     init: function (userId, forceRefresh) {
         forceRefresh = forceRefresh || false;
@@ -52,13 +53,25 @@ var NotificationManager = {
             this.log('API URL updated to: ' + BASE_API);
         }
 
+        // Load local notifications
         this.loadNotifications();
 
+        // Bind UI events
         this.bindEvents();
 
+        // Initialize Firebase
         this.initFirebaseMessaging();
 
+        // Initialize Audio
         this.initAudio();
+
+        // PERBAIKAN: Fetch notifikasi dari server saat init
+        if (forceRefresh) {
+            var self = this;
+            setTimeout(function () {
+                self.fetchNotificationsFromServer();
+            }, 2000);
+        }
 
         this.isInitialized = true;
     },
@@ -79,19 +92,23 @@ var NotificationManager = {
             self.isInitialized = false;
             self.retryCount = 0;
 
-            // Clear local notifications (optional)
-            // self.notifications = [];
-            // self.saveNotifications();
-
             if (callback) callback();
         });
     },
 
     /**
      * Initialize Firebase Cloud Messaging
+     * ANDROID ONLY - iOS tidak didukung
      */
     initFirebaseMessaging: function () {
         var self = this;
+
+        // Check platform - hanya Android yang didukung
+        if (typeof device !== 'undefined' && device.platform !== 'Android') {
+            this.log('Skipping Firebase Messaging - Only Android is supported');
+            this.log('Current platform: ' + device.platform);
+            return;
+        }
 
         // Check if plugin is available
         if (!this.isFirebaseAvailable()) {
@@ -100,17 +117,10 @@ var NotificationManager = {
             return;
         }
 
-        this.log('Initializing Firebase Messaging...');
+        this.log('Initializing Firebase Messaging for Android...');
 
-        // Request permission (required for iOS, good practice for Android)
-        cordova.plugins.firebase.messaging.requestPermission({
-            forceShow: true // Show notification even when app is in foreground
-        }).then(function () {
-            self.log('Notification permission granted');
-            self.getFirebaseToken();
-        }).catch(function (error) {
-            self.logError('Notification permission denied: ' + JSON.stringify(error));
-        });
+        // Get token immediately
+        this.getFirebaseToken();
 
         // Listen for token refresh
         cordova.plugins.firebase.messaging.onTokenRefresh(function (token) {
@@ -122,7 +132,8 @@ var NotificationManager = {
 
         // Listen for foreground messages
         cordova.plugins.firebase.messaging.onMessage(function (payload) {
-            self.log('Foreground message received: ' + JSON.stringify(payload));
+            self.log('=== FOREGROUND MESSAGE RECEIVED ===');
+            self.log('Full Payload: ' + JSON.stringify(payload, null, 2));
             self.handleFirebaseMessage(payload, false);
         }, function (error) {
             self.logError('Error receiving foreground message: ' + JSON.stringify(error));
@@ -130,7 +141,8 @@ var NotificationManager = {
 
         // Listen for background message taps
         cordova.plugins.firebase.messaging.onBackgroundMessage(function (payload) {
-            self.log('Background message tapped: ' + JSON.stringify(payload));
+            self.log('=== BACKGROUND MESSAGE TAPPED ===');
+            self.log('Full Payload: ' + JSON.stringify(payload, null, 2));
             self.handleFirebaseMessage(payload, true);
         }, function (error) {
             self.logError('Error receiving background message: ' + JSON.stringify(error));
@@ -195,6 +207,7 @@ var NotificationManager = {
 
     /**
      * Register FCM Token to Server
+     * PERBAIKAN: Setelah register berhasil, fetch notifikasi dari server
      */
     registerTokenToServer: function (token) {
         var self = this;
@@ -227,6 +240,17 @@ var NotificationManager = {
                 localStorage.setItem('token_registered', 'true');
                 localStorage.setItem('token_registered_at', new Date().toISOString());
                 localStorage.setItem('token_registered_user', self.userId);
+
+                // PERBAIKAN: Fetch notifikasi dari server setelah register berhasil
+                // Ini untuk memastikan notifikasi yang sudah ada di database ditampilkan
+                setTimeout(function () {
+                    self.fetchNotificationsFromServer();
+                }, 1000);
+
+                // PERBAIKAN: Jika server mengirim info unread notifications, tampilkan
+                if (response.unread_notifications_sent && response.unread_notifications_sent.sent > 0) {
+                    self.log('Server sent ' + response.unread_notifications_sent.sent + ' unread notifications via push');
+                }
             },
             error: function (xhr, status, error) {
                 self.logError('Failed to register token: ' + error);
@@ -241,6 +265,148 @@ var NotificationManager = {
                         }, self.config.retryDelay);
                     }
                 }
+            }
+        });
+    },
+
+    /**
+     * BARU: Fetch notifikasi dari server database
+     * Dipanggil saat login untuk mengambil notifikasi yang sudah ada
+     */
+    fetchNotificationsFromServer: function () {
+        var self = this;
+
+        if (!this.userId) {
+            this.logError('Cannot fetch notifications: No user ID');
+            return;
+        }
+
+        this.log('Fetching notifications from server...');
+
+        $.ajax({
+            url: this.config.apiUrl + '/notifications',
+            type: 'GET',
+            data: {
+                user_id: this.userId,
+                page: 1
+            },
+            headers: this.getAuthHeaders(),
+            timeout: 15000,
+            success: function (response) {
+                self.log('Notifications fetched: ' + JSON.stringify(response));
+
+                if (response.success && response.data && response.data.data) {
+                    var serverNotifications = response.data.data;
+
+                    // Merge dengan notifikasi lokal
+                    self.mergeServerNotifications(serverNotifications);
+
+                    // Update unread count
+                    self.fetchUnreadCount();
+
+                    // Tampilkan toast jika ada notifikasi baru yang belum dibaca
+                    var unreadFromServer = serverNotifications.filter(function (n) {
+                        return !n.is_read || n.is_read === 0 || n.is_read === '0';
+                    });
+
+                    if (unreadFromServer.length > 0) {
+                        self.log('Found ' + unreadFromServer.length + ' unread notifications from server');
+
+                        // Tampilkan toast untuk notifikasi terbaru
+                        var latestUnread = unreadFromServer[0];
+                        self.showToast(latestUnread.title, latestUnread.message);
+
+                        // Play sound
+                        self.playNotificationSound();
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                self.logError('Failed to fetch notifications: ' + error);
+            }
+        });
+    },
+
+    /**
+     * BARU: Merge notifikasi dari server dengan notifikasi lokal
+     */
+    mergeServerNotifications: function (serverNotifications) {
+        var self = this;
+
+        if (!serverNotifications || !serverNotifications.length) {
+            return;
+        }
+
+        // Convert server notifications ke format lokal
+        serverNotifications.forEach(function (serverNotif) {
+            var existingIndex = self.notifications.findIndex(function (n) {
+                return n.serverId === serverNotif.id;
+            });
+
+            var localNotif = {
+                id: serverNotif.id + '_server',
+                serverId: serverNotif.id,
+                title: serverNotif.title,
+                body: serverNotif.message,
+                type: serverNotif.type || 'general',
+                data: serverNotif.data ? (typeof serverNotif.data === 'string' ? JSON.parse(serverNotif.data) : serverNotif.data) : {},
+                timestamp: serverNotif.dt_record || serverNotif.created_at,
+                isRead: serverNotif.is_read == 1 || serverNotif.is_read === true,
+                fromServer: true
+            };
+
+            if (existingIndex === -1) {
+                // Tambah notifikasi baru
+                self.notifications.unshift(localNotif);
+            } else {
+                // Update notifikasi yang sudah ada
+                self.notifications[existingIndex] = localNotif;
+            }
+        });
+
+        // Sort by timestamp (newest first)
+        this.notifications.sort(function (a, b) {
+            return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+
+        // Limit jumlah notifikasi
+        if (this.notifications.length > this.config.maxNotifications) {
+            this.notifications = this.notifications.slice(0, this.config.maxNotifications);
+        }
+
+        // Save dan render
+        this.saveNotifications();
+        this.updateUnreadCount();
+        this.renderNotifications();
+    },
+
+    /**
+     * BARU: Fetch unread count dari server
+     */
+    fetchUnreadCount: function () {
+        var self = this;
+
+        if (!this.userId) {
+            return;
+        }
+
+        $.ajax({
+            url: this.config.apiUrl + '/notifications/unread-count',
+            type: 'GET',
+            data: {
+                user_id: this.userId
+            },
+            headers: this.getAuthHeaders(),
+            timeout: 10000,
+            success: function (response) {
+                if (response.success && typeof response.count !== 'undefined') {
+                    self.unreadCount = parseInt(response.count);
+                    self.updateBadge();
+                    self.log('Unread count from server: ' + self.unreadCount);
+                }
+            },
+            error: function (xhr, status, error) {
+                self.logError('Failed to fetch unread count: ' + error);
             }
         });
     },
@@ -330,19 +496,16 @@ var NotificationManager = {
     },
 
     /**
-     * Initialize Audio Context (panggil di init setelah initFirebaseMessaging)
+     * Initialize Audio Context
      */
     initAudio: function () {
         var self = this;
 
         try {
-            // Buat AudioContext
             var AudioContext = window.AudioContext || window.webkitAudioContext;
             if (AudioContext) {
                 this.audioContext = new AudioContext();
                 this.log('AudioContext initialized');
-
-                // Preload audio file
                 this.preloadSound();
             } else {
                 this.log('AudioContext not supported');
@@ -361,7 +524,7 @@ var NotificationManager = {
         if (!this.audioContext) return;
 
         var request = new XMLHttpRequest();
-        request.open('GET', 'audio/test-sound.mp3', true);
+        request.open('GET', 'audio/notification.mp3', true);
         request.responseType = 'arraybuffer';
 
         request.onload = function () {
@@ -385,7 +548,8 @@ var NotificationManager = {
     },
 
     /**
-     * Play Notification Sound - VERSI DIPERBAIKI
+     * Play Notification Sound
+     * ANDROID: Gunakan plugin native untuk suara yang lebih reliable
      */
     playNotificationSound: function () {
         var self = this;
@@ -397,9 +561,65 @@ var NotificationManager = {
 
         this.log('Attempting to play notification sound...');
 
+        // ANDROID: Coba gunakan NativeAudio plugin jika ada
+        if (typeof window.plugins !== 'undefined' && window.plugins.NativeAudio) {
+            try {
+                window.plugins.NativeAudio.play('notification', function () {
+                    self.log('Sound played via NativeAudio');
+                }, function (error) {
+                    self.logError('NativeAudio failed: ' + error);
+                    self.playFallbackSound();
+                });
+                return;
+            } catch (e) {
+                this.logError('NativeAudio error: ' + e.message);
+            }
+        }
+
+        // Fallback ke metode lain
+        this.playFallbackSound();
+    },
+
+    /**
+     * Fallback sound methods
+     */
+    playFallbackSound: function () {
+        var self = this;
+
+        // Try Media plugin (Cordova)
+        if (typeof Media !== 'undefined') {
+            try {
+                var soundPath = '/android_asset/www/audio/notification.mp3';
+                var media = new Media(soundPath,
+                    function () {
+                        self.log('Sound played via Media plugin');
+                    },
+                    function (err) {
+                        self.logError('Media plugin failed: ' + err.code);
+                        self.playHtmlAudio();
+                    }
+                );
+                media.play();
+                this.vibrateDevice();
+                return;
+            } catch (e) {
+                this.logError('Media plugin error: ' + e.message);
+            }
+        }
+
+        // Fallback ke HTML5 Audio
+        this.playHtmlAudio();
+    },
+
+    /**
+     * HTML5 Audio fallback
+     */
+    playHtmlAudio: function () {
+        var self = this;
+
+        // Try Web Audio API first
         if (this.audioContext && this.audioBuffer) {
             try {
-                // Resume AudioContext jika suspended (karena autoplay policy)
                 if (this.audioContext.state === 'suspended') {
                     this.audioContext.resume();
                 }
@@ -407,7 +627,6 @@ var NotificationManager = {
                 var source = this.audioContext.createBufferSource();
                 source.buffer = this.audioBuffer;
 
-                // Add gain node untuk volume control
                 var gainNode = this.audioContext.createGain();
                 gainNode.gain.value = 0.7;
 
@@ -416,21 +635,38 @@ var NotificationManager = {
 
                 source.start(0);
                 this.log('Sound played via Web Audio API');
+                this.vibrateDevice();
                 return;
             } catch (e) {
                 this.logError('Web Audio API failed: ' + e.message);
             }
         }
+
+        // Final fallback: HTML5 Audio
+        try {
+            var audio = new Audio('audio/notification.mp3');
+            audio.volume = 0.7;
+            audio.play().then(function () {
+                self.log('Sound played via HTML5 Audio');
+            }).catch(function (e) {
+                self.logError('HTML5 Audio failed: ' + e.message);
+            });
+        } catch (e) {
+            this.logError('All audio methods failed: ' + e.message);
+        }
+
+        // Always vibrate sebagai fallback
+        this.vibrateDevice();
     },
 
     /**
-     * Vibrate device as fallback
+     * Vibrate device
      */
     vibrateDevice: function () {
         try {
             if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200, 100, 200]);
-                this.log('Device vibrated as fallback');
+                navigator.vibrate([200, 100, 200]);
+                this.log('Device vibrated');
             }
         } catch (e) {
             this.logError('Vibration failed: ' + e.message);
@@ -438,120 +674,206 @@ var NotificationManager = {
     },
 
     /**
-     * Enable/Disable audio
-     */
-    setAudioEnabled: function (enabled) {
-        this.audioEnabled = enabled;
-        this.log('Audio ' + (enabled ? 'enabled' : 'disabled'));
-    },
-
-    /**
-     * Test sound (untuk debugging)
-     */
-    testSound: function () {
-        this.log('Testing notification sound...');
-        this.playNotificationSound();
-    },
-
-
-    /**
      * Handle Firebase message
+     * ANDROID ONLY - iOS tidak didukung
      */
     handleFirebaseMessage: function (payload, wasTapped) {
-        this.log('Handling message, wasTapped: ' + wasTapped);
+        this.log('=== handleFirebaseMessage ===');
+        this.log('wasTapped: ' + wasTapped);
+        this.log('=== FULL PAYLOAD DEBUG ===');
+        this.log(JSON.stringify(payload, null, 2));
 
-        // Extract notification data
-        var title = payload.title ||
-            (payload.notification && payload.notification.title) ||
-            'Notifikasi';
-        var body = payload.body ||
-            (payload.notification && payload.notification.body) ||
-            '';
-        var data = payload.data || {};
+        // Extract notification data dari berbagai format payload Android
+        var title = '';
+        var body = '';
+        var data = {};
 
-        // Parse data jika string
-        if (typeof data === 'string') {
-            try {
-                data = JSON.parse(data);
-            } catch (e) {
-                data = {};
+        // ANDROID FORMAT PRIORITY - Check semua kemungkinan field
+
+        // 1. Check payload.data first (PRIORITAS untuk Android!)
+        if (payload.data) {
+            this.log('Processing payload.data...');
+            data = payload.data;
+
+            // Check berbagai kemungkinan field untuk title
+            if (payload.data.title) {
+                title = payload.data.title;
+                this.log('Title from data.title: ' + title);
+            }
+
+            // Check berbagai kemungkinan field untuk body/message
+            if (payload.data.message) {
+                body = payload.data.message;
+                this.log('Body from data.message: ' + body);
+            } else if (payload.data.body) {
+                body = payload.data.body;
+                this.log('Body from data.body: ' + body);
+            } else if (payload.data.text) {
+                body = payload.data.text;
+                this.log('Body from data.text: ' + body);
             }
         }
 
-        // Add notification to list
-        var notification = this.addNotification(title, body, data);
+        // 2. Check payload.notification (untuk notifikasi dengan notification payload)
+        if (payload.notification) {
+            this.log('Processing payload.notification...');
 
-        // TAMBAHAN: Play sound untuk foreground notification
+            if (!title && payload.notification.title) {
+                title = payload.notification.title;
+                this.log('Title from notification.title: ' + title);
+            }
+
+            if (!body && payload.notification.body) {
+                body = payload.notification.body;
+                this.log('Body from notification.body: ' + body);
+            }
+        }
+
+        // 3. Check payload langsung (fallback)
+        if (!title && payload.title) {
+            title = payload.title;
+            this.log('Title from payload.title: ' + title);
+        }
+        if (!body && payload.body) {
+            body = payload.body;
+            this.log('Body from payload.body: ' + body);
+        }
+        if (!body && payload.message) {
+            body = payload.message;
+            this.log('Body from payload.message: ' + body);
+        }
+
+        // 4. Check gcm format (Android legacy)
+        if (payload.gcm && payload.gcm.notification) {
+            this.log('Processing payload.gcm.notification...');
+
+            if (!title && payload.gcm.notification.title) {
+                title = payload.gcm.notification.title;
+                this.log('Title from gcm.notification.title: ' + title);
+            }
+            if (!body && payload.gcm.notification.body) {
+                body = payload.gcm.notification.body;
+                this.log('Body from gcm.notification.body: ' + body);
+            }
+        }
+
+        // Log hasil extract
+        this.log('=== EXTRACTION RESULT ===');
+        this.log('Final title: ' + (title || 'EMPTY'));
+        this.log('Final body: ' + (body || 'EMPTY'));
+        this.log('Final data: ' + JSON.stringify(data));
+        this.log('========================');
+
+        // Default title jika masih kosong
+        if (!title || title === '') {
+            title = 'Notifikasi Baru';
+            this.log('Using default title');
+        }
+
+        // Default body jika masih kosong - HANYA jika benar-benar kosong
+        if (!body || body === '') {
+            body = 'Anda memiliki notifikasi baru';
+            this.log('Using default body - THIS SHOULD NOT HAPPEN!');
+            this.logError('WARNING: Body is empty! Check server payload!');
+        }
+
+        // Cek apakah ini adalah notifikasi type 'unread_summary'
+        if (data.type === 'unread_summary') {
+            this.log('Received unread summary notification');
+            // Fetch notifikasi dari server untuk mendapatkan list lengkap
+            this.fetchNotificationsFromServer();
+            return; // Skip adding to local list untuk unread_summary
+        }
+
+        // Buat notifikasi object
+        var notification = {
+            id: 'push_' + Date.now(),
+            title: title,
+            body: body,
+            type: data.type || 'general',
+            data: data,
+            timestamp: new Date().toISOString(),
+            isRead: wasTapped,
+            fromPush: true
+        };
+
+        this.log('=== FINAL NOTIFICATION OBJECT ===');
+        this.log(JSON.stringify(notification, null, 2));
+        this.log('=================================');
+
+        // Simpan notifikasi
+        this.addNotification(notification);
+
+        // Jika foreground (tidak di-tap), tampilkan toast dan play sound
         if (!wasTapped) {
+            this.log('App in foreground - showing toast and playing sound');
+            this.showToast(title, body);
             this.playNotificationSound();
+        } else {
+            this.log('App opened from notification tap');
         }
 
-        // If user tapped notification (from background)
-        if (wasTapped) {
-            // Mark as read and handle action
-            var self = this;
-            setTimeout(function () {
-                self.markAsRead(notification.id);
-                self.handleNotificationClick(notification);
-            }, 300);
-        }
+        // Handle berdasarkan type
+        this.handleNotificationType(data);
+
+        // Fetch notifikasi terbaru dari server untuk sinkronisasi
+        var self = this;
+        setTimeout(function () {
+            self.fetchNotificationsFromServer();
+        }, 2000);
     },
 
     /**
-     * Add notification to list
+     * Add notification ke list
      */
-    addNotification: function (title, body, data) {
-        var notification = {
-            id: Date.now(),
-            title: title,
-            body: body,
-            data: data,
-            timestamp: new Date().toISOString(),
-            isRead: false
-        };
+    addNotification: function (notification) {
+        // Cek duplikasi
+        var isDuplicate = this.notifications.some(function (n) {
+            return n.title === notification.title &&
+                n.body === notification.body &&
+                Math.abs(new Date(n.timestamp) - new Date(notification.timestamp)) < 5000;
+        });
 
-        // Add to beginning of array
+        if (isDuplicate) {
+            this.log('Duplicate notification, skipping');
+            return;
+        }
+
+        // Tambah ke awal array
         this.notifications.unshift(notification);
 
-        // Limit notifications
+        // Limit jumlah notifikasi
         if (this.notifications.length > this.config.maxNotifications) {
             this.notifications = this.notifications.slice(0, this.config.maxNotifications);
         }
 
+        // Save dan update UI
         this.saveNotifications();
         this.updateUnreadCount();
         this.renderNotifications();
-
-        // Show toast
-        this.showToast(title, body);
-
-        // Vibrate
-        if (navigator.vibrate) {
-            navigator.vibrate(200);
-        }
-
-        return notification;
     },
 
     /**
-     * Load notifications from localStorage
+     * Load notifications dari localStorage
      */
     loadNotifications: function () {
         try {
-            var stored = localStorage.getItem('notifications_' + this.userId);
-            if (stored) {
-                this.notifications = JSON.parse(stored);
+            var saved = localStorage.getItem('notifications_' + this.userId);
+            if (saved) {
+                this.notifications = JSON.parse(saved);
+                this.log('Loaded ' + this.notifications.length + ' notifications from localStorage');
             }
         } catch (e) {
             this.logError('Error loading notifications: ' + e.message);
             this.notifications = [];
         }
+
         this.updateUnreadCount();
         this.renderNotifications();
     },
 
     /**
-     * Save notifications to localStorage
+     * Save notifications ke localStorage
      */
     saveNotifications: function () {
         try {
@@ -569,88 +891,161 @@ var NotificationManager = {
             return !n.isRead;
         }).length;
 
-        var badge = $('#notifBadge');
-        if (badge.length) {
-            badge.text(this.unreadCount);
+        this.updateBadge();
+    },
+
+    /**
+     * Update badge UI
+     */
+    updateBadge: function () {
+        var badge = document.getElementById('notifBadge');
+        if (badge) {
             if (this.unreadCount > 0) {
-                badge.removeClass('hidden').show();
+                badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
+                badge.style.display = 'flex';
             } else {
-                badge.addClass('hidden').hide();
+                badge.style.display = 'none';
             }
         }
-
-        // Update app badge
-        this.setBadgeNumber(this.unreadCount);
     },
 
     /**
-     * Set app badge number
-     */
-    setBadgeNumber: function (number) {
-        if (this.isFirebaseAvailable()) {
-            cordova.plugins.firebase.messaging.setBadge(number).then(function () {
-                // Success
-            }).catch(function (error) {
-                // Ignore badge errors
-            });
-        }
-    },
-
-    /**
-     * Render notifications in UI
+     * Render notifications ke panel
      */
     renderNotifications: function () {
-        var list = $('#notifList');
-        if (!list.length) return;
-
-        list.empty();
+        var list = document.getElementById('notifList');
+        if (!list) return;
 
         if (this.notifications.length === 0) {
-            list.append(
-                '<li class="empty-notification">' +
-                '   <p>Belum ada notifikasi</p>' +
-                '</li>'
-            );
+            list.innerHTML = '<li class="empty-notification"><p>Tidak ada notifikasi</p></li>';
             return;
         }
 
         var self = this;
-        $.each(this.notifications, function (index, notif) {
-            var itemClass = 'notification-item';
-            if (!notif.isRead) {
-                itemClass += ' unread';
-            }
+        var html = '';
 
-            var timeAgo = self.getTimeAgo(notif.timestamp);
+        this.notifications.forEach(function (notif, index) {
+            var unreadClass = notif.isRead ? '' : 'unread';
+            // Truncate body untuk preview (max 80 karakter)
+            var truncatedBody = notif.body && notif.body.length > 80
+                ? notif.body.substring(0, 80) + '...'
+                : (notif.body || '');
 
-            var itemHtml =
-                '<li class="' + itemClass + '" data-id="' + notif.id + '">' +
-                '   <div class="notif-title">' + self.escapeHtml(notif.title) + '</div>' +
-                '   <div class="notif-body">' + self.escapeHtml(notif.body) + '</div>' +
-                '   <div class="notif-time">' + timeAgo + '</div>' +
+            html += '<li class="notification-item ' + unreadClass + '" data-index="' + index + '">' +
+                '<div class="notif-title">' + self.escapeHtml(notif.title) + '</div>' +
+                '<div class="notif-body">' + self.escapeHtml(truncatedBody) + '</div>' +
+                '<div class="notif-time">' + self.getTimeAgo(notif.timestamp) + '</div>' +
                 '</li>';
-
-            var item = $(itemHtml);
-
-            item.on('click', function () {
-                self.markAsRead(notif.id);
-                self.handleNotificationClick(notif);
-            });
-
-            list.append(item);
         });
+
+        list.innerHTML = html;
+
+        // Bind click events - klik untuk menampilkan detail
+        var items = list.querySelectorAll('.notification-item');
+        items.forEach(function (item) {
+            item.addEventListener('click', function () {
+                var panel = document.getElementById('notifPanel');
+                var index = parseInt(this.getAttribute('data-index'));
+
+                panel.style.display = 'none';
+                self.showNotificationDetail(index);
+            });
+        });
+    },
+
+    /**
+     * Show notification detail popup
+     */
+    showNotificationDetail: function (index) {
+        var self = this;
+        if (!this.notifications[index]) return;
+
+        var notif = this.notifications[index];
+
+        // Format data tambahan jika ada
+        var dataHtml = '';
+        if (notif.data && Object.keys(notif.data).length > 0) {
+            dataHtml = '<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #2d3a4f;">';
+            dataHtml += '<div style="font-size: 12px; color: #999; margin-bottom: 8px;">Informasi Tambahan:</div>';
+
+            for (var key in notif.data) {
+                if (notif.data.hasOwnProperty(key) && key !== 'type') {
+                    var label = key.replace(/_/g, ' ').replace(/\b\w/g, function (l) { return l.toUpperCase() });
+                    dataHtml += '<div style="margin-bottom: 5px; font-size: 12px;">';
+                    dataHtml += '<span style="color: #999;">' + self.escapeHtml(label) + ':</span> ';
+                    dataHtml += '<span style="color: #fff;">' + self.escapeHtml(String(notif.data[key])) + '</span>';
+                    dataHtml += '</div>';
+                }
+            }
+            dataHtml += '</div>';
+        }
+
+        // Buat popup dengan Framework7
+        var popup = app.popup.create({
+            content: '<div class="popup notif-detail-popup">' +
+                '<div class="page">' +
+                '<div class="navbar">' +
+                '<div class="navbar-bg"></div>' +
+                '<div class="navbar-inner">' +
+                '<div class="title">Detail Notifikasi</div>' +
+                '<div class="right">' +
+                '<a class="link popup-close"><i class="f7-icons">multiply_circle</i></a>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="page-content" style="background: #1a1a2e;">' +
+                '<div class="block" style="margin-top: 0; padding: 20px;">' +
+                '<div style="background: #0f0f1e; border-radius: 12px; padding: 20px; border-left: 4px solid #ff6b35;">' +
+                '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">' +
+                '<h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600;">' + self.escapeHtml(notif.title) + '</h3>' +
+                (notif.isRead ? '' : '<span style="background: #ff6b35; color: white; font-size: 10px; padding: 4px 8px; border-radius: 4px;">BARU</span>') +
+                '</div>' +
+                '<div style="color: #ff6b35; font-size: 12px; margin-bottom: 15px;">' +
+                '<i class="f7-icons" style="font-size: 12px; vertical-align: middle;">clock</i> ' +
+                self.getTimeAgo(notif.timestamp) +
+                '</div>' +
+                '<div style="color: #e0e0e0; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">' +
+                self.escapeHtml(notif.body) +
+                '</div>' +
+                dataHtml +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+            on: {
+                opened: function () {
+                    self.log('Notification detail popup opened');
+                },
+                closed: function () {
+                    // Mark as read saat popup ditutup
+                    self.markAsRead(index);
+                }
+            }
+        });
+
+        popup.open();
     },
 
     /**
      * Mark notification as read
      */
-    markAsRead: function (notifId) {
-        var notification = this.notifications.find(function (n) {
-            return n.id === notifId;
-        });
+    markAsRead: function (index) {
+        if (this.notifications[index]) {
+            var notif = this.notifications[index];
 
-        if (notification && !notification.isRead) {
-            notification.isRead = true;
+            // Skip jika sudah dibaca
+            if (notif.isRead) {
+                return;
+            }
+
+            notif.isRead = true;
+
+            // Jika notifikasi dari server, update ke server juga
+            if (notif.serverId) {
+                this.markAsReadOnServer(notif.serverId);
+            }
+
             this.saveNotifications();
             this.updateUnreadCount();
             this.renderNotifications();
@@ -658,60 +1053,109 @@ var NotificationManager = {
     },
 
     /**
-     * Mark all notifications as read
+     * Mark as read on server
+     */
+    markAsReadOnServer: function (notificationId) {
+        var self = this;
+
+        $.ajax({
+            url: this.config.apiUrl + '/notifications/' + notificationId + '/read',
+            type: 'POST',
+            data: {
+                user_id: this.userId
+            },
+            headers: this.getAuthHeaders(),
+            timeout: 10000,
+            success: function (response) {
+                self.log('Notification marked as read on server');
+            },
+            error: function (xhr, status, error) {
+                self.logError('Failed to mark as read on server: ' + error);
+            }
+        });
+    },
+
+    /**
+     * Mark all as read
      */
     markAllAsRead: function () {
-        var hasUnread = false;
-        this.notifications.forEach(function (n) {
-            if (!n.isRead) {
-                n.isRead = true;
-                hasUnread = true;
+        var self = this;
+
+        this.notifications.forEach(function (notif) {
+            notif.isRead = true;
+        });
+
+        // Update ke server
+        $.ajax({
+            url: this.config.apiUrl + '/notifications/mark-all-read',
+            type: 'POST',
+            data: {
+                user_id: this.userId
+            },
+            headers: this.getAuthHeaders(),
+            timeout: 10000,
+            success: function (response) {
+                self.log('All notifications marked as read on server');
+            },
+            error: function (xhr, status, error) {
+                self.logError('Failed to mark all as read: ' + error);
             }
         });
 
-        if (hasUnread) {
-            this.saveNotifications();
-            this.updateUnreadCount();
-            this.renderNotifications();
+        this.saveNotifications();
+        this.updateUnreadCount();
+        this.renderNotifications();
+    },
+
+    /**
+     * Show toast notification
+     */
+    showToast: function (title, body) {
+        var toast = document.getElementById('toastNotif');
+        var toastTitle = document.getElementById('toastTitle');
+        var toastBody = document.getElementById('toastBody');
+
+        if (toast && toastTitle && toastBody) {
+            toastTitle.textContent = title;
+            toastBody.textContent = body;
+            toast.style.display = 'block';
+
+            var self = this;
+            setTimeout(function () {
+                toast.style.display = 'none';
+            }, this.config.toastDuration);
         }
     },
 
     /**
-     * Handle notification click - customize based on your app's navigation
+     * Handle notification type specific actions
      */
-    handleNotificationClick: function (notification) {
-        this.log('Notification clicked: ' + JSON.stringify(notification.data));
+    handleNotificationType: function (data) {
+        var type = data.type || 'general';
+        var invoiceId = data.invoice_id;
 
-        this.closePanel();
+        this.log('Handling notification type: ' + type);
 
-        if (!notification.data || !notification.data.type) {
-            return;
-        }
-
-        var type = notification.data.type;
-        var invoiceId = notification.data.invoice_id;
-
-        // Gunakan Framework7 router, bukan window.location.href
         switch (type) {
             case 'new_order':
-            case 'new_order_multiple':
             case 'production_order':
                 // Refresh data produksi
                 if (typeof getDataProduksi === 'function') {
                     getDataProduksi();
                 }
-                if (typeof getDataProduksiCabangPusatSpk === 'function') {
-                    getDataProduksiCabangPusatSpk();
+                if (typeof chooseDataProduksiCabangRedirect === 'function') {
+                    chooseDataProduksiCabangRedirect('pusat');
                 }
-                // Tampilkan toast info
                 this.showToast('Order Baru', 'Data produksi telah diperbarui');
                 break;
 
+            case 'unread_summary':
+                // Ini adalah summary, fetch notifikasi lengkap dari server
+                this.fetchNotificationsFromServer();
+                break;
+
             case 'payment':
-                // Handle payment notification
-                if (invoiceId && typeof app !== 'undefined') {
-                    // Jika ada halaman detail pembayaran
-                    // app.views.main.router.navigate('/payment-detail/' + invoiceId);
+                if (invoiceId) {
                     this.showToast('Pembayaran', 'Ada update pembayaran untuk ' + invoiceId);
                 }
                 break;
@@ -723,28 +1167,10 @@ var NotificationManager = {
 
             default:
                 this.log('Unknown notification type: ' + type);
-                // Refresh data sebagai fallback
                 if (typeof getDataProduksi === 'function') {
                     getDataProduksi();
                 }
         }
-    },
-
-    /**
-     * Show toast notification
-     */
-    showToast: function (title, body) {
-        var toast = $('#toastNotif');
-        if (!toast.length) return;
-
-        $('#toastTitle').text(title);
-        $('#toastBody').text(body);
-
-        toast.fadeIn(300);
-
-        setTimeout(function () {
-            toast.fadeOut(300);
-        }, this.config.toastDuration);
     },
 
     /**
@@ -753,49 +1179,84 @@ var NotificationManager = {
     bindEvents: function () {
         var self = this;
 
+        this.log('Binding events...');
+
         // Toggle notification panel
-        $(document).off('click', '#notifIcon').on('click', '#notifIcon', function (e) {
-            e.stopPropagation();
-            self.togglePanel();
-        });
+        var notifIcon = document.getElementById('notifIcon');
+        if (notifIcon) {
+            notifIcon.addEventListener('click', function (e) {
+                e.stopPropagation();
+                self.togglePanel();
+            });
+            this.log('Bound notifIcon click');
+        }
 
         // Close panel button
-        $(document).off('click', '#closePanel').on('click', '#closePanel', function () {
-            self.closePanel();
-        });
+        var closeBtn = document.getElementById('closePanel');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                self.closePanel();
+            });
+            this.log('Bound closePanel click');
+        }
+
+        // Mark all as read button
+        var markAllBtn = document.getElementById('markAllRead');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', function () {
+                self.markAllAsRead();
+            });
+            this.log('Bound markAllRead click');
+        }
+
+        // Clear all button
+        var clearAllBtn = document.getElementById('clearAllNotif');
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', function () {
+                self.clearAll();
+            });
+            this.log('Bound clearAllNotif click');
+        }
+
+        // Close toast on click
+        var toast = document.getElementById('toastNotif');
+        if (toast) {
+            toast.addEventListener('click', function () {
+                toast.style.display = 'none';
+            });
+            this.log('Bound toast click');
+        }
 
         // Close panel on outside click
-        $(document).off('click.notifPanel').on('click.notifPanel', function (e) {
-            if (!$(e.target).closest('#notifIcon, #notifPanel').length) {
-                self.closePanel();
+        document.addEventListener('click', function (e) {
+            var panel = document.getElementById('notifPanel');
+            var icon = document.getElementById('notifIcon');
+
+            if (panel && icon) {
+                if (!panel.contains(e.target) && !icon.contains(e.target)) {
+                    panel.style.display = 'none';
+                }
             }
         });
 
-        // Close toast on click
-        $(document).off('click', '#toastNotif').on('click', '#toastNotif', function () {
-            $(this).fadeOut(300);
-        });
-
-        // Mark all as read button
-        $(document).off('click', '#markAllRead').on('click', '#markAllRead', function () {
-            self.markAllAsRead();
-        });
-
-        // Clear all button
-        $(document).off('click', '#clearAllNotif').on('click', '#clearAllNotif', function () {
-            self.clearAll();
-        });
+        this.log('Events bound successfully');
     },
 
     /**
      * Toggle notification panel
      */
     togglePanel: function () {
-        var panel = $('#notifPanel');
-        if (panel.is(':visible')) {
-            this.closePanel();
-        } else {
-            panel.fadeIn(200);
+        var panel = document.getElementById('notifPanel');
+        if (panel) {
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+                // Refresh notifikasi dari server saat buka panel
+                this.fetchNotificationsFromServer();
+                this.log('Panel opened');
+            } else {
+                panel.style.display = 'none';
+                this.log('Panel closed');
+            }
         }
     },
 
@@ -803,7 +1264,10 @@ var NotificationManager = {
      * Close notification panel
      */
     closePanel: function () {
-        $('#notifPanel').fadeOut(200);
+        var panel = document.getElementById('notifPanel');
+        if (panel) {
+            panel.style.display = 'none';
+        }
     },
 
     /**
@@ -815,6 +1279,7 @@ var NotificationManager = {
             this.saveNotifications();
             this.updateUnreadCount();
             this.renderNotifications();
+            this.log('All notifications cleared');
         }
     },
 
@@ -901,6 +1366,52 @@ var NotificationManager = {
      */
     logError: function (message) {
         console.error('[NotificationManager] ERROR: ' + message);
+    },
+
+    // ==================== Debug/Test Functions ====================
+
+    /**
+     * Test notification (untuk debugging)
+     */
+    testNotification: function () {
+        this.log('=== TEST NOTIFICATION ===');
+
+        var testPayload = {
+            title: 'Test Notifikasi',
+            body: 'Ini adalah test notifikasi pada ' + new Date().toLocaleTimeString(),
+            data: {
+                type: 'test',
+                timestamp: Date.now()
+            }
+        };
+
+        this.handleFirebaseMessage(testPayload, false);
+    },
+
+    /**
+     * Debug info
+     */
+    debugInfo: function () {
+        console.log('=== NotificationManager Debug Info ===');
+        console.log('isInitialized:', this.isInitialized);
+        console.log('userId:', this.userId);
+        console.log('fcmToken:', this.fcmToken ? this.fcmToken.substring(0, 30) + '...' : null);
+        console.log('notifications count:', this.notifications.length);
+        console.log('unreadCount:', this.unreadCount);
+        console.log('Firebase available:', this.isFirebaseAvailable());
+        console.log('config:', this.config);
+        console.log('localStorage fcm_token:', localStorage.getItem('fcm_token'));
+        console.log('localStorage token_registered:', localStorage.getItem('token_registered'));
+        console.log('======================================');
+    },
+
+    /**
+     * Manual refresh - panggil untuk force fetch dari server
+     */
+    refresh: function () {
+        this.log('Manual refresh triggered');
+        this.fetchNotificationsFromServer();
+        this.fetchUnreadCount();
     }
 };
 
