@@ -383,6 +383,7 @@ function PurchaseProces() {
 				item: $('#item_purchase').val(),
 				jumlah: $('#qty_purchase').val(),
 				tgl_deadline: $('#tgl_deadline_purchase').val(),
+				harga_produksi: $('#production_fee').val(),
 				penjualan_detail_performa_id: $('#penjualan_detail_performa_id_purchase').val()
 			},
 			beforeSend: function () {
@@ -390,9 +391,9 @@ function PurchaseProces() {
 			},
 			success: function (data) {
 				app.dialog.close();
-				$('#tgl_deadline_purchase').val("");
-
 				$('#qty_purchase').val("");
+				$('#production_fee').val("")
+				$('#tgl_deadline_purchase').val("");
 				getPopUpPurchase();
 			},
 			error: function (xmlhttprequest, textstatus, message) {
@@ -407,6 +408,7 @@ function setPurchaseDetailPerformaId(penjualan_detail_performa_id, penjualan_id,
 	$('#type_purchase_tbl').html(penjualan_jenis);
 	$('#qty_purchase_tbl').html(penjualan_qty);
 	$('#tgl_deadline_purchase').val("");
+	$('#production_fee').val("");
 	$('#item_purchase').val("");
 	$('#item_purchase').val(penjualan_jenis);
 	$('#qty_purchase').val("");
@@ -453,8 +455,6 @@ function getPopUpPurchase() {
 					qty_selesai += val.jumlah;
 				}
 
-
-
 				var warna_bg = '';
 				if (val.status == null) {
 					warna_bg = 'background:linear-gradient(#4a8a4a , forestgreen); border-color:white;';
@@ -472,6 +472,7 @@ function getPopUpPurchase() {
 				data_partner_purchasing += '   <td  class="label-cell text-align-left">' + val.nama_partner + '</td>';
 				data_partner_purchasing += '   <td  class="label-cell text-align-left">' + val.item + '</td>';
 				data_partner_purchasing += '   <td  class="label-cell text-align-center">' + val.jumlah + '</td>';
+				data_partner_purchasing += '   <td  class="label-cell text-align-center">' + (val.harga_produksi * val.jumlah) + '</td>';
 				data_partner_purchasing += '   <td  class="label-cell text-align-center">' + moment(val.tgl_input).format('DD-MM-YYYY') + '</td>';
 				data_partner_purchasing += '   <td  class="label-cell text-align-center">' + moment(val.tgl_deadline).format('DD-MM-YYYY') + '</td>';
 				if (val.tgl_selesai != null) {
@@ -479,15 +480,15 @@ function getPopUpPurchase() {
 				} else {
 					data_partner_purchasing += '   <td  class="label-cell text-align-center">-</td>';
 				}
-				if (val.tgl_selesai == null) {
-					data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
-					data_partner_purchasing += '   <button  class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"   onclick="selesaiPartner(\'' + val.id_partner_transaksi + '\',\'' + val.tgl_deadline + '\',\'' + val.penjualan_detail_performa_id + '\');">Selesai</button>';
-					data_partner_purchasing += '</td>';
-				} else {
-					data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
-					data_partner_purchasing += ' ';
-					data_partner_purchasing += '</td>';
-				}
+				// if (val.tgl_selesai == null) {
+				// 	data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
+				// 	data_partner_purchasing += '   <button  class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"   onclick="selesaiPartner(\'' + val.id_partner_transaksi + '\',\'' + val.tgl_deadline + '\',\'' + val.penjualan_detail_performa_id + '\');">Selesai</button>';
+				// 	data_partner_purchasing += '</td>';
+				// } else {
+				// 	data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
+				// 	data_partner_purchasing += ' ';
+				// 	data_partner_purchasing += '</td>';
+				// }
 				data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
 				data_partner_purchasing += '   <button  class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"   onclick="hapusTransaksiPartner(\'' + val.id_partner_transaksi + '\');">Hapus</button>';
 				data_partner_purchasing += '</td>';
