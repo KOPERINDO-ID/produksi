@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "807706982340",
+    "project_id": "koperindo-id-int",
+    "storage_bucket": "koperindo-id-int.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807706982340:android:a786fe5b4f38eac192d691",
+        "android_client_info": {
+          "package_name": "com.produksi13.vertice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEOPVGn_ePp72k8_8lO8zaIHeT6ijl9xI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807706982340:android:88eecc33c10735ee92d691",
+        "android_client_info": {
+          "package_name": "io.cordova.operasional_tasindo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEOPVGn_ePp72k8_8lO8zaIHeT6ijl9xI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -33,7 +33,7 @@ var app = new Framework7({
   },
   root: '#app', // App root element
   id: 'id.vertice.tasindosalesapp', // App bundle ID
-  name: 'Sales App', // App name
+  name: 'Produksi App', // App name
   theme: 'md', // Automatic theme detection
   // App root data
   data: function () {
@@ -69,6 +69,8 @@ var app = new Framework7({
           return app.views.main.router.navigate('/login');
         }, 300);
       } else {
+
+        initNotificationManager(true);
 
         var lower_api = localStorage.getItem("lokasi_pabrik").toLowerCase();
 
@@ -211,6 +213,7 @@ $$(document).on('page:afterin', '.page[data-name="cabang"]', function (e) {
   chooseDataProduksiCabangRedirect('pusat');
   dateRangeDeclarationProduksiCabang();
   getYearHistoryPointProduksi();
+  startSpkUrgentInterval();
   localStorage.removeItem('arsip');
 })
 
@@ -230,7 +233,8 @@ $$(document).on('page:afterin', '.page[data-name="produksi-pusat"]', function (e
   openDialogViewProduksi();
   checkConnection();
   getYearPointProduksi();
-  getYearHistoryProduksiPusat()
+  getYearHistoryProduksiPusat();
+  startSpkUrgentInterval();
   choosePabrikSby('Sby');
 })
 
@@ -282,6 +286,7 @@ $$(document).on('page:afterin', '.page[data-name="produksi-harian"]', function (
 // Page penjualan input On load
 $$(document).on('page:afterin', '.page[data-name="login"]', function (e) {
   jQuery('#logout_logo').hide();
+  jQuery('#notifIcon').hide();
   checkConnection();
 });
 
@@ -302,4 +307,63 @@ $$(document).on('page:afterin', '.page[data-name="penjualan_input_non_performa"]
   checkConnection();
 });
 
+/**
+ * Inisialisasi NotificationManager
+ * Dipanggil setelah login berhasil
+ * @param {boolean} forceRefresh - true jika setelah login (bukan app init)
+ */
+function initNotificationManager(forceRefresh) {
+  var userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    console.log('[App] No user_id found, skipping notification init');
+    return;
+  }
+
+  if (typeof cordova !== 'undefined' && document.readyState !== 'complete') {
+    document.addEventListener('deviceready', function () {
+      _doInitNotification(userId, forceRefresh);
+    }, false);
+  } else {
+    setTimeout(function () {
+      _doInitNotification(userId, forceRefresh);
+    }, 500);
+  }
+}
+
+function _doInitNotification(userId, forceRefresh) {
+  if (typeof NotificationManager === 'undefined') {
+    console.warn('[App] NotificationManager not loaded');
+    return;
+  }
+
+  if (typeof BASE_API !== 'undefined') {
+    NotificationManager.config.apiUrl = BASE_API;
+  }
+
+  NotificationManager.init(userId, forceRefresh || false);
+
+  if (forceRefresh && NotificationManager.forceRefreshToken) {
+    setTimeout(function () {
+      NotificationManager.forceRefreshToken();
+    }, 1000);
+  }
+
+  console.log('[App] NotificationManager initialized for user:', userId);
+}
+
+/**
+ * Cleanup NotificationManager sebelum logout
+ * Panggil ini di fungsi logOut()
+ */
+function cleanupNotificationManager(callback) {
+  if (typeof NotificationManager !== 'undefined' && NotificationManager.isInitialized) {
+    NotificationManager.cleanup(function () {
+      console.log('[App] NotificationManager cleaned up');
+      if (callback) callback();
+    });
+  } else {
+    if (callback) callback();
+  }
+}
 
