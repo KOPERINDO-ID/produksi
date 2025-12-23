@@ -53,6 +53,12 @@
   color: white;
 }
 
+/* Custom Button */
+
+.btn-standard {
+  width: 85px !important;
+}
+
 :root {
   --f7-popup-border-radius: 0px;
   --f7-popup-tablet-width: 630px;
@@ -500,12 +506,14 @@ div[class*="col-border"] {
   overflow: hidden;
   padding-right: 1rem;
 }
+
 .text-oneLine::before {
   position: absolute;
   content: "...";
   bottom: 0;
   right: 0;
 }
+
 .text-oneLine::after {
   content: "";
   position: absolute;
@@ -531,326 +539,327 @@ div[class*="col-border"] {
 
 
 .f-s-0 {
-    font-size: 0px !important;
+  font-size: 0px !important;
 }
 
 .f-s-1 {
-    font-size: 1px !important;
+  font-size: 1px !important;
 }
 
 .f-s-2 {
-    font-size: 2px !important;
+  font-size: 2px !important;
 }
 
 .f-s-3 {
-    font-size: 3px !important;
+  font-size: 3px !important;
 }
 
 .f-s-4 {
-    font-size: 4px !important;
+  font-size: 4px !important;
 }
 
 .f-s-5 {
-    font-size: 5px !important;
+  font-size: 5px !important;
 }
 
 .f-s-6 {
-    font-size: 6px !important;
+  font-size: 6px !important;
 }
 
 .f-s-7 {
-    font-size: 7px !important;
+  font-size: 7px !important;
 }
 
 .f-s-8 {
-    font-size: 8px !important;
+  font-size: 8px !important;
 }
 
 .f-s-9 {
-    font-size: 9px !important;
+  font-size: 9px !important;
 }
 
 .f-s-10 {
-    font-size: 10px !important;
+  font-size: 10px !important;
 }
 
 .f-s-11 {
-    font-size: 11px !important;
+  font-size: 11px !important;
 }
 
 .f-s-12 {
-    font-size: 12px !important;
+  font-size: 12px !important;
 }
 
 .f-s-13 {
-    font-size: 13px !important;
+  font-size: 13px !important;
 }
 
 .f-s-14 {
-    font-size: 14px !important;
+  font-size: 14px !important;
 }
 
 .f-s-15 {
-    font-size: 15px !important;
+  font-size: 15px !important;
 }
 
 .f-s-16 {
-    font-size: 16px !important;
+  font-size: 16px !important;
 }
 
 .f-s-17 {
-    font-size: 17px !important;
+  font-size: 17px !important;
 }
 
 .f-s-18 {
-    font-size: 18px !important;
+  font-size: 18px !important;
 }
 
 .f-s-19 {
-    font-size: 19px !important;
+  font-size: 19px !important;
 }
 
 .f-s-20 {
-    font-size: 20px !important;
+  font-size: 20px !important;
 }
 
 .f-s-21 {
-    font-size: 21px !important;
+  font-size: 21px !important;
 }
 
 .f-s-22 {
-    font-size: 22px !important;
+  font-size: 22px !important;
 }
 
 .f-s-23 {
-    font-size: 23px !important;
+  font-size: 23px !important;
 }
 
 .f-s-24 {
-    font-size: 24px !important;
+  font-size: 24px !important;
 }
 
 .f-s-25 {
-    font-size: 25px !important;
+  font-size: 25px !important;
 }
 
 .f-s-26 {
-    font-size: 26px !important;
+  font-size: 26px !important;
 }
 
 .f-s-27 {
-    font-size: 27px !important;
+  font-size: 27px !important;
 }
 
 .f-s-28 {
-    font-size: 28px !important;
+  font-size: 28px !important;
 }
 
 .f-s-29 {
-    font-size: 29px !important;
+  font-size: 29px !important;
 }
 
 .f-s-30 {
-    font-size: 30px !important;
+  font-size: 30px !important;
 }
 
 .f-s-31 {
-    font-size: 31px !important;
+  font-size: 31px !important;
 }
 
 .f-s-32 {
-    font-size: 32px !important;
+  font-size: 32px !important;
 }
 
 .f-s-33 {
-    font-size: 33px !important;
+  font-size: 33px !important;
 }
 
 .f-s-34 {
-    font-size: 34px !important;
+  font-size: 34px !important;
 }
 
 .f-s-35 {
-    font-size: 35px !important;
+  font-size: 35px !important;
 }
 
 .f-s-36 {
-    font-size: 36px !important;
+  font-size: 36px !important;
 }
 
 .f-s-37 {
-    font-size: 37px !important;
+  font-size: 37px !important;
 }
 
 .f-s-38 {
-    font-size: 38px !important;
+  font-size: 38px !important;
 }
 
 .f-s-39 {
-    font-size: 39px !important;
+  font-size: 39px !important;
 }
 
 .f-s-40 {
-    font-size: 40px !important;
+  font-size: 40px !important;
 }
 
 .f-s-41 {
-    font-size: 41px !important;
+  font-size: 41px !important;
 }
 
 .f-s-42 {
-    font-size: 42px !important;
+  font-size: 42px !important;
 }
 
 .f-s-43 {
-    font-size: 43px !important;
+  font-size: 43px !important;
 }
 
 .f-s-44 {
-    font-size: 44px !important;
+  font-size: 44px !important;
 }
 
 .f-s-45 {
-    font-size: 45px !important;
+  font-size: 45px !important;
 }
 
 .f-s-46 {
-    font-size: 46px !important;
+  font-size: 46px !important;
 }
 
 .f-s-47 {
-    font-size: 47px !important;
+  font-size: 47px !important;
 }
 
 .f-s-48 {
-    font-size: 48px !important;
+  font-size: 48px !important;
 }
 
 .f-s-49 {
-    font-size: 49px !important;
+  font-size: 49px !important;
 }
 
 .f-s-50 {
-    font-size: 50px !important;
+  font-size: 50px !important;
 }
 
 .f-s-51 {
-    font-size: 51px !important;
+  font-size: 51px !important;
 }
 
 .f-s-52 {
-    font-size: 52px !important;
+  font-size: 52px !important;
 }
 
 .f-s-53 {
-    font-size: 53px !important;
+  font-size: 53px !important;
 }
 
 .f-s-54 {
-    font-size: 54px !important;
+  font-size: 54px !important;
 }
 
 .f-s-55 {
-    font-size: 55px !important;
+  font-size: 55px !important;
 }
 
 .f-s-56 {
-    font-size: 56px !important;
+  font-size: 56px !important;
 }
 
 .f-s-57 {
-    font-size: 57px !important;
+  font-size: 57px !important;
 }
 
 .f-s-58 {
-    font-size: 58px !important;
+  font-size: 58px !important;
 }
 
 .f-s-59 {
-    font-size: 59px !important;
+  font-size: 59px !important;
 }
 
 .f-s-60 {
-    font-size: 60px !important;
+  font-size: 60px !important;
 }
 
 .f-s-61 {
-    font-size: 61px !important;
+  font-size: 61px !important;
 }
 
 .f-s-62 {
-    font-size: 62px !important;
+  font-size: 62px !important;
 }
 
 .f-s-63 {
-    font-size: 63px !important;
+  font-size: 63px !important;
 }
 
 .f-s-64 {
-    font-size: 64px !important;
+  font-size: 64px !important;
 }
 
 .f-s-65 {
-    font-size: 65px !important;
+  font-size: 65px !important;
 }
 
 .f-s-66 {
-    font-size: 66px !important;
+  font-size: 66px !important;
 }
 
 .f-s-67 {
-    font-size: 67px !important;
+  font-size: 67px !important;
 }
 
 .f-s-68 {
-    font-size: 68px !important;
+  font-size: 68px !important;
 }
 
 .f-s-69 {
-    font-size: 69px !important;
+  font-size: 69px !important;
 }
 
 .f-s-70 {
-    font-size: 70px !important;
+  font-size: 70px !important;
 }
 
 .f-s-71 {
-    font-size: 71px !important;
+  font-size: 71px !important;
 }
 
 .f-s-72 {
-    font-size: 72px !important;
+  font-size: 72px !important;
 }
 
 .f-s-73 {
-    font-size: 73px !important;
+  font-size: 73px !important;
 }
 
 .f-s-74 {
-    font-size: 74px !important;
+  font-size: 74px !important;
 }
 
 .f-s-75 {
-    font-size: 75px !important;
+  font-size: 75px !important;
 }
 
 .f-s-76 {
-    font-size: 76px !important;
+  font-size: 76px !important;
 }
 
 .f-s-77 {
-    font-size: 77px !important;
+  font-size: 77px !important;
 }
 
 .f-s-78 {
-    font-size: 78px !important;
+  font-size: 78px !important;
 }
 
 .f-s-79 {
-    font-size: 79px !important;
+  font-size: 79px !important;
 }
 
 .f-s-80 {
-    font-size: 80px !important;
+  font-size: 80px !important;
 }
+
 /*end additional css by aris*/

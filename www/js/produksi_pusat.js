@@ -2210,9 +2210,9 @@ function getDataProduksi() {
 							data_produksi += '  <td  style="border-bottom: solid gray 1px; border-top: solid 1px; border-right: solid 1px;  border-color:gray;" class="label-cell"  align="left" >';
 
 							if (val.foto_purchase_logo_selesai == null || val.foto_resin_selesai == null) {
-								data_produksi += '<button data-popup=".get-logo-purchase"  onclick="getLogoPurchase(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_resin_selesai + '\');"  class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold popup-open">Logo</button>';
+								data_produksi += '<button data-popup=".get-logo-purchase"  onclick="getLogoPurchase(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_resin_selesai + '\');"  class="text-add-colour-black-soft bg-dark-gray-young btn-standard col button text-bold popup-open">Logo</button>';
 							} else {
-								data_produksi += '<button data-popup=".get-logo-purchase"  onclick="getLogoPurchase(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_resin_selesai + '\');" style="background-color:blue; color:white;" class="text-add-colour-black-soft button-small col button text-bold popup-open">Logo</button>';
+								data_produksi += '<button data-popup=".get-logo-purchase"  onclick="getLogoPurchase(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_resin_selesai + '\');" style="background-color:blue; color:white;" class="text-add-colour-black-soft btn-standard col button text-bold popup-open">Logo</button>';
 							}
 
 							data_produksi += '</td>';

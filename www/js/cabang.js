@@ -1456,15 +1456,15 @@ function getDataProduksiCabang() {
 									// data_produksi += '  <td class="label-cell" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;">' + wilayah + '</td>';
 									if (val.status_produksi == 'selesai') {
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 										}
 
 
@@ -1493,7 +1493,7 @@ function getDataProduksiCabang() {
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 												data_produksi += '</td>';
 											}
@@ -1509,7 +1509,7 @@ function getDataProduksiCabang() {
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" style="width: 85px;" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 												data_produksi += '</td>';
 											}
@@ -1715,15 +1715,15 @@ function getDataProduksiCabang() {
 									// data_produksi += '  <td class="label-cell" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;">' + wilayah + '</td>';
 									if (val.status_produksi == 'selesai') {
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 										}
 
 
@@ -1752,7 +1752,7 @@ function getDataProduksiCabang() {
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 												data_produksi += '</td>';
 											}
@@ -1768,7 +1768,7 @@ function getDataProduksiCabang() {
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 												data_produksi += '</td>';
 											}
@@ -1990,15 +1990,15 @@ function getDataProduksiCabang() {
 								// data_produksi += '  <td class="label-cell" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;">' + wilayah + '</td>';
 								if (val.status_produksi == 'selesai') {
 									if (val.foto_produksi_selesai != null) {
-										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 									} else {
-										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 									}
 
 									if (val.foto_produksi_sjc != null) {
-										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 									} else {
-										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+										data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 									}
 
 
@@ -2027,7 +2027,7 @@ function getDataProduksiCabang() {
 										} else {
 											data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-											data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+											data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 											data_produksi += '</td>';
 										}
@@ -2043,7 +2043,7 @@ function getDataProduksiCabang() {
 										} else {
 											data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
 
-											data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+											data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 
 											data_produksi += '</td>';
 										}
@@ -2708,15 +2708,15 @@ function getDataExtraCabang() {
 									if (val.status_produksi == 'selesai') {
 
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="order-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 										}
 
 										var sisa_kirim_sj = parseFloat(val.penjualan_qty) - parseFloat(data.surat_jalan_count[val.penjualan_detail_performa_id]);
@@ -2742,7 +2742,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										} else {
@@ -2752,7 +2752,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										}
@@ -2958,15 +2958,15 @@ function getDataExtraCabang() {
 									if (val.status_produksi == 'selesai') {
 
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 										}
 
 										var sisa_kirim_sj = parseFloat(val.penjualan_qty) - parseFloat(data.surat_jalan_count[val.penjualan_detail_performa_id]);
@@ -2992,7 +2992,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										} else {
@@ -3002,7 +3002,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										}
@@ -3223,15 +3223,15 @@ function getDataExtraCabang() {
 									if (val.status_produksi == 'selesai') {
 
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;>SJC</button></td>';
 										}
 
 										var sisa_kirim_sj = parseFloat(val.penjualan_qty) - parseFloat(data.surat_jalan_count[val.penjualan_detail_performa_id]);
@@ -3257,7 +3257,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										} else {
@@ -3267,7 +3267,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										}
@@ -3473,15 +3473,15 @@ function getDataExtraCabang() {
 									if (val.status_produksi == 'selesai') {
 
 										if (val.foto_produksi_selesai != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">Foto</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">Foto</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".data-produksi-selesai-foto-cabang" onclick="getDataFotoProduksiCabang(\'' + val.produksi_tanggal_body + '\',\'' + val.produksi_tanggal_proses + '\',\'' + val.produksi_tanggal_selesai + '\',\'' + val.foto_produksi_body + '\',\'' + val.foto_produksi_proses + '\',\'' + val.foto_produksi_selesai + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">Foto</button></td>';
 										}
 
 										if (val.foto_produksi_sjc != null) {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button style="color:white; width: 85px;" class="card-color-blue button-small col button text-bold">SJC</button></td>';
 										} else {
-											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold">SJC</button></td>';
+											data_produksi += '  <td class="label-cell popup-open" style="border-right: solid 1px; border-bottom: solid 1px; border-top: solid 1px; border-left: solid 1px;  border-color:gray;" data-popup=".produksi-sjc-foto-cabang" onclick="getDataFotoSjcSelesaiCabang(\'' + val.penjualan_detail_performa_id + '\',\'' + val.foto_produksi_sjc + '\')"><button class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold" style="width: 85px;">SJC</button></td>';
 										}
 
 										var sisa_kirim_sj = parseFloat(val.penjualan_qty) - parseFloat(data.surat_jalan_count[val.penjualan_detail_performa_id]);
@@ -3507,7 +3507,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										} else {
@@ -3517,7 +3517,7 @@ function getDataExtraCabang() {
 												data_produksi += '</td>';
 											} else {
 												data_produksi += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
-												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
+												data_produksi += '   <button class="' + color_btn_terima_id + ' button-small col button popup-open text-bold" style="width: 85px;" data-popup=".terima-pabrik" onclick="terimaPabrik(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_qty + '\',\'' + val.stok + '\',\'' + val.client_nama + '\',\'' + val.penjualan_id + '\',\'' + val.penjualan_jenis.replace(/\"/g, '').replace(/\'/g, '') + '\',\'' + val.penjualan_tanggal + '\');">Pusat</button>';
 												data_produksi += '</td>';
 											}
 										}
