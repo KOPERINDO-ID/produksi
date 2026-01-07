@@ -1121,7 +1121,6 @@ function uploadMaterialPhoto() {
 
     // Prepare form data
     const formData = new FormData();
-    formData.append('token', localStorage.getItem('token'));
     formData.append('id_partner_transaksi', MATERIAL_STATE.tempMaterialRow.id_partner_transaksi);
     formData.append('nama', MATERIAL_STATE.tempMaterialRow.nama);
     formData.append('jumlah', MATERIAL_STATE.tempMaterialRow.jumlah);
@@ -1134,7 +1133,7 @@ function uploadMaterialPhoto() {
     // Upload
     $.ajax({
         type: 'POST',
-        url: BASE_API + '/save-material',
+        url: BASE_API + '/material/add-partner-material',
         data: formData,
         processData: false,
         contentType: false,
