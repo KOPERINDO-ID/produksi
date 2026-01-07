@@ -544,15 +544,22 @@ function deletePurchase(id_partner_transaksi) {
     });
 }
 
+/**
+ * =========================================
+ * MATERIAL MANAGEMENT FUNCTIONS
+ * =========================================
+ * Fungsi untuk mengelola material partner
+ */
+
 // =========================================
-// MATERIAL MODAL FUNCTIONS
+// MATERIAL TABLE FUNCTIONS
 // =========================================
 
 /**
- * Open material modal
+ * Membuka modal material dengan data dari API
  */
-function openMaterialModal(id_partner_transaksi, partner_name, penjualan_id, penjualan_tanggal, jumlah) {
-    console.log('Opening material modal:', { id_partner_transaksi, partner_name, penjualan_id, penjualan_tanggal, jumlah });
+function openMaterialModal(id_partner_transaksi, partner_name = '') {
+    console.log('Opening material modal for partner transaksi:', id_partner_transaksi);
 
     // Validasi
     if (!id_partner_transaksi) {
@@ -560,102 +567,69 @@ function openMaterialModal(id_partner_transaksi, partner_name, penjualan_id, pen
         return;
     }
 
-    // Set state
+    // Simpan id ke state
     MATERIAL_STATE.currentPartnerTransaksiId = id_partner_transaksi;
     MATERIAL_STATE.currentPartnerName = partner_name;
-    MATERIAL_STATE.currentJumlah = jumlah;
 
-    // Update UI
-    $('#material-spk-code').text(formatSPKCode(penjualan_id, penjualan_tanggal) || '-');
-    $('#material-partner-name').text(partner_name || '-');
-    $('#material-quantity').text((jumlah || 0) + ' pcs');
-
-    // Load material data
+    // Load material data from API
     loadMaterialData(id_partner_transaksi);
 
-    // Open popup
+    // Open modal
     if (typeof app !== 'undefined') {
         app.popup.open('.popup-material');
     }
 }
 
 /**
- * Load material data
+ * Load data material dari API
  */
 function loadMaterialData(id_partner_transaksi) {
-    // Validasi parameter
-    if (!id_partner_transaksi) {
-        showAlert('ID Partner Transaksi tidak valid', 'Error');
-        return;
-    }
+    console.log('Loading material data for ID:', id_partner_transaksi);
 
-    jQuery.ajax({
-        type: 'POST',
-        url: BASE_API + '/material',
-        data: JSON.stringify({
-            id_partner_transaksi: id_partner_transaksi
-        }),
-        contentType: 'application/json',
+    $.ajax({
+        type: "POST",
+        url: BASE_API + "/material",
         dataType: 'json',
+        data: {
+            id_partner_transaksi: id_partner_transaksi
+        },
         beforeSend: function () {
             showLoading(true);
         },
         success: function (response) {
             console.log('Material data loaded:', response);
 
-            // Sesuaikan dengan response backend (success: true/false)
-            if (response.success === true) {
+            if (response.success === true && response.data) {
                 // Simpan data ke state
-                MATERIAL_STATE.materialList = response.data || [];
-                MATERIAL_STATE.partnerInfo = response.partner_info || null;
-                MATERIAL_STATE.grandTotal = response.grand_total || 0;
-                MATERIAL_STATE.totalItems = response.total_items || 0;
+                MATERIAL_STATE.materialList = response.data.material || [];
 
-                // Render table
-                renderMaterialTable(response.data);
+                // Populate header info
+                populateMaterialHeader(response.data);
 
-                // Opsional: render info partner dan total
-                if (response.partner_info) {
-                    renderPartnerInfo(response.partner_info);
-                }
-                if (response.grand_total) {
-                    renderGrandTotal(response.grand_total);
-                }
+                // Render material table
+                renderMaterialTable(response.data.material);
+
+                // Update material count
+                updateMaterialCount(response.data.total_items || 0);
+
             } else {
-                // Handle error dari backend
                 showAlert(response.message || 'Gagal memuat data material', 'Error');
+                // Render empty table
+                renderEmptyMaterialTable();
             }
         },
         error: function (xhr, status, error) {
-            console.error('Error loading material data:', xhr);
+            console.error('Error loading material data:', error);
+            console.error('Response:', xhr.responseText);
 
-            // Handle berbagai error response
-            let errorMessage = 'Terjadi kesalahan saat memuat data';
-
-            if (xhr.responseJSON) {
-                // Error dari backend Laravel
-                errorMessage = xhr.responseJSON.message || errorMessage;
-
-                // Tampilkan detail error jika ada
-                if (xhr.responseJSON.errors) {
-                    console.error('Validation errors:', xhr.responseJSON.errors);
-                    errorMessage += ': ' + Object.values(xhr.responseJSON.errors).flat().join(', ');
-                }
-
-                if (xhr.responseJSON.error) {
-                    console.error('Backend error:', xhr.responseJSON.error);
-                }
-            } else if (xhr.status === 404) {
-                errorMessage = 'Data tidak ditemukan';
-            } else if (xhr.status === 422) {
-                errorMessage = 'Data tidak valid';
-            } else if (xhr.status === 500) {
-                errorMessage = 'Terjadi kesalahan di server';
-            } else if (xhr.status === 0) {
-                errorMessage = 'Tidak dapat terhubung ke server';
+            // Check if 404 (no data found)
+            if (xhr.status === 404) {
+                console.log('No material data found - rendering empty table');
+                renderEmptyMaterialTable();
+                updateMaterialCount(0);
+            } else {
+                showAlert('Terjadi kesalahan saat memuat data', 'Error');
             }
-
-            showAlert(errorMessage, 'Error');
         },
         complete: function () {
             showLoading(false);
@@ -664,271 +638,252 @@ function loadMaterialData(id_partner_transaksi) {
 }
 
 /**
- * Render material table
+ * Populate material header information
  */
-function renderMaterialTable(materials) {
-    let html = '';
-    let totalHarga = 0;
+function populateMaterialHeader(data) {
+    console.log('Populating material header:', data);
 
-    if (!materials || materials.length === 0) {
-        html = `
-            <tr>
-                <td colspan="5" align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 20px;">
-                    <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
-                    <p style="color: #999; margin-top: 10px;">Belum ada data material</p>
-                </td>
-            </tr>
-        `;
-    } else {
-        materials.forEach(function (material, index) {
-            const total = (parseInt(material.jumlah) || 0) * (parseInt(material.harga) || 0);
-            totalHarga += total;
+    if (data.partner_info) {
+        const partnerInfo = data.partner_info;
 
-            html += `
-                <tr>
-                    <td align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                        ${index + 1}
-                    </td>
-                    <td align="left" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                        ${material.nama || '-'}
-                    </td>
-                    <td align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                        ${material.jumlah || 0}
-                    </td>
-                    <td align="right" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                        ${formatRupiah(material.harga)}
-                    </td>
-                    <td align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                        ${material.foto_bukti_material ? `
-                            <button onclick="viewMaterialPhoto('${material.foto_bukti_material}');" 
-                                    class="button button-small button-fill" 
-                                    style="background: #34c759; margin-bottom: 5px;">
-                                <i class="f7-icons" style="font-size: 14px;">photo</i> Lihat Foto
-                            </button>
-                        ` : ''}
-                        <button onclick="deleteMaterial('${material.id_partner_transaksi_detail}');" 
-                                class="button button-small button-fill" 
-                                style="background: #ff3b30;">
-                            <i class="f7-icons" style="font-size: 14px;">trash</i> Hapus
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
+        // Set partner name
+        $('#material-partner-name').text(partnerInfo.nama_partner || '-');
 
-        // Add total row
-        html += `
-            <tr style="font-weight: bold; background: #f8f8f8;">
-                <td colspan="3" align="right" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                    Total:
-                </td>
-                <td align="right" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
-                    ${formatRupiah(totalHarga)}
-                </td>
-                <td style="border-top: solid 1px; border-left: solid 1px; border-color:gray;"></td>
-            </tr>
-        `;
+        // Set SPK code from penjualan_id
+        if (partnerInfo.penjualan_id) {
+            // Assuming you have the date from somewhere, otherwise use today's date
+            const spkCode = formatSPKCode(partnerInfo.penjualan_id, new Date());
+            $('#material-spk-code').text(spkCode);
+        }
     }
 
-    $('#data_material').html(html);
+    // Set quantity badge (could be sum of material quantities or from partner_info)
+    // const totalQty = data.material ? data.material.reduce((sum, item) => sum + parseInt(item.jumlah || 0), 0) : 0;
+    const totalQty = data.partner_info.penjualan_qty;
+    $('#material-quantity').text(totalQty + ' pcs');
 }
 
 /**
- * Add material row
+ * Render material table
  */
-function addMaterialRow() {
-    console.log('=== ADD MATERIAL ROW ===');
+function renderMaterialTable(materials) {
+    console.log('Rendering material table:', materials);
 
-    // Check if there's already an editing row
-    if ($('.editing-row').length > 0) {
-        console.log('Already has editing row');
-        showAlert('Selesaikan input material yang sedang diedit terlebih dahulu', 'Perhatian');
+    const tbody = $('#material_table_body');
+    tbody.empty();
+
+    if (!materials || materials.length === 0) {
+        renderEmptyMaterialTable();
         return;
     }
 
-    // Get current row count untuk numbering
-    const currentRowCount = $('#material_table_body tr:not(.editing-row)').length;
-    const emptyState = $('#material_table_body').find('td[colspan]').length > 0;
-    const nextNumber = emptyState ? 1 : currentRowCount + 1;
+    materials.forEach((item, index) => {
+        const row = createMaterialRow(item, index + 1);
+        tbody.append(row);
+    });
 
-    console.log('Current row count:', currentRowCount);
-    console.log('Next number:', nextNumber);
+    console.log('Material table rendered with', materials.length, 'rows');
+}
 
-    // Get today's date for display
-    const today = new Date();
-    const todayFormatted = formatDateShow(today);
+/**
+ * Render empty material table
+ */
+function renderEmptyMaterialTable() {
+    const tbody = $('#material_table_body');
+    tbody.empty();
 
-    console.log('Today:', todayFormatted);
+    const emptyRow = `
+        <tr>
+            <td colspan="6" align="center" style="padding: 20px; border: 1px solid #ddd;">
+                <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
+                <p style="color: #999; margin-top: 10px;">Belum ada data material</p>
+            </td>
+        </tr>
+    `;
 
-    // Create new editable row with Framework7 styling
-    const rowHtml = `
-        <tr class="editing-row" style="background-color: #fff3cd;">
-            <td align="center" style="padding: 10px; border: 1px solid #1C1C1D;">
-                <i class="f7-icons" style="font-size: 24px; color: #ffc107;">exclamationmark_triangle_fill</i>
+    tbody.append(emptyRow);
+}
+
+/**
+ * Create material table row
+ */
+function createMaterialRow(item, rowNumber) {
+    const tanggal = formatDateShow(item.dt_created);
+    const materialName = item.nama || '-';
+    const jumlah = formatNumber(item.jumlah || 0);
+    const harga = formatRupiah(item.harga || 0);
+    const total = formatRupiah(item.total_harga || 0);
+
+    // ========== PHOTO BUTTON - SIMPLIFIED ==========
+    let photoButton = '';
+    if (item.foto_bukti_material) {
+        const photoUrl = item.foto_bukti_material;
+
+        photoButton = `
+            <button class="button button-small button-fill color-blue text-bold" 
+                    onclick="viewMaterialPhoto('${photoUrl}')" 
+                    style="margin-right: 4px;">
+                        DETAIL
+            </button>
+        `;
+    }
+    // ==============================================
+
+    const row = `
+        <tr data-id="${item.id}">
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${rowNumber}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${tanggal}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${materialName}</td>
+            <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${jumlah}</td>
+            <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${harga}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
+                ${photoButton}
             </td>
-            <td align="center" style="padding: 10px; border: 1px solid #1C1C1D;">
-                ${todayFormatted}
+        </tr>
+    `;
+
+    return row;
+}
+/**
+ * Update material count
+ */
+function updateMaterialCount(count) {
+    $('#material_count').text(count + ' item');
+}
+
+/**
+ * Add new material row (inline editing)
+ */
+function addMaterialRow() {
+    console.log('Adding new material row');
+
+    // Validasi
+    if (!MATERIAL_STATE.currentPartnerTransaksiId) {
+        showAlert('ID Partner Transaksi tidak tersedia', 'Error');
+        return;
+    }
+
+    // Check if there's already an editing row
+    if ($('.editing-row').length > 0) {
+        showAlert('Selesaikan penambahan material yang sedang berlangsung', 'Perhatian');
+        return;
+    }
+
+    // Remove empty placeholder if exists
+    $('#material_table_body tr').each(function () {
+        if ($(this).find('td[colspan="6"]').length > 0) {
+            $(this).remove();
+        }
+    });
+
+    // Create new editable row
+    const newRow = createEditableMaterialRow();
+    $('#material_table_body').prepend(newRow);
+
+    // Focus on first input
+    $('#input_material_nama').focus();
+
+    console.log('Editable row added');
+}
+
+/**
+ * Create editable material row for adding new material
+ */
+function createEditableMaterialRow(item = null) {
+    const isEdit = item !== null;
+    const rowId = isEdit ? item.id : 'new';
+
+    const tanggal = isEdit ? formatDate(item.dt_created) : formatDate(new Date());
+    const materialName = isEdit ? item.nama : '';
+    const jumlah = isEdit ? item.jumlah : '';
+    const harga = isEdit ? item.harga : '';
+
+    const row = `
+        <tr class="editing-row" data-id="${rowId}">
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <i class="f7-icons" style="color: #FFA500;">pencil_circle_fill</i>
             </td>
-            <td style="padding: 5px; border: 1px solid #1C1C1D; width: 120px;">
-                <div class="list inline-labels no-hairlines no-hairlines-between margin-top-half margin-bottom-half">
-                    <ul>
-                        <li class="item-content item-input">
-                            <div class="item-inner">
-                                <div class="item-input-wrap">
-                                    <input type="text" 
-                                           id="new_material_nama" 
-                                           placeholder="Nama Material" 
-                                           class="input-with-value"
-                                           style="color: #1C1C1D; padding: 8px; border: 1px solid #1C1C1D; border-radius: 4px; width: 100%;">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="date" 
+                       class="form-control" 
+                       id="input_material_tanggal" 
+                       value="${tanggal}"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td style="padding: 5px; border: 1px solid #1C1C1D;">
-                <div class="list inline-labels no-hairlines no-hairlines-between margin-top-half margin-bottom-half">
-                    <ul>
-                        <li class="item-content item-input">
-                            <div class="item-inner">
-                                <div class="item-input-wrap">
-                                    <input type="number" 
-                                           id="new_material_jumlah" 
-                                           placeholder="0" 
-                                           min="0"
-                                           step="1"
-                                           class="input-with-value"
-                                           style="color: #1C1C1D; padding: 8px; border: 1px solid #1C1C1D; border-radius: 4px; width: 100%; text-align: center;">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="text" 
+                       class="form-control" 
+                       id="input_material_nama" 
+                       placeholder="Nama Material"
+                       value="${materialName}"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td style="padding: 5px; border: 1px solid #1C1C1D;">
-                <div class="list inline-labels no-hairlines no-hairlines-between margin-top-half margin-bottom-half">
-                    <ul>
-                        <li class="item-content item-input">
-                            <div class="item-inner">
-                                <div class="item-input-wrap">
-                                    <input type="number" 
-                                           id="new_material_harga" 
-                                           placeholder="0" 
-                                           min="0"
-                                           step="1000"
-                                           class="input-with-value"
-                                           style="color: #1C1C1D; padding: 8px; border: 1px solid #1C1C1D; border-radius: 4px; width: 100%; text-align: right;">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="number" 
+                       class="form-control" 
+                       id="input_material_jumlah" 
+                       placeholder="Jumlah"
+                       value="${jumlah}"
+                       min="0"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td align="center" style="padding: 10px; border: 1px solid #1C1C1D;">
-                <button class="button button-small button-fill color-green" 
-                        onclick="saveMaterialRow();" 
-                        style="width: 80px;">
-                    Simpan
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="number" 
+                       class="form-control" 
+                       id="input_material_harga" 
+                       placeholder="Harga"
+                       value="${harga}"
+                       min="0"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+            </td>
+            <td class="display-flex flex-direction-row justify-content-space-between align-items-center" style="padding: 8px; text-align: center; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <button class="button button-small button-fill color-green" style="margin-right: 4px;"
+                        onclick="saveMaterialRow()">
+                    <i class="f7-icons" style="font-size: 16px;">checkmark</i>
                 </button>
-                <br>
-                <button class="button button-small button-fill color-orange" 
-                        onclick="cancelMaterialRow();"
-                        style="width: 80px;">
-                    Batal
+                <button class="button button-small button-fill color-red" 
+                        onclick="cancelMaterialRow()">
+                    <i class="f7-icons" style="font-size: 16px;">xmark</i>
                 </button>
             </td>
         </tr>
     `;
 
-    // Remove empty state if exists
-    if (emptyState) {
-        console.log('Removing empty state');
-        $('#material_table_body').empty();
-    }
-
-    // Prepend new row (add at top)
-    $('#material_table_body').prepend(rowHtml);
-    console.log('✓ Row added to table');
-
-    // Auto-calculate total when price or quantity changes
-    $('#new_material_jumlah, #new_material_harga').on('input', function () {
-        calculateMaterialTotal();
-    });
-
-    // Focus on material name input
-    setTimeout(function () {
-        $('#new_material_nama').focus();
-        console.log('✓ Focus set to nama input');
-    }, 100);
-
-    console.log('=== ADD MATERIAL ROW COMPLETE ===');
+    return row;
 }
 
 /**
- * Calculate material total preview
- */
-function calculateMaterialTotal() {
-    const jumlah = parseInt($('#new_material_jumlah').val() || 0);
-    const harga = parseInt($('#new_material_harga').val() || 0);
-    const total = jumlah * harga;
-
-    $('#new_material_total_preview').text('Total: ' + formatRupiah(total));
-
-    console.log('Total calculated:', {
-        jumlah: jumlah,
-        harga: harga,
-        total: total
-    });
-}
-
-/**
- * Save material row
- * VERSI YANG SUDAH DIPERBAIKI
+ * Save material row (add new or update existing)
  */
 function saveMaterialRow() {
-    console.log('=== SAVE MATERIAL ROW ===');
+    console.log('Saving material row');
 
-    // Get input values
-    const nama = $('#new_material_nama').val().trim();
-    const jumlah = parseInt($('#new_material_jumlah').val() || 0);
-    const harga = parseInt($('#new_material_harga').val() || 0);
-
-    console.log('Input values:', { nama, jumlah, harga });
+    // Get values
+    const nama = $('#input_material_nama').val().trim();
+    const jumlah = parseInt($('#input_material_jumlah').val()) || 0;
+    const harga = parseInt($('#input_material_harga').val()) || 0;
 
     // Validation
     if (!nama) {
-        console.log('✗ Validation failed: nama kosong');
-        showAlert('Nama material harus diisi', 'Validasi');
-        $('#new_material_nama').focus();
+        showAlert('Nama material harus diisi', 'Perhatian');
+        $('#input_material_nama').focus();
         return;
     }
 
     if (jumlah <= 0) {
-        console.log('✗ Validation failed: jumlah <= 0');
-        showAlert('Jumlah harus lebih dari 0', 'Validasi');
-        $('#new_material_jumlah').focus();
+        showAlert('Jumlah harus lebih dari 0', 'Perhatian');
+        $('#input_material_jumlah').focus();
         return;
     }
 
     if (harga <= 0) {
-        console.log('✗ Validation failed: harga <= 0');
-        showAlert('Harga harus lebih dari 0', 'Validasi');
-        $('#new_material_harga').focus();
+        showAlert('Harga harus lebih dari 0', 'Perhatian');
+        $('#input_material_harga').focus();
         return;
     }
 
     // Calculate total
-    const totalHarga = jumlah * harga;
-    console.log('Total harga:', totalHarga);
-
-    // Validate MATERIAL_STATE
-    if (!MATERIAL_STATE.currentPartnerTransaksiId) {
-        console.error('✗ No currentPartnerTransaksiId');
-        showAlert('ID Partner Transaksi tidak tersedia', 'Error');
-        return;
-    }
-
-    console.log('Partner Transaksi ID:', MATERIAL_STATE.currentPartnerTransaksiId);
+    const total_harga = jumlah * harga;
 
     // Prepare data
     const materialData = {
@@ -936,108 +891,216 @@ function saveMaterialRow() {
         nama: nama,
         jumlah: jumlah,
         harga: harga,
-        total_harga: totalHarga
+        total_harga: total_harga
     };
 
-    console.log('Material data prepared:', materialData);
+    console.log('Material data to save:', materialData);
 
-    // Store to temp state for photo upload
+    // Check if editing existing row
+    const rowId = $('.editing-row').data('id');
+    if (rowId && rowId !== 'new') {
+        materialData.id = rowId;
+        updateMaterialToServer(materialData);
+    } else {
+        // Open photo upload popup
+        openPhotoUploadPopup(materialData);
+    }
+}
+
+/**
+ * Open photo upload popup
+ */
+function openPhotoUploadPopup(materialData) {
+    console.log('Opening photo upload popup');
+
+    // Save temp data
     MATERIAL_STATE.tempMaterialRow = materialData;
 
-    console.log('✓ Data stored to temp state');
-    console.log('Opening photo upload modal...');
+    // Initialize Header Data
+    $('#photo-spk-code').text(PURCHASE_STATE.currentSpkCode);
+    $('#photo-partner-name').text(MATERIAL_STATE.currentPartnerName);
+    $('#photo-purchase-qty').text(PURCHASE_STATE.currentQuantity);
 
-    // Open photo upload modal
-    openPhotoUploadModal(PURCHASE_STATE.currentSpkCode, MATERIAL_STATE.currentPartnerName);
-
-    console.log('=== SAVE MATERIAL ROW COMPLETE ===');
-}
-
-/**
- * Cancel material row
- * VERSI YANG SUDAH DIPERBAIKI
- */
-function cancelMaterialRow() {
-    console.log('=== CANCEL MATERIAL ROW ===');
-
-    // Remove editing row
-    $('.editing-row').remove();
-    console.log('✓ Editing row removed');
-
-    // Check if table is empty
-    const remainingRows = $('#material_table_body tr').length;
-    console.log('Remaining rows:', remainingRows);
-
-    if (remainingRows === 0) {
-        console.log('No rows left, showing empty state');
-
-        const emptyStateHtml = `
-            <tr data-empty-state="true">
-                <td colspan="6" align="center" style="padding: 20px; border: 1px solid #ddd;">
-                    <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
-                    <p style="color: #999; margin-top: 10px;">Belum ada data material</p>
-                </td>
-            </tr>
-        `;
-
-        $('#material_table_body').html(emptyStateHtml);
-        console.log('✓ Empty state rendered');
-    }
-
-    console.log('=== CANCEL MATERIAL ROW COMPLETE ===');
-}
-
-/**
- * Open photo upload modal
- * VERSI YANG SUDAH DIPERBAIKI UNTUK FRAMEWORK7
- */
-function openPhotoUploadModal(spkCode, partnerName) {
-    console.log('=== OPEN PHOTO UPLOAD MODAL ===');
-
-    // Init Components
-    $('#photo-spk-code').text(spkCode);
-    $('#photo-partner-name').text(partnerName);
-    $('#photo-purchase-qty').text(MATERIAL_STATE.currentJumlah);
-
+    // Initialize Table Data
     $('#photo_type_purchase_tbl').text(PURCHASE_STATE.currentItem);
     $('#photo_qty_purchase_tbl').text(PURCHASE_STATE.currentQuantity);
     $('#photo_selesai_purchase_tbl').text(MATERIAL_STATE.currentJumlah);
-    $('#photo_sisa_purchase_tbl').text(PURCHASE_STATE.currentQuantity - MATERIAL_STATE.currentJumlah);
 
-    // Validate temp data
-    if (!MATERIAL_STATE.tempMaterialRow) {
-        console.error('✗ No temp material data');
-        showAlert('Data material tidak tersedia', 'Error');
-        return;
-    }
-
-    console.log('Temp material data:', MATERIAL_STATE.tempMaterialRow);
-
-    // Clear previous data
-    $('#photo_empty_placeholder').show();
+    // Reset upload form
     $('#photo_upload_input').val('');
-    $('#photo_preview_area').hide();
     $('#photo_preview').attr('src', '');
+    $('#photo_empty_placeholder').show();
+    $('#photo_preview_area').hide();
     $('#btn_upload_photo').hide();
 
-    console.log('✓ Photo inputs cleared');
-
-    // Open popup using Framework7
-    if (typeof app !== 'undefined' && app.popup) {
-        console.log('Opening popup with Framework7...');
+    // Open popup
+    if (typeof app !== 'undefined') {
         app.popup.open('.popup-photo-upload');
-        console.log('✓ Popup opened');
-    } else {
-        console.error('✗ Framework7 app not available');
-        showAlert('Framework7 belum siap', 'Error');
     }
-
-    console.log('=== OPEN PHOTO UPLOAD MODAL COMPLETE ===');
 }
 
 /**
+ * Cancel material row editing
+ */
+function cancelMaterialRow() {
+    console.log('Canceling material row');
+
+    showConfirm(
+        'Batalkan penambahan material?',
+        'Konfirmasi',
+        function () {
+            $('.editing-row').remove();
+
+            // Check if table is empty
+            if ($('#material_table_body tr').length === 0) {
+                renderEmptyMaterialTable();
+            }
+
+            console.log('Material row cancelled');
+        }
+    );
+}
+
+/**
+ * Edit material row
+ */
+function editMaterialRow(id) {
+    console.log('Editing material row:', id);
+
+    // Check if there's already an editing row
+    if ($('.editing-row').length > 0) {
+        showAlert('Selesaikan pengeditan yang sedang berlangsung', 'Perhatian');
+        return;
+    }
+
+    // Find material in state
+    const material = MATERIAL_STATE.materialList.find(item => item.id === id);
+
+    if (!material) {
+        showAlert('Data material tidak ditemukan', 'Error');
+        return;
+    }
+
+    console.log('Material to edit:', material);
+
+    // Find and replace the row
+    const targetRow = $(`#material_table_body tr[data-id="${id}"]`);
+    if (targetRow.length > 0) {
+        const editableRow = createEditableMaterialRow(material);
+        targetRow.replaceWith(editableRow);
+        $('#input_material_nama').focus();
+    }
+}
+
+/**
+ * Update material to server
+ */
+function updateMaterialToServer(materialData) {
+    console.log('Updating material to server:', materialData);
+
+    $.ajax({
+        type: 'POST',
+        url: BASE_API + '/material/update-partner-material',
+        data: materialData,
+        dataType: 'json',
+        beforeSend: function () {
+            showLoading(true);
+        },
+        success: function (response) {
+            console.log('Update response:', response);
+
+            if (response.status == 1 || response.success === true) {
+                showNotification('Material berhasil diupdate', 'success');
+
+                // Remove editing row
+                $('.editing-row').remove();
+
+                // Refresh material data
+                refreshMaterialData();
+            } else {
+                showAlert(response.message || 'Gagal mengupdate material', 'Error');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Update error:', error);
+            showAlert('Terjadi kesalahan saat mengupdate material', 'Error');
+        },
+        complete: function () {
+            showLoading(false);
+        }
+    });
+}
+
+/**
+ * Delete material row
+ */
+function deleteMaterialRow(id) {
+    console.log('Deleting material row:', id);
+
+    showConfirm(
+        'Hapus material ini?',
+        'Konfirmasi Hapus',
+        function () {
+            $.ajax({
+                type: 'POST',
+                url: BASE_API + '/material/delete-partner-material',
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    showLoading(true);
+                },
+                success: function (response) {
+                    console.log('Delete response:', response);
+
+                    if (response.status == 1 || response.success === true) {
+                        showNotification('Material berhasil dihapus', 'success');
+
+                        // Refresh material data
+                        refreshMaterialData();
+                    } else {
+                        showAlert(response.message || 'Gagal menghapus material', 'Error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Delete error:', error);
+                    showAlert('Terjadi kesalahan saat menghapus material', 'Error');
+                },
+                complete: function () {
+                    showLoading(false);
+                }
+            });
+        }
+    );
+}
+
+/**
+ * Refresh material data
+ */
+function refreshMaterialData() {
+    console.log('=== REFRESH MATERIAL DATA ===');
+
+    if (!MATERIAL_STATE.currentPartnerTransaksiId) {
+        console.error('✗ No currentPartnerTransaksiId');
+        showAlert('ID Partner Transaksi tidak tersedia', 'Error');
+        return;
+    }
+
+    console.log('Refreshing for ID:', MATERIAL_STATE.currentPartnerTransaksiId);
+
+    // Call loadMaterialData
+    loadMaterialData(MATERIAL_STATE.currentPartnerTransaksiId);
+
+    console.log('=== REFRESH MATERIAL DATA COMPLETE ===');
+}
+
+// =========================================
+// PHOTO UPLOAD FUNCTIONS
+// =========================================
+
+/**
  * Handle photo selection
- * VERSI YANG SUDAH DIPERBAIKI
  */
 $(document).on('change', '#photo_upload_input', function (e) {
     console.log('=== PHOTO SELECTED ===');
@@ -1045,27 +1108,25 @@ $(document).on('change', '#photo_upload_input', function (e) {
     const file = e.target.files[0];
 
     if (!file) {
-        console.log('No file selected');
+        console.log('✗ No file selected');
         return;
     }
 
-    console.log('File info:', {
-        name: file.name,
-        type: file.type,
-        size: file.size
-    });
+    console.log('File:', file.name, file.size, file.type);
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-        console.error('✗ Invalid file type');
-        showAlert('File harus berupa gambar', 'Error');
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+        console.log('✗ Invalid file type:', file.type);
+        showAlert('File harus berformat JPG, JPEG, atau PNG', 'Error');
         $(this).val('');
         return;
     }
 
     // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        console.error('✗ File too large');
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        console.log('✗ File too large:', file.size);
         showAlert('Ukuran file maksimal 5MB', 'Error');
         $(this).val('');
         return;
@@ -1095,8 +1156,7 @@ $(document).on('change', '#photo_upload_input', function (e) {
 });
 
 /**
- * Upload material photo
- * VERSI YANG SUDAH DIPERBAIKI
+ * Upload material with photo
  */
 function uploadMaterialPhoto() {
     console.log('=== UPLOAD MATERIAL PHOTO ===');
@@ -1192,34 +1252,31 @@ function uploadMaterialPhoto() {
 
 /**
  * View material photo
- * VERSI YANG SUDAH DIPERBAIKI UNTUK FRAMEWORK7
  */
 function viewMaterialPhoto(photoUrl) {
     console.log('=== VIEW MATERIAL PHOTO ===');
     console.log('Photo URL:', photoUrl);
 
     if (!photoUrl) {
-        console.log('✗ No photo URL');
         showAlert('Foto tidak tersedia', 'Info');
         return;
     }
 
-    // Set photo
-    $('#photo_viewer_image').attr('src', photoUrl);
-    console.log('✓ Photo URL set');
+    const url = BASE_API.slice(0, -3) + photoUrl;
 
-    // Open popup using Framework7
+    // ✅ URL sudah lengkap dari backend, tidak perlu concat lagi
+    $('#photo_viewer_image').attr('src', url);
+
+    // Set download link
+    $('#photo_download_link').attr('href', url);
+
+    // Open popup
     if (typeof app !== 'undefined' && app.popup) {
-        console.log('Opening photo viewer...');
         app.popup.open('.popup-photo-viewer');
-        console.log('✓ Photo viewer opened');
     } else {
-        console.error('✗ Framework7 app not available');
-        // Fallback: open in new window
-        window.open(photoUrl, '_blank');
+        window.open(url, '_blank');
     }
 }
-
 /**
  * Refresh material data
  * VERSI YANG SUDAH DIPERBAIKI
