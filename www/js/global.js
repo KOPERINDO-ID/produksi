@@ -1,5 +1,3 @@
-
-
 // Configuration APP
 function checkConnection() {
 	var networkState = navigator.connection.type;
@@ -24,12 +22,10 @@ function checkConnection() {
 	}
 }
 
+// var BASE_API = 'https://tasindo-sale-webservice.digiseminar.id/api'; /** Production Base API */
+var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api'; /** Staging Base API */
+// var BASE_API = 'http://127.0.0.1:8000/api' /** Development Base API */
 
-
-
-var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api';
-
-var BASE_API2 = 'https://tasindo-sale-webservice.digiseminar.id/api';
 var BASE_PATH_IMAGE = 'https://tasindo-sale-webservice.digiseminar.id/kunjungan';
 var BASE_PATH_IMAGE_PERFORMA = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
 var BASE_PATH_IMAGE_CUSTOMER = 'https://tasindo-sale-webservice.digiseminar.id/customer_logo';
@@ -38,8 +34,6 @@ var BASE_PATH_IMAGE_PRODUCT_NEW = 'https://tasindo-sale-webservice.digiseminar.i
 var BASE_PATH_IMAGE_BUKTI_PRODUKSI = 'https://tasindo-sale-webservice.digiseminar.id/foto_produksi';
 var BASE_PATH_IMAGE_BUKTI_PURCHASE = 'https://tasindo-sale-webservice.digiseminar.id/foto_purchasing_logo';
 var BASE_PATH_IMAGE_BUKTI_PURCHASE_RISEN = 'https://tasindo-sale-webservice.digiseminar.id/foto_purchasing_resin';
-
-
 
 function refreshPage() {
 	return app.views.main.router.navigate(app.views.main.router.currentRoute.url, { reloadCurrent: true, ignoreCache: true, });
@@ -478,10 +472,10 @@ function initSpkUrgentPopup() {
 		'        <div class="navbar-inner">' +
 		'          <div class="title" style="color:#fff;">' +
 		'            <i class="f7-icons" style="font-size:20px;">exclamationmark_triangle_fill</i> ' +
-		'            SPK URGENT - Perlu Diisi' +
+		'            SPK URGENT' +
 		'          </div>' +
 		'          <div class="right">' +
-		'            <a href="#" class="link popup-close" style="color:#fff;">' +
+		'            <a href="#" class="link popup-close" data-popup=".spk-urgent-popup" style="color:#fff;">' +
 		'              <i class="f7-icons">xmark</i>' +
 		'            </a>' +
 		'          </div>' +
@@ -492,7 +486,7 @@ function initSpkUrgentPopup() {
 		'          <a href="#" class="link" onclick="showSpkUrgentPopup();">' +
 		'            <i class="f7-icons">arrow_clockwise</i> REFRESH' +
 		'          </a>' +
-		'          <a href="#" class="link popup-close">' +
+		'          <a href="#" class="link popup-close" data-popup=".spk-urgent-popup">' +
 		'            <i class="f7-icons">xmark_circle</i> TUTUP SEMENTARA' +
 		'          </a>' +
 		'        </div>' +
@@ -516,7 +510,6 @@ function initSpkUrgentPopup() {
 		'              <i class="f7-icons">chevron_left</i> Kembali' +
 		'            </a>' +
 		'          </div>' +
-		'          <div class="title" style="color:#fff;" id="spk-urgent-detail-title">Detail SPK</div>' +
 		'        </div>' +
 		'      </div>' +
 		'      <div class="toolbar toolbar-bottom">' +
@@ -526,7 +519,7 @@ function initSpkUrgentPopup() {
 		'          </a>' +
 		'        </div>' +
 		'      </div>' +
-		'      <div class="page-content" id="spk-urgent-detail-content" style="padding-top:10px;padding-bottom:60px;">' +
+		'      <div class="page-content" id="spk-urgent-detail-content" style="padding-top:10px;padding-bottom:60px;background:#fff;">' +
 		'      </div>' +
 		'    </div>' +
 		'  </div>' +
@@ -618,6 +611,8 @@ function showSpkUrgentPopup() {
 					? moment(item.penjualan_tanggal_kirim).format('DD-MMM-YY')
 					: '-';
 
+				let btnDetailStyle = item.keterangan_urgent === null ? 'color-gray' : 'color-orange';
+
 				rowsHtml += '' +
 					'<tr>' +
 					'  <td style="border:1px solid #444;padding:8px;" align="center">' + no + '</td>' +
@@ -625,11 +620,8 @@ function showSpkUrgentPopup() {
 					'  <td style="border:1px solid #444;padding:8px;">' + (item.client_nama || '-') + '</td>' +
 					'  <td style="border:1px solid #444;padding:8px;white-space:nowrap;" align="center">' + hariBadge + '</td>' +
 					'  <td style="border:1px solid #444;padding:8px;white-space:nowrap;" align="center">' + tglKirim + '</td>' +
-					'  <td style="border:1px solid #444;padding:8px;white-space:nowrap;" align="center">' +
-					'    <span class="badge" style="background:#ffeeba;color:#856404;">Belum Diisi</span>' +
-					'  </td>' +
 					'  <td style="border:1px solid #444;padding:8px;" align="center">' +
-					'    <button class="button button-fill button-small color-blue" onclick="showSpkUrgentDetail(\'' + item.penjualan_id + '\')">' +
+					`    <button class="button button-fill button-small ${btnDetailStyle}" onclick="showSpkUrgentDetail('${item.penjualan_id}')">` +
 					'      <i class="f7-icons" style="font-size:12px;">eye_fill</i> Detail' +
 					'    </button>' +
 					'  </td>' +
@@ -653,7 +645,6 @@ function showSpkUrgentPopup() {
 				'          <th style="border:1px solid #444;padding:10px;color:#fff;">Client</th>' +
 				'          <th style="border:1px solid #444;padding:10px;width:90px;color:#fff;" align="center">Sisa Hari</th>' +
 				'          <th style="border:1px solid #444;padding:10px;width:90px;color:#fff;" align="center">Tgl Kirim</th>' +
-				'          <th style="border:1px solid #444;padding:10px;width:90px;color:#fff;" align="center">Status</th>' +
 				'          <th style="border:1px solid #444;padding:10px;width:80px;color:#fff;" align="center">Aksi</th>' +
 				'        </tr>' +
 				'      </thead>' +
@@ -703,11 +694,11 @@ function showSpkUrgentDetail(penjualan_id) {
 				header.penjualan_id.replace(/INV_/g, '').replace(/^0+/, '');
 
 			// Update title
-			$('#spk-urgent-detail-title').text('Detail SPK - ' + nomorSpk);
+			// $('#spk-urgent-detail-title').text('Detail SPK - ' + nomorSpk); /** Tidak diperlukan lagi */
 
 			// Info header
 			var infoHtml = '' +
-				'<div class="card" style="margin:40px 0 15px 0;background:#1e1e1e;">' +
+				'<div class="card" style="margin:64px 0 15px 0;background:#fff;border:1px solid #999">' +
 				'  <div class="card-content card-content-padding">' +
 				'    <div class="row">' +
 				'      <div class="col-50">' +
@@ -796,7 +787,7 @@ function showSpkUrgentDetail(penjualan_id) {
 				'</div>';
 
 			var contentHtml = '' +
-				'<div class="block" style="margin:10px;">' +
+				'<div class="block" style="margin:10px; background:none;">' +
 				infoHtml +
 				tableHtml +
 				formHtml +

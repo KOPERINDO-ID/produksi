@@ -285,7 +285,8 @@ function hapusTransaksiPartner(id_partner_transaksi) {
 						},
 						success: function (data) {
 							app.dialog.close();
-							getPopUpPurchase();
+							// getPopUpPurchase();
+							openPurchaseModal();
 						},
 						error: function (xmlhttprequest, textstatus, message) {
 						}
@@ -353,7 +354,8 @@ function selesaiPartner(id_partner_transaksi, tgl_deadline, penjualan_detail_per
 							$('#tgl_deadline_purchase').val("");
 
 							$('#qty_purchase').val("");
-							getPopUpPurchase();
+							// getPopUpPurchase();
+							openPurchaseModal();
 						},
 						error: function (xmlhttprequest, textstatus, message) {
 						}
@@ -394,7 +396,8 @@ function PurchaseProces() {
 				$('#qty_purchase').val("");
 				$('#production_fee').val("")
 				$('#tgl_deadline_purchase').val("");
-				getPopUpPurchase();
+				// getPopUpPurchase();
+				openPurchaseModal();
 			},
 			error: function (xmlhttprequest, textstatus, message) {
 			}
@@ -404,7 +407,6 @@ function PurchaseProces() {
 
 function setPurchaseDetailPerformaId(penjualan_detail_performa_id, penjualan_id, penjualan_jenis, penjualan_tanggal, penjualan_qty) {
 	localStorage.setItem('purchase_detail_performa_id', penjualan_detail_performa_id);
-	$('#invoice_purchase_tbl').html(moment(penjualan_tanggal).format('DDMMYY') + '-' + penjualan_id.replace(/\INV_/g, '').replace(/^0+/, ''));
 	$('#type_purchase_tbl').html(penjualan_jenis);
 	$('#qty_purchase_tbl').html(penjualan_qty);
 	$('#tgl_deadline_purchase').val("");
@@ -415,7 +417,8 @@ function setPurchaseDetailPerformaId(penjualan_detail_performa_id, penjualan_id,
 	$('#penjualan_detail_performa_id_purchase').val(penjualan_detail_performa_id);
 
 	$('#qty_total_input').val(penjualan_qty);
-	getPopUpPurchase();
+	// getPopUpPurchase();
+	openPurchaseModal(penjualan_detail_performa_id);
 }
 
 function getPopUpPurchase() {
@@ -450,7 +453,6 @@ function getPopUpPurchase() {
 			var qty_sisa = 0;
 
 			$.each(data.data, function (i, val) {
-
 				if (val.tgl_selesai != null) {
 					qty_selesai += val.jumlah;
 				}
@@ -489,8 +491,11 @@ function getPopUpPurchase() {
 				// 	data_partner_purchasing += ' ';
 				// 	data_partner_purchasing += '</td>';
 				// }
-				data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell" width="15%">';
-				data_partner_purchasing += '   <button  class="text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"   onclick="hapusTransaksiPartner(\'' + val.id_partner_transaksi + '\');">Hapus</button>';
+				data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
+				data_partner_purchasing += `   <button  class="text-add-colour-black-soft bg-dark-gray-young col button button-small text-bold" style="width: 85px;" onclick="lihatMaterial('${val.id_partner_transaksi}', '${val.nama_partner}', '${val.item}');">Material</button>`;
+				data_partner_purchasing += '</td>';
+				data_partner_purchasing += '<td style="border-right:1px solid gray; border-bottom:1px solid gray;" class="label-cell">';
+				data_partner_purchasing += '   <button  class="text-add-colour-black-soft bg-dark-gray-young col button button-small text-bold" style="width: 85px;" onclick="hapusTransaksiPartner(\'' + val.id_partner_transaksi + '\');">Hapus</button>';
 				data_partner_purchasing += '</td>';
 				data_partner_purchasing += '</tr>';
 

@@ -327,6 +327,7 @@
       </div>
     </div>
 
+    <!-- Popup Proses Purchase -->
     <div class="popup proses-purchase">
       <div class="view view-init">
         <div class="page">
@@ -335,73 +336,83 @@
             <div class="navbar-inner bg-dark-gray-medium">
               <div class="title">Proses</div>
               <div class="right">
-                <!-- Link to close popup -->
-                <p class="text-add-colour-white link popup-close"><i style="margin-right:5px;"
-                    class="f7-icons">xmark_rectangle_fill</i></p>
+                <a class="link popup-close" id="close_purchase_modal" data-popup=".proses-purchase">
+                  <i class="f7-icons" style="margin-right:5px; color: #fff;">xmark_rectangle_fill</i>
+                </a>
               </div>
             </div>
           </div>
+
           <div class="page-content">
             <div class="card card-outline margin-top">
               <div class="card-content">
                 <div class="row">
                   <div class="col-100">
-
                     <div class="card">
 
-                      <table align="center" width="100%" style=" border-collapse: collapse; border:1px solid gray;"
-                        border="1">
-                        <thead class="bg-dark-gray-medium text-align-center">
-                          <tr>
-                            <td
-                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                              align="center" width="30%">
-                              Invoice
-                            </td>
-                            <td
-                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                              align="center" width="31%">
-                              Type
-                            </td>
-                            <td
-                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                              align="center" width="13%">
-                              Total
-                            </td>
-                            <td
-                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                              align="center" width="13%">
-                              Selesai
-                            </td>
-                            <td
-                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                              align="center" width="13%">
-                              Sisa
-                            </td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <td class="label-cell text-align-left" id="invoice_purchase_tbl"></td>
-                          <td class="label-cell text-align-left" id="type_purchase_tbl"></td>
-                          <td class="label-cell text-align-right" id="qty_purchase_tbl"></td>
-                          <td class="label-cell text-align-right" id="selesai_purchase_tbl"></td>
-                          <td class="label-cell text-align-right" id="sisa_purchase_tbl"></td>
-                        </tbody>
-                      </table>
-                      <br>
-                      <div class="list no-hairlines-md">
+                      <!-- Header Information -->
+                      <div class="information-card-header col-100" style="margin-bottom: 10px; padding: 10px;">
+                        <div class="spk-info">
+                          <div class="spk-code" id="spk-code" style="font-weight: bold; font-size: 16px;">-</div>
+                          <div class="client-name" id="client-name" style="color: #666;">-</div>
+                        </div>
+                        <div class="quantity-badge" id="purchase-qty">
+                          0 pcs
+                        </div>
+                      </div>
+
+                      <!-- Table Summary -->
+                      <div style="overflow-x: auto; width: 100%; margin-bottom: 10px;">
+                        <table align="center" width="100%" style="border-collapse: collapse; border:1px solid gray;"
+                          border="1">
+                          <thead class="table-header-theme text-align-center">
+                            <tr>
+                              <td align="center" width="40%" style="padding: 8px; font-weight: bold;">
+                                Tipe
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                Jumlah
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                SPK
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                Sisa
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody class="table-body-theme">
+                            <tr>
+                              <td class="label-cell text-align-left" id="type_purchase_tbl" style="padding: 8px;">-</td>
+                              <td class="label-cell text-align-right" id="qty_purchase_tbl" style="padding: 8px;">0</td>
+                              <td class="label-cell text-align-right" id="selesai_purchase_tbl" style="padding: 8px;">0
+                              </td>
+                              <td class="label-cell text-align-right" id="sisa_purchase_tbl" style="padding: 8px;">0
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <!-- Form Input -->
+                      <div class="list no-hairlines-md"
+                        style="border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; padding: 10px;">
                         <form id="purchase_form">
                           <div class="list">
-                            <input type="hidden" id="item_purchase" name="item_purchase" placeholder="Item" value=""
-                              required validate readonly>
+                            <!-- Hidden Inputs -->
+                            <input type="hidden" id="item_purchase" name="item_purchase" value="">
                             <input type="hidden" id="penjualan_detail_performa_id_purchase"
-                              name="penjualan_detail_performa_id_purchase" placeholder="" value="" required validate>
+                              name="penjualan_detail_performa_id_purchase" value="">
+                            <input type="hidden" id="qty_total_input" name="qty_total_input" value="0">
+
                             <ul>
+                              <!-- Partner Selection -->
                               <li>
                                 <a class="item-link smart-select smart-select-init partner-smart-select"
                                   data-close-on-select="true" data-open-in="popup" data-searchbar="true"
                                   data-searchbar-placeholder="Cari Partner">
-                                  <select name="nama_partner_purchase" id="nama_partner_purchase" required validate>
+                                  <select name="nama_partner_purchase" id="nama_partner_purchase" required>
+                                    <option value=""></option>
                                   </select>
                                   <div class="item-content">
                                     <div class="item-inner">
@@ -411,111 +422,384 @@
                                 </a>
                               </li>
 
+                              <!-- Jumlah & Harga -->
                               <li class="item-content item-input">
-                                <div class="item-inner">
+                                <div class="item-inner col-50">
                                   <div class="item-input-wrap">
-                                    <input type="hidden" id="qty_total_input" name="qty_total_input" placeholder=""
-                                      value="" required validate>
-                                    <label>Qty</label>
-                                    <input type="number" id="qty_purchase" name="qty_purchase" placeholder="" value=""
-                                      required validate>
+                                    <input type="text" placeholder="Jumlah" class="label-input" readonly value="Jumlah"
+                                      style="border: none; font-size: 16px; padding: 0;">
+                                    <input type="number" id="qty_purchase" name="qty_purchase" placeholder="0" value=""
+                                      min="0" required>
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
-                              </li>
-
-                              <li class="item-content item-input">
-                                <div class="item-inner">
+                                <div class="item-inner col-50">
                                   <div class="item-input-wrap">
-                                    <label>Harga</label>
-                                    <input type="number" id="production_fee" name="production_fee" placeholder=""
-                                      value="" required validate>
+                                    <input type="text" placeholder="Harga" class="label-input" readonly value="Harga"
+                                      style="border: none; font-size: 16px; padding: 0;">
+                                    <input type="number" id="production_fee" name="production_fee" placeholder="0"
+                                      value="" min="0" required>
                                   </div>
                                 </div>
                               </li>
 
+                              <!-- Tanggal Kirim & Deadline -->
                               <li class="item-content item-input">
-                                <div class="item-inner">
+                                <div class="item-inner col-50">
                                   <div class="item-input-wrap">
-                                    <label>Deadline</label>
+                                    <input type="text" placeholder="Kirim" class="label-input" readonly value="Kirim"
+                                      style="border: none; font-size: 16px; padding: 0;">
+                                    <input type="date" id="tgl_kirim_purchase" name="tgl_kirim_purchase"
+                                      placeholder="Tanggal Kirim" value="" readonly>
+                                  </div>
+                                </div>
+                                <div class="item-inner col-50">
+                                  <div class="item-input-wrap" style="position: relative;">
+                                    <div
+                                      style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                                      <input type="text" placeholder="Deadline" class="label-input" readonly
+                                        value="Deadline" style="border: none; font-size: 16px; padding: 0; flex: 1;">
+
+                                      <!-- TOMBOL COPY - MENGGUNAKAN ONCLICK (LEBIH RELIABLE) -->
+                                      <button type="button" onclick="copyKirimToDeadline(); return false;"
+                                        id="btn_copy_kirim_to_deadline"
+                                        style="width: 32px; height: 32px; background: #007aff; color: white; border: none; border-radius: 2px; padding: 4px; font-size: 11px; cursor: pointer;">
+                                        <i class="f7-icons" style="font-size: 12px;">doc_on_doc</i>
+                                      </button>
+                                    </div>
                                     <input type="date" id="tgl_deadline_purchase" name="tgl_deadline_purchase"
-                                      placeholder="Tanggal Deadline" value="" required validate>
+                                      placeholder="Tanggal Deadline" value="" required>
                                   </div>
                                 </div>
                               </li>
 
+                              <!-- Keterangan -->
+                              <li class="item-content item-input">
+                                <div class="item-inner">
+                                  <div class="item-input-wrap">
+                                    <input type="text" placeholder="Keterangan" class="label-input" readonly
+                                      value="Keterangan"
+                                      style="border: none; font-size: 16px; padding: 0; margin-bottom: 5px;">
+                                    <input type="text" id="keterangan_partner" name="keterangan_partner"
+                                      placeholder="Keterangan (opsional)" value="">
+                                  </div>
+                                </div>
+                              </li>
                             </ul>
                           </div>
-
                         </form>
-                        <br>
-                        <center>
-                          <button onclick="PurchaseProces();" style="width:25%;"
-                            class="margin-12 text-add-colour-black-soft bg-dark-gray-young button-small col button text-bold"
-                            id="performa_button_save">Simpan
+
+                        <!-- Submit Button -->
+                        <div style="padding: 8px 0;">
+                          <button onclick="PurchaseProces();" class="button btn-primary-theme" id="performa_button_save"
+                            style="width: 100%;">
+                            Simpan
                           </button>
-                        </center>
-                        <br>
+                        </div>
                       </div>
+
+                      <!-- Table Purchasing List -->
                       <div class="card-content" style="overflow-x:auto; width:100%;">
-                        <table align="center" width="750px" style="border-collapse: collapse; border:1px solid gray;"
+                        <table align="center" width="100%" style="border-collapse: collapse; border:1px solid gray;"
                           border="1">
-                          <thead class="bg-dark-gray-medium text-align-center">
+                          <thead class="table-header-theme text-align-center">
                             <tr>
                               <td
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center" width="7%">
+                                style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold; padding: 10px;"
+                                align="center">
                                 No
                               </td>
-                              <td width="17%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              <td
+                                style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold; padding: 10px;"
                                 align="center">
                                 Nama
                               </td>
-                              <td width="17%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center">
-                                Item
-                              </td>
-                              <td width="7%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              <td
+                                style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold; padding: 10px;"
                                 align="center">
                                 Jumlah
                               </td>
-                              <td width="14%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              <td
+                                style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold; padding: 10px;"
                                 align="center">
-                                Total Harga
-                              </td>
-                              <td width="14%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center">
-                                Tanggal
-                              </td>
-                              <td width="14%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center">
-                                Deadline
-                              </td>
-                              <td width="14%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center">
-                                Selesai
-                              </td>
-                              <td colspan="2" width="12%"
-                                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                                align="center">
-                                Opsi
+                                Aksi
                               </td>
                             </tr>
                           </thead>
-                          <tbody id="data_partner_purchasing">
+                          <tbody class="table-body-theme" id="data_partner_purchasing">
+                            <!-- Data will be rendered here by JavaScript -->
+                            <tr>
+                              <td colspan="10" align="center"
+                                style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 20px;">
+                                <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
+                                <p style="color: #999; margin-top: 10px;">Belum ada data</p>
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup Material -->
+    <div class="popup popup-material">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Material</div>
+              <div class="right">
+                <!-- Link to close popup dengan ID -->
+                <a class="link popup-close" id="close_material_modal" data-popup=".popup-material">
+                  <i class="f7-icons" style="margin-right:5px; color: #fff;">xmark_rectangle_fill</i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+
+                      <!-- Header Information -->
+                      <div class="information-card-header col-100" style="margin-bottom: 10px; padding: 10px;">
+                        <div class="spk-info">
+                          <div class="spk-code" id="material-spk-code" style="font-weight: bold; font-size: 16px;">-
+                          </div>
+                          <div class="client-name" id="material-partner-name" style="color: #1C1C1D;">-</div>
+                        </div>
+                        <div class="quantity-badge" id="material-quantity">
+                          0 pcs
+                        </div>
+                      </div>
+
+                      <!-- Header Action -->
+                      <div class="col-100"
+                        style="background-color: #CFECFE; overflow-x: auto; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                          <!-- Left: Material Title & Count -->
+                          <div style="display: flex; align-items: center; gap: 10px; color: #1C1C1D;">
+                            <div style="font-weight: bold; font-size: 16px;">Material</div>
+                            <div style="font-size: 14px;" id="material_count">0 item</div>
+                          </div>
+
+                          <!-- Right: Action Buttons -->
+                          <div style="display: flex; gap: 8px;">
+                            <!-- Refresh Button -->
+                            <button
+                              class="button button-small button-fill color-green display-flex justify-content-end align-items-center"
+                              id="btn_refresh_material" onclick="refreshMaterialData();" style="height: 32px;">
+                              <i class="f7-icons" style="font-size: 18px;">arrow_clockwise</i>
+                            </button>
+
+                            <!-- Add Button -->
+                            <button
+                              class="button button-small button-fill color-green display-flex justify-content-end align-items-center"
+                              id="btn_add_material" onclick="addMaterialRow();" style="height: 32px;">
+                              <i class="f7-icons" style="font-size: 18px;">plus</i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Material Table -->
+                      <div class="col-100" style="overflow-x: auto;">
+                        <table width="100%" style="border-collapse: collapse; border: 1px solid #ddd;"
+                          id="material_table">
+                          <thead class="table-header-theme">
+                            <tr>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 50px;">
+                                No
+                              </th>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 100px;">
+                                Tanggal
+                              </th>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 120px;">
+                                Material
+                              </th>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 100px;">
+                                Jumlah
+                              </th>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 120px;">
+                                Harga
+                              </th>
+                              <th
+                                style="padding: 12px; text-align: center; border: 1px solid #1C1C1D; min-width: 100px;">
+                                Aksi
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="table-body-theme" id="material_table_body">
+                            <!-- Data will be rendered by JavaScript -->
+                            <tr>
+                              <td colspan="6" align="center" style="padding: 20px; border: 1px solid #ddd;">
+                                <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
+                                <p style="color: #999; margin-top: 10px;">Belum ada data material</p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Upload Popup -->
+    <div class="popup popup-photo-upload">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Upload Bukti Kirim</div>
+              <div class="right">
+                <a class="link popup-close" data-popup=".popup-photo-upload">
+                  <i class="f7-icons" style="color: #fff;">xmark_rectangle_fill</i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="page-content">
+            <div class="card">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+                      <!-- Header Information -->
+                      <div class="information-card-header col-100" style="margin-bottom: 10px; padding: 10px;">
+                        <div class="spk-info">
+                          <div class="spk-code" id="photo-spk-code" style="font-weight: bold; font-size: 16px;">-</div>
+                          <div class="client-name" id="photo-partner-name" style="color: #666;">-</div>
+                        </div>
+                        <div class="quantity-badge" id="photo-purchase-qty">
+                          0 pcs
+                        </div>
+                      </div>
+
+                      <!-- Table Summary -->
+                      <div style="overflow-x: auto; width: 100%; margin-bottom: 10px;">
+                        <table align="center" width="100%" style="border-collapse: collapse; border:1px solid gray;"
+                          border="1">
+                          <thead class="table-header-theme text-align-center">
+                            <tr>
+                              <td align="center" width="40%" style="padding: 8px; font-weight: bold;">
+                                Tipe
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                Jumlah
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                SPK
+                              </td>
+                              <td align="center" width="20%" style="padding: 8px; font-weight: bold;">
+                                Sisa
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody class="table-body-theme">
+                            <tr>
+                              <td class="label-cell text-align-left" id="photo_type_purchase_tbl" style="padding: 8px;">
+                                -
+                              </td>
+                              <td class="label-cell text-align-right" id="photo_qty_purchase_tbl" style="padding: 8px;">
+                                0
+                              </td>
+                              <td class="label-cell text-align-right" id="photo_selesai_purchase_tbl"
+                                style="padding: 8px;">
+                                0
+                              </td>
+                              <td class="label-cell text-align-right" id="photo_sisa_purchase_tbl"
+                                style="padding: 8px;">0
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <!-- Photo Upload Area -->
+                      <div style="border: 1px solid #fff; border-radius: 4px; padding: 8px;">
+                        <input type="file" id="photo_upload_input" accept="image/*" capture="camera"
+                          style="display: none;">
+
+                        <div id="photo_empty_placeholder" class="col-100" style="display: none; padding: 32px 0px;">
+                          <div
+                            class="display-flex flex-direction-column justify-content-space-between align-items-center"
+                            style="color: #008000;">
+                            <i class="f7-icons" style="font-size: 48px;">camera</i>
+                            <h3 class="">BUKTI MATERIAL</h3>
+                          </div>
+                        </div>
+
+                        <div id="photo_preview_area" style="display: none; margin: 8px 0px;">
+                          <img id="photo_preview" src=""
+                            style="width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px;">
+                        </div>
+
+                        <button class="button button-fill button-large color-green" id="btn_choose_photo"
+                          onclick="$('#photo_upload_input').click();" style="width: 100%; margin-bottom: 10px;">
+                          PILIH FOTO
+                        </button>
+
+                        <button class="button button-fill button-large color-blue" id="btn_upload_photo"
+                          onclick="uploadMaterialPhoto();" style="width: 100%; display: none;">
+                          UNGGAH
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Viewer Popup -->
+    <div class="popup popup-photo-viewer">
+      <div class="view view-init">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Bukti Kirim Material</div>
+              <div class="right">
+                <a class="link popup-close" data-popup=".popup-photo-viewer">
+                  <i class="f7-icons" style="color: #fff;">xmark_rectangle_fill</i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="page-content">
+            <div class="card">
+              <div class="card-content" style="padding: 0;">
+                <img id="photo_viewer_image" src="" style="width: 100%; height: auto;">
               </div>
             </div>
           </div>
