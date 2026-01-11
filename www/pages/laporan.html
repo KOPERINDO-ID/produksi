@@ -1,6 +1,97 @@
 <div class="page" data-name="laporan" class="theme-dark">
-
   <div class="page-content theme-dark">
+    <!-- Menu Section -->
+    <div class="card">
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+        <div class="col col-border  text-bold"><a class="text-add-colour-white" href="/produksi_pusat">SPK</a></div>
+        <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-makasar.digiseminar.id/api');"
+          class="col col-border text-bold jakartaFilterCabangBtn"><a class="text-add-colour-white"
+            href="/cabang_pusat">IND-BAR</a></div>
+        <!-- <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-palembang.digiseminar.id/api');"
+          class="col col-border text-bold palembangFilterCabangBtn"><a class="text-add-colour-white"
+            href="/cabang">PLB</a></div> -->
+        <div class="col col-border text-bold bg-dark-gray-medium"><a class="text-add-colour-white"
+            href="/laporan">PARTNER</a></div>
+      </div>
+      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+        <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
+            href="/laporan">Laporan</a></div>
+        <div class="col col-border text-bold"><a class="text-add-colour-gray" href="/purchasing">Partner</a></div>
+      </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="card">
+      <!-- Table Header -->
+      <div class="col-100 bg-dark-gray-young" style="padding:10px; font-size:18px; font-weight:bold;">
+        <div class="display-flex justify-content-space-between align-items-center"
+          style="margin-bottom:4px; padding: 4px 0px;">
+          <div class="display-flex justify-content-start align-items-center"
+            style="font-size:20px; font-weight:bold; color:#1C1C1D;">
+            <span style="border-right: 1px solid #1C1C1D; padding-right: 16px; margin-right: 16px;">Data Laporan</span>
+            <span id="jumlah_data_laporan">0</span>
+          </div>
+          <i class="f7-icons" style="font-size:30px; color:#009100;"
+            onclick="refreshLaporanData()">arrow_2_circlepath_circle_fill</i>
+        </div>
+        <!-- Search Boxes -->
+        <div class="display-flex flex-direction-row justify-content-space-between align-items-center">
+          <input onkeyup="doSearchPartnerLaporan()" type="text"
+            style="font-size:14px; margin-right: 4px; border-radius:3px; padding:6px; width:100%;  color:#1C1C1D; background-color:lightgray;"
+            id="partner_laporan_filter_search" name="partner_laporan_filter_search" placeholder="Cari Partner">
+          <input onkeyup="doSearchCustomerLaporan()" type="text"
+            style="font-size:14px; border-radius:3px; padding:6px; width:100%;  color:#1C1C1D; background-color:lightgray;"
+            id="partner_customer_filter_search" name="partner_customer_filter_search" placeholder="Cari Customer">
+        </div>
+      </div>
+      <!-- Table Content -->
+      <div class="col-100" style="overflow-x: auto;">
+        <table id="tabel_laporan_partner" cellspacing="1" cellpadding="1" width="100%">
+          <thead class="bg-dark-gray-medium text-align-center">
+            <tr>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                align="center">No</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Spk</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Partner</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Customer</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Item</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Jumlah</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Tanggal</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Deadline</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Selesai</th>
+              <th class="label-cell"
+                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="text-align-center" id="data_laporan_partner">
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination Buttons -->
+      <div id="tombol_paginasi" class="text-align-center"
+        style="margin:5px; font-size:16px; width: 100%; display: block;">
+      </div>
+    </div>
+
+    <!-- Popup Item Detail Gambar -->
     <div class="popup item-detail-gambar">
       <div class="view">
         <div class="page">
@@ -21,7 +112,7 @@
                 <div class="row">
                   <div class="col-100">
                     <div class="card" id="item_detail_gambar">
-                      
+
                     </div>
                   </div>
                 </div>
@@ -32,100 +123,108 @@
       </div>
     </div>
 
-    <div class="card ">
-      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
-        <div class="col col-border  text-bold"><a class="text-add-colour-white" href="/produksi_pusat">SPK</a></div>
-        <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-makasar.digiseminar.id/api');"
-          class="col col-border text-bold jakartaFilterCabangBtn"><a class="text-add-colour-white"
-            href="/cabang_pusat">IND-BAR</a></div>
-        <!-- <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-palembang.digiseminar.id/api');"
-          class="col col-border text-bold palembangFilterCabangBtn"><a class="text-add-colour-white"
-            href="/cabang">PLB</a></div> -->
-        <div class="col col-border text-bold bg-dark-gray-medium"><a class="text-add-colour-white" href="/laporan">PARTNER</a></div>
-      </div>
-      <div class="card">
-        <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
-          <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
-            href="/laporan">Laporan</a></div>
-          <div class="col col-border text-bold"><a class="text-add-colour-gray" href="/purchasing">Partner</a></div>
-       
+    <!-- Popup Approval Penerimaan -->
+    <div class="popup popup-approval-penerimaan">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner bg-dark-gray-medium">
+              <div class="title">Detail Penerimaan</div>
+              <div class="right">
+                <a class="link popup-close" data-popup=".popup-approval-penerimaan">
+                  <i class="f7-icons" style="margin-right:5px; color: #fff;">xmark_rectangle_fill</i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="page-content">
+            <div class="card card-outline margin-top">
+              <div class="card-content">
+                <div class="row">
+                  <div class="col-100">
+                    <div class="card">
+
+                      <!-- Header Information -->
+                      <div class="information-card-header col-100" style="margin-bottom: 10px; padding: 10px;">
+                        <div class="spk-info">
+                          <div class="spk-code" id="spk-code" style="font-weight: bold; font-size: 16px;">-</div>
+                          <div class="client-name" id="client-name" style="color: #666;">-</div>
+                        </div>
+                        <div class="quantity-badge" id="purchase-qty">
+                          0 pcs
+                        </div>
+                      </div>
+
+                      <!-- Foto Bukti Penerimaan -->
+                      <div class="col-100" style="margin-bottom: 20px;">
+                        <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">
+                          Bukti Penerimaan
+                        </div>
+
+                        <div id="approval_foto_empty"
+                          style="border: 2px dashed #ddd; border-radius: 8px; padding: 30px; text-align: center; background-color: #fafafa; display: none;">
+                          <i class="f7-icons" style="font-size: 48px; color: #ccc;">photo</i>
+                          <p style="color: #999; margin-top: 10px;">Tidak ada bukti penerimaan</p>
+                        </div>
+
+                        <div id="approval_foto_area" style="display: none;">
+                          <div
+                            style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; background-color: #fff; text-align: center;">
+                            <img id="approval_foto_img"
+                              style="max-width: 100%; max-height: 400px; border-radius: 8px; cursor: pointer;"
+                              onclick="window.open(this.src, '_blank')" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Foto Bukti Dokumen -->
+                      <div class="col-100" style="margin-bottom: 20px;">
+                        <div style="font-weight: bold; margin-bottom: 10px; font-size: 16px;">
+                          Bukti Dokumen
+                        </div>
+
+                        <div id="approval_dokumen_empty"
+                          style="border: 2px dashed #ddd; border-radius: 8px; padding: 30px; text-align: center; background-color: #fafafa; display: none;">
+                          <i class="f7-icons" style="font-size: 48px; color: #ccc;">doc</i>
+                          <p style="color: #999; margin-top: 10px;">Tidak ada dokumen</p>
+                        </div>
+
+                        <div id="approval_dokumen_area" style="display: none;">
+                          <div
+                            style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; background-color: #fff;">
+                            <div style="text-align: center; margin-bottom: 10px;">
+                              <img id="approval_dokumen_img"
+                                style="max-width: 100%; max-height: 300px; border-radius: 8px; display: none;" />
+                              <i id="approval_dokumen_icon" class="f7-icons"
+                                style="font-size: 64px; color: #e53935; display: none;">doc_text_fill</i>
+                            </div>
+                            <div
+                              style="text-align: center; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">
+                              <span id="approval_dokumen_name" style="font-size: 14px; color: #333;">-</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="col-100" style="margin-top: 20px;">
+                        <button
+                          class="display-flex justify-content-center align-items-center button button-small btn-primary-theme"
+                          id="btn_approve_penerimaan" onclick="approvePenerimaan()" style="margin-bottom: 10px;">
+                          <i class="f7-icons" style="margin-right: 4px;">checkmark_circle_fill</i> TERIMA
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    
-    <div class="card" style="width:98%;">
-      <table width="98%;" cellspacing="0" cellpadding="1" style="border-color:gray; margin-bottom:10px;">
-        <tr class="bg-dark-gray-young">
-          <th style="padding:4px;" colspan="8" align="left">
-            Data Laporan
-
-          </th>
-          <th style="padding-right:20px;" align="right">
-
-          </th>
-        </tr>
-      </table>
-
-    </div>
-    <div class="card-content" style="overflow-x:auto;  height:415px; width:96%; margin-top:-12px; margin-left:8px;">
-      <table cellspacing="1" cellpadding="1" style="border-collapse: collapse; border:1px solid gray;" width="825px">
-        <thead class="bg-dark-gray-medium text-align-center">
-          <tr>
-            <th colspan="2" style="padding:5px;">
-              <center>
-                <input onkeyup="doSearchPartnerLaporan()" type="text"
-                  style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
-                  id="partner_laporan_filter_search" name="partner_laporan_filter_search" placeholder="Cari Partner">
-              </center>
-
-            </th>  <th colspan="2" style="padding:5px;">
-              <center>
-                <input onkeyup="doSearchCustomerLaporan()" type="text"
-                  style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
-                  id="partner_customer_filter_search" name="partner_customer_filter_search" placeholder="Cari Customer">
-              </center>
-
-            </th>
-            <th colspan="7" style="padding:5px;">
-
-            </th>
-          </tr>
-          <tr>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-              align="center" width="5%">No</th>
-              <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
-              Spk</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
-              Partner</th>
-              <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
-              Customer</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="15%">
-              Item</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="6%">
-              Jumlah</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="11%">
-              Tanggal</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-              width="11%">Deadline</th>
-            <th class="label-cell"
-              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-              width="11%">Selesai</th>
-          </tr>
-        </thead>
-        <tbody class="text-align-center" id="partner_data_laporan">
-        </tbody>
-      </table>
-      <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
-      </div>
-    </div>
   </div>
-</div>
 </div>

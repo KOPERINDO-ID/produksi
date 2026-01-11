@@ -711,7 +711,7 @@ function createMaterialRow(item, rowNumber) {
     const tanggal = formatDateShow(item.dt_created);
     const materialName = item.nama || '-';
     const jumlah = formatNumber(item.jumlah || 0);
-    const harga = formatRupiah(item.harga || 0);
+    const harga = formatNumber(item.harga || 0);
     const total = formatRupiah(item.total_harga || 0);
 
     // ========== PHOTO BUTTON - SIMPLIFIED ==========
@@ -727,7 +727,6 @@ function createMaterialRow(item, rowNumber) {
             </button>
         `;
     }
-    // ==============================================
 
     const row = `
         <tr data-id="${item.id}">

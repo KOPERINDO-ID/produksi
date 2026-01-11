@@ -213,14 +213,14 @@ $$(document).on('page:afterin', '.page[data-name="cabang"]', function (e) {
   chooseDataProduksiCabangRedirect('pusat');
   dateRangeDeclarationProduksiCabang();
   getYearHistoryPointProduksi();
-  startSpkUrgentInterval();
+  // startSpkUrgentInterval();
   localStorage.removeItem('arsip');
 })
 
 
 $$(document).on('page:afterin', '.page[data-name="purchasing"]', function (e) {
   checkLogin();
-  getDataPartner();
+  initPurchasingPage();
 })
 
 
@@ -234,7 +234,7 @@ $$(document).on('page:afterin', '.page[data-name="produksi-pusat"]', function (e
   checkConnection();
   getYearPointProduksi();
   getYearHistoryProduksiPusat();
-  startSpkUrgentInterval();
+  // startSpkUrgentInterval();
   choosePabrikSby('Sby');
 })
 
