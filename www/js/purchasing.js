@@ -10,8 +10,8 @@
 const PURCHASING_CONFIG = {
 	itemsPerPage: 20,
 	apiEndpoint: '/get-data-partner',
-	apiAddEndpoint: '/partner/tambah-partner-proses',
-	apiDeleteEndpoint: '/partner/hapus-partner'
+	apiAddEndpoint: '/tambah-partner-proses',
+	apiDeleteEndpoint: '/hapus-partner'
 };
 
 let PURCHASING_STATE = {

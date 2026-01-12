@@ -166,7 +166,7 @@ function executeApproval() {
 
     $.ajax({
         type: 'POST',
-        url: BASE_API + '/delivery/approve',
+        url: BASE_API + '/partner/approve',
         data: {
             id: APPROVAL_STATE.currentPenerimaanId,
             id_partner_transaksi: APPROVAL_STATE.currentPartnerTransaksiId
