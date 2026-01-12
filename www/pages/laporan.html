@@ -149,10 +149,11 @@
                       <!-- Header Information -->
                       <div class="information-card-header col-100" style="margin-bottom: 10px; padding: 10px;">
                         <div class="spk-info">
-                          <div class="spk-code" id="spk-code" style="font-weight: bold; font-size: 16px;">-</div>
-                          <div class="client-name" id="client-name" style="color: #666;">-</div>
+                          <div class="spk-code" id="approval_spk_code" style="font-weight: bold; font-size: 16px;">-
+                          </div>
+                          <div class="client-name" id="approval_partner_name" style="color: #666;">-</div>
                         </div>
-                        <div class="quantity-badge" id="purchase-qty">
+                        <div class="quantity-badge" id="approval_purchase_qty">
                           0 pcs
                         </div>
                       </div>
@@ -212,8 +213,9 @@
                       <div class="col-100" style="margin-top: 20px;">
                         <button
                           class="display-flex justify-content-center align-items-center button button-small btn-primary-theme"
-                          id="btn_approve_penerimaan" onclick="approvePenerimaan()" style="margin-bottom: 10px;">
-                          <i class="f7-icons" style="margin-right: 4px;">checkmark_circle_fill</i> TERIMA
+                          id="btn_approve_penerimaan" onclick="approvePenerimaan()" style="margin-bottom: 10px;"
+                          disabled>
+                          <i class="f7-icons" style="margin-right: 4px;">checkmark_circle_fill</i> ACC
                         </button>
                       </div>
 

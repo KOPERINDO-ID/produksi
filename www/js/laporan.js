@@ -290,7 +290,7 @@ function createLaporanTableRow(item, index) {
                 ${formatDateIndonesia(item.tgl_selesai)}
             </td>
             <td style="border:1px solid gray !important;" class="label-cell text-align-center">
-                <button class="button button-small button-fill bg-dark-gray-young text-add-colour-black-soft" style="width: 116px;"
+                <button class="button button-small button-fill ${item.status_penerimaan == null ? 'bg-dark-gray-young text-add-colour-black-soft' : 'bg-blue text-add-colour-white'}" style="width: 116px;"
 					onclick="lihatDetailPenerimaan('${item.penjualan_detail_performa_id}', '${item.id_partner_transaksi}');">
 					Detail
 				</button>

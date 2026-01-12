@@ -363,7 +363,7 @@ function tambahPartnerProses() {
 
 	// Prepare data
 	const postData = {
-		nama: namaPartner,
+		nama_partner: namaPartner,
 		pic: pic,
 		no_hp: noHp,
 		kota: kota,
@@ -379,16 +379,11 @@ function tambahPartnerProses() {
 		success: function (response) {
 			console.log('Partner added:', response);
 
-			if (response.success) {
+			if (response.status === 'done') {
 				showPurchasingNotification('Partner berhasil ditambahkan', 'success');
 
-				// Reset form
+				app.popup.close('.tambah-partner');
 				jQuery('#tambah_partner_form')[0].reset();
-
-				// Close popup
-				if (typeof app !== 'undefined') {
-					app.popup.close('.tambah-partner');
-				}
 
 				// Refresh data
 				fetchPartnerData();

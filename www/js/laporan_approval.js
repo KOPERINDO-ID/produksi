@@ -43,6 +43,12 @@ function lihatDetailPenerimaan(id_penerimaan, id_partner_transaksi) {
             if (response.success && response.data) {
                 APPROVAL_STATE.currentData = response.data;
 
+                if (response.data.deliveries == [] || APPROVAL_STATE.currentData.data[0].status_penerimaan === 'SUDAH_DITERIMA') {
+                    $('#btn_approve_penerimaan').hide();
+                } else {
+                    $('#btn_approve_penerimaan').show();
+                }
+
                 // Populate popup dengan data
                 populateApprovalPopup(response.data);
 
@@ -74,55 +80,85 @@ function lihatDetailPenerimaan(id_penerimaan, id_partner_transaksi) {
 function populateApprovalPopup(data) {
     console.log('Populating approval popup:', data);
 
-    // Info penerimaan
-    $('#approval_partner_name').text(data.partner_name || '-');
-    $('#approval_spk').text(data.spk_number || '-');
-    $('#approval_item').text(data.item || '-');
-    $('#approval_jumlah').text((data.jumlah_diterima || 0) + ' unit');
-
-    // Format tanggal
-    if (data.tanggal_diterima) {
-        const date = new Date(data.tanggal_diterima);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        $('#approval_tanggal').text(date.toLocaleDateString('id-ID', options));
-    } else {
-        $('#approval_tanggal').text('-');
+    // ========== VALIDASI DATA ==========
+    if (!data || !data.data || data.data.length === 0) {
+        console.error('Data tidak valid atau kosong');
+        showNotification('Data tidak ditemukan', 'error');
+        return;
     }
 
-    // Handle foto bukti penerimaan
-    if (data.bukti_penerimaan_url) {
-        $('#approval_foto_img').attr('src', data.bukti_penerimaan_url);
-        $('#approval_foto_area').show();
-        $('#approval_foto_empty').hide();
-    } else {
-        $('#approval_foto_area').hide();
-        $('#approval_foto_empty').show();
-    }
+    const headerInfo = data.data[0];
+    const detailInfo = data.deliveries && data.deliveries.length > 0 ? data.deliveries[0] : null;
 
-    // Handle bukti dokumen
-    if (data.bukti_dokumen_penerimaan_url) {
-        const filename = data.bukti_dokumen_penerimaan_url.split('/').pop();
-        const ext = filename.split('.').pop().toLowerCase();
+    // ========== POPULATE HEADER INFO ==========
+    $('#approval_partner_name').text(headerInfo?.nama_partner || '-');
+    $('#approval_spk_code').text(headerInfo?.penjualan_id || '-');
 
-        $('#approval_dokumen_name').text(filename);
+    // ========== HANDLE DETAIL INFO (dengan preventif null) ==========
+    if (detailInfo) {
+        // Jika ada detail info
+        $('#approval_purchase_qty').text((detailInfo.jumlah_diterima || 0) + ' pcs');
 
-        // Show preview untuk image, icon untuk PDF
-        if (['jpg', 'jpeg', 'png'].includes(ext)) {
-            $('#approval_dokumen_img').attr('src', data.bukti_dokumen_penerimaan_url).show();
-            $('#approval_dokumen_icon').hide();
+        // Format tanggal
+        if (detailInfo.tanggal_diterima) {
+            const date = new Date(detailInfo.tanggal_diterima);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            $('#approval_tanggal').text(date.toLocaleDateString('id-ID', options));
         } else {
-            $('#approval_dokumen_img').hide();
-            $('#approval_dokumen_icon').show();
+            $('#approval_tanggal').text('-');
         }
 
-        $('#approval_dokumen_area').show();
-        $('#approval_dokumen_empty').hide();
+        // Handle foto bukti penerimaan
+        if (detailInfo.bukti_penerimaan_url) {
+            $('#approval_foto_img').attr('src', detailInfo.bukti_penerimaan_url);
+            $('#approval_foto_area').show();
+            $('#approval_foto_empty').hide();
+        } else {
+            $('#approval_foto_area').hide();
+            $('#approval_foto_empty').show();
+        }
+
+        // Handle bukti dokumen
+        if (detailInfo.bukti_dokumen_penerimaan_url) {
+            const filename = detailInfo.bukti_dokumen_penerimaan_url.split('/').pop();
+            const ext = filename.split('.').pop().toLowerCase();
+
+            $('#approval_dokumen_name').text(filename);
+
+            // Show preview untuk image, icon untuk PDF
+            if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                $('#approval_dokumen_img').attr('src', detailInfo.bukti_dokumen_penerimaan_url).show();
+                $('#approval_dokumen_icon').hide();
+            } else {
+                $('#approval_dokumen_img').hide();
+                $('#approval_dokumen_icon').show();
+            }
+
+            $('#approval_dokumen_area').show();
+            $('#approval_dokumen_empty').hide();
+        } else {
+            $('#approval_dokumen_area').hide();
+            $('#approval_dokumen_empty').show();
+        }
     } else {
+        // ========== JIKA DETAIL INFO NULL - TAMPILKAN EMPTY STATE ==========
+        console.warn('Detail info tidak tersedia (null/kosong)');
+
+        // Set default values
+        $('#approval_purchase_qty').text('0 pcs');
+        $('#approval_tanggal').text('-');
+
+        // Hide semua area dan show empty state
+        $('#approval_foto_area').hide();
+        $('#approval_foto_empty').show();
+
         $('#approval_dokumen_area').hide();
         $('#approval_dokumen_empty').show();
+
+        // Optional: Show warning message
+        showNotification('Data pengiriman belum tersedia', 'warning');
     }
 }
-
 /**
  * Approve penerimaan
  */
@@ -226,7 +262,7 @@ function executeApproval() {
         },
         complete: function () {
             // Re-enable button
-            $('#btn_approve_penerimaan').prop('disabled', false).html('<i class="f7-icons">checkmark_circle_fill</i> Approve Penerimaan');
+            $('#btn_approve_penerimaan').prop('disabled', false).html('<i class="f7-icons" style="margin-right: 8px;">checkmark_circle_fill</i> ACC');
 
             // Hide loading
             if (typeof app !== 'undefined' && app.preloader) {
