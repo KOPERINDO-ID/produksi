@@ -39,11 +39,10 @@ function refreshPage() {
 	return app.views.main.router.navigate(app.views.main.router.currentRoute.url, { reloadCurrent: true, ignoreCache: true, });
 }
 
-
 function checkInternet() {
 	jQuery.ajax({
 		type: 'POST',
-		url: "" + BASE_API + "/check-internet",
+		url: BASE_API + "/check-internet",
 		dataType: 'JSON',
 		data: {
 			karyawan_id: localStorage.getItem("user_id")
@@ -52,19 +51,24 @@ function checkInternet() {
 		},
 		success: function (data) {
 			localStorage.setItem("internet_koneksi", "good");
-			$("#box_internet").css("background-color", "green");
+
+			// Update styling dengan class untuk efek glow hijau
+			$("#box_internet").removeClass("disconnected").addClass("connected");
 
 			console.log(localStorage.getItem("internet_koneksi"));
 		},
 		error: function (xmlhttprequest, textstatus, message) {
 			if (textstatus === "timeout") {
-				$("#box_internet").css("background-color", "red");
-				localStorage.setItem("internet_koneksi", "fail")
+				localStorage.setItem("internet_koneksi", "fail");
+
+				// Update styling dengan class untuk efek glow merah
+				$("#box_internet").removeClass("connected").addClass("disconnected");
 
 			} else {
-				$("#box_internet").css("background-color", "red");
-				localStorage.setItem("internet_koneksi", "fail")
+				localStorage.setItem("internet_koneksi", "fail");
 
+				// Update styling dengan class untuk efek glow merah
+				$("#box_internet").removeClass("connected").addClass("disconnected");
 			}
 		}
 	});
@@ -98,7 +102,6 @@ function inputLog(id_transaksi, jenis, keterangan) {
 		}
 	});
 }
-
 
 function getPlayAudio() {
 	jQuery.ajax({

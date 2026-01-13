@@ -856,8 +856,6 @@ function getDashboardProspek() {
   });
 }
 
-
-
 function startTimeMain() {
   var today = new Date();
   var d = today.getDate();
@@ -866,11 +864,16 @@ function startTimeMain() {
   var h = today.getHours();
   var m = today.getMinutes();
   var s = today.getSeconds();
-  const month_names_short= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  // Array nama bulan dalam Bahasa Indonesia
+  var namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
   m = checkTimeMain(m);
   s = checkTimeMain(s);
+
   document.getElementById('clock_view').innerHTML =
-    "<b> " + h + ":" + m + ":" + s + "<br> " + d + "/" + month_names_short[mon] + "/" + y + " </b>";
+    "<b>" + d + " " + namaBulan[mon] + " " + y + "<br>" + h + ":" + m + ":" + s + "</b>";
   var t = setTimeout(startTimeMain, 500);
 }
 

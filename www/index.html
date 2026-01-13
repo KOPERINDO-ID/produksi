@@ -17,12 +17,6 @@
   <link rel="stylesheet" href="css/lib/chart.min.css">
   <link rel="stylesheet" href="css/app.css">
   <style type="text/css">
-    .kotak {
-      border: solid 1px white;
-      width: 22px;
-      height: 22px;
-    }
-
     .navbar-inner {
       position: relative;
       padding: 0 10px;
@@ -243,6 +237,76 @@
     .notif-detail-popup .block {
       margin-top: 0;
     }
+
+    /* ========== CONNECTION INDICATOR STYLE ========== */
+    .connection-indicator {
+      float: left;
+      margin: 0px 8px 0px 12px;
+      width: 14px;
+      height: 14px;
+      border: 1px dashed #fff;
+      border-radius: 50%;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Status Connected - Hijau dengan glow */
+    .connection-indicator.connected {
+      background-color: #00ff00;
+      box-shadow: 0 0 10px #00ff00,
+        0 0 20px #00ff00,
+        0 0 30px #00ff00;
+      animation: pulse-green 2s ease-in-out infinite;
+      border: none;
+    }
+
+    /* Status Disconnected - Merah dengan glow */
+    .connection-indicator.disconnected {
+      background-color: #ff0000;
+      box-shadow: 0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 30px #ff0000;
+      animation: pulse-red 1s ease-in-out infinite;
+      border: none;
+    }
+
+    /* Animasi kedip hijau (lebih lambat, smooth) */
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 10px #00ff00,
+          0 0 20px #00ff00,
+          0 0 30px #00ff00;
+      }
+
+      50% {
+        opacity: 0.6;
+        box-shadow: 0 0 5px #00ff00,
+          0 0 10px #00ff00,
+          0 0 15px #00ff00;
+      }
+    }
+
+    /* Animasi kedip merah (lebih cepat, alert) */
+    @keyframes pulse-red {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 10px #ff0000,
+          0 0 20px #ff0000,
+          0 0 30px #ff0000;
+      }
+
+      50% {
+        opacity: 0.4;
+        box-shadow: 0 0 5px #ff0000,
+          0 0 10px #ff0000,
+          0 0 15px #ff0000;
+      }
+    }
   </style>
 </head>
 
@@ -252,14 +316,14 @@
       <div class="navbar">
         <div class="navbar-bg"></div>
         <div class="navbar-inner bg-dark-gray-medium">
-          <div class="kotak" id="box_internet"></div>
+          <div class="connection-indicator" id="box_internet"></div>
           <h4 id="header_name">Produksi</h4>
           <div id="nav-right">
             <div id="notifIcon">
               <i class="f7-icons">bell_fill</i>
               <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
             </div>
-            <div id="clock_view">15:05:44<br>7/Oct/2025</div>
+            <div id="clock_view"></div>
             <img onclick="logOut();" id="logout_logo" src="img/logo/logout.png" width="45" />
           </div>
         </div>
@@ -268,39 +332,38 @@
         <div class="page-content">
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ========== NOTIFICATION PANEL ========== -->
-  <div id="notifPanel" style="display: none;">
-    <div class="notif-panel-header">
-      <h4 style="margin: 0; color: #fff;">Notifikasi</h4>
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <button id="markAllRead" style="background: none; border: none; color: #3498db; cursor: pointer;"
-          title="Tandai Semua Dibaca">
-          <i class="f7-icons">checkmark_circle</i>
-        </button>
-        <button id="clearAllNotif" style="background: none; border: none; color: #e74c3c; cursor: pointer;"
-          title="Hapus Semua">
-          <i class="f7-icons">trash_circle</i>
-        </button>
-        <button id="closePanel" style="background: none; border: none; color: #fff; cursor: pointer;" title="Tutup">
-          <i class="f7-icons">multiply_circle</i>
-        </button>
+      <!-- ========== NOTIFICATION PANEL ========== -->
+      <div id="notifPanel" style="display: none;">
+        <div class="notif-panel-header">
+          <h4 style="margin: 0; color: #fff;">Notifikasi</h4>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button id="markAllRead" style="background: none; border: none; color: #3498db; cursor: pointer;"
+              title="Tandai Semua Dibaca">
+              <i class="f7-icons">checkmark_circle</i>
+            </button>
+            <button id="clearAllNotif" style="background: none; border: none; color: #e74c3c; cursor: pointer;"
+              title="Hapus Semua">
+              <i class="f7-icons">trash_circle</i>
+            </button>
+            <button id="closePanel" style="background: none; border: none; color: #fff; cursor: pointer;" title="Tutup">
+              <i class="f7-icons">multiply_circle</i>
+            </button>
+          </div>
+        </div>
+        <div class="notif-panel-body">
+          <ul id="notifList"></ul>
+        </div>
       </div>
-    </div>
-    <div class="notif-panel-body">
-      <ul id="notifList"></ul>
-    </div>
-  </div>
 
-  <!-- ========== TOAST NOTIFICATION ========== -->
-  <div class="toast-notification" id="toastNotif" style="display: none;">
-    <div class="toast-content">
-      <div class="toast-icon">🔔</div>
-      <div class="toast-text">
-        <h4 id="toastTitle">Judul</h4>
-        <p id="toastBody">Pesan notifikasi</p>
+      <!-- ========== TOAST NOTIFICATION ========== -->
+      <div class="toast-notification" id="toastNotif" style="display: none;">
+        <div class="toast-content">
+          <div class="toast-icon">🔔</div>
+          <div class="toast-text">
+            <h4 id="toastTitle">Judul</h4>
+            <p id="toastBody">Pesan notifikasi</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
