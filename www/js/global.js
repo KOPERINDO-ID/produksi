@@ -185,6 +185,7 @@ function logOut() {
 		return app.views.main.router.navigate('/login');
 	});
 }
+
 function writeLog(str) {
 	if (!logOb) return;
 	var log = str + " [" + (new Date()) + "]\n";

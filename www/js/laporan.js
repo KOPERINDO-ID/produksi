@@ -287,11 +287,11 @@ function createLaporanTableRow(item, index) {
                 ${formatDateIndonesia(item.tgl_deadline)}
             </td>
             <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
-                ${formatDateIndonesia(item.tgl_selesai)}
+                ${formatDateIndonesia(item.tanggal_penerimaan)}
             </td>
             <td style="border:1px solid gray !important;" class="label-cell text-align-center">
-                <button class="button button-small button-fill ${item.status_penerimaan == null ? 'bg-dark-gray-young text-add-colour-black-soft' : 'bg-blue text-add-colour-white'}" style="width: 116px;"
-					onclick="lihatDetailPenerimaan('${item.penjualan_detail_performa_id}', '${item.id_partner_transaksi}');">
+                <button class="button button-small button-fill ${item.status_approval === 'ACC' ? 'btn-color-blueWhite' : item.status_penerimaan != null ? 'btn-color-greenWhite' : 'bg-dark-gray-young text-add-colour-black-soft'}" style="width: 116px;"
+					onclick="lihatDetailPenerimaan('${item.id_partner_transaksi}');">
 					Detail
 				</button>
             </td>
