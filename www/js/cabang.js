@@ -752,22 +752,17 @@ function updateFotoProduksiSelesaiProcessCabang() {
 	}
 }
 
-
 function updateFotoSjcProcessCabang() {
-
-	// app.dialog.alert(localStorage.getItem("file_foto_sjc"));
-	// if ($('#file_foto_sjc_cabang').val() != "") {
-
 	if (localStorage.getItem("file_foto_sjc") != null || jQuery('#tambah_file_acc_1_sjc').val() != '') {
 		var formData = new FormData(jQuery("#upload_foto_sjc_selesai_cabang")[0]);
+
 		formData.append('penjualan_detail_performa_id_foto_produksi_selesai_cabang', jQuery('#penjualan_detail_performa_id_foto_sjc_selesai_cabang').val());
-		// var file = $('#file_foto_sjc_cabang').get(0).files[0];
-		// var file = localStorage.getItem("file_foto_sjc");
 		formData.append('file_foto_sjc_galeri', jQuery('#tambah_file_acc_1_sjc').prop('files')[0]);
 		formData.append('file_foto_sjc', localStorage.getItem("file_foto_sjc"));
+
 		jQuery.ajax({
 			type: "POST",
-			url: BASE_API + "/update-file-foto-sjc-cabang-backup",
+			url: BASE_API + "/update-file-foto-sjc-cabang",
 			dataType: "JSON",
 			data: formData,
 			timeout: 7000,

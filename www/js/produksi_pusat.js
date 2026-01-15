@@ -385,7 +385,7 @@ function PurchaseProces() {
 				item: $('#item_purchase').val(),
 				jumlah: $('#qty_purchase').val(),
 				tgl_deadline: $('#tgl_deadline_purchase').val(),
-				harga_produksi: $('#production_fee').val(),
+				harga_produksi: $('#production_fee').val() * $('#qty_purchase').val(),
 				penjualan_detail_performa_id: $('#penjualan_detail_performa_id_purchase').val()
 			},
 			beforeSend: function () {
