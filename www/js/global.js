@@ -22,8 +22,8 @@ function checkConnection() {
 	}
 }
 
-// var BASE_API = 'https://tasindo-sale-webservice.digiseminar.id/api'; /** Production Base API */
-var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api'; /** Staging Base API */
+var BASE_API = 'https://tasindo-sale-webservice.digiseminar.id/api'; /** Production Base API */
+// var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api'; /** Staging Base API */
 // var BASE_API = 'http://127.0.0.1:8000/api' /** Development Base API */
 
 var BASE_PATH_IMAGE = 'https://tasindo-sale-webservice.digiseminar.id/kunjungan';
