@@ -78,11 +78,9 @@ function lihatDetailPenerimaan(id_partner_transaksi) {
 
                     // Cek apakah sudah diterima
                     if (partnerData.partner_transaksi.status_approval === 'ACC' || partnerData.partner_transaksi.status_penerimaan == null) {
-                        alert("HALO");
                         $('#btn_approve_penerimaan').hide();
                         $('#btn_cancel_approval').hide();
                     } else {
-                        alert("TEST");
                         $('#btn_approve_penerimaan').show();
                         $('#btn_cancel_approval').show();
                     }
@@ -315,7 +313,7 @@ function populateApprovalPopup(data) {
             <div style="display: flex; flex-direction: column; justify-content: gap: 0.75rem; space-between; align-items: start; padding: 14px; border-radius: 0.5rem; border: 2px solid #CFECFE;">
                 <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-top: 4px; margin-bottom: 8px; text-align: left;">Keterangan</h3>
                 <div style="max-height: 4.5em; overflow-y: auto; line-height: 1.5em; width: 100%;">
-                    ${penjualanDetail.keterangan}
+                    ${penjualanDetail.keterangan ?? '-'}
                 </div>
             </div>
         `;
@@ -635,7 +633,7 @@ function executeApproval() {
                 if (typeof refreshDataLaporan === 'function') {
                     setTimeout(function () {
                         refreshDataLaporan();
-                    }, 500);
+                    }, 1000);
                 }
 
                 // Reset state

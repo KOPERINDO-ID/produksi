@@ -297,9 +297,10 @@ function populatePurchaseHeader(data, transaksi) {
         PURCHASE_STATE.currentSpkCode = spkCode;
 
         // Update UI
-        $('#spk-code').text(spkCode);
-        $('#client-name').text(penjualan_header.client_nama || '-');
-        $('#purchase-qty').text((penjualan_detail.penjualan_qty || 0) + ' pcs');
+        $('#spk_code').text(spkCode);
+        $('#client_name').text(penjualan_header.client_nama || '-');
+        $('#partner_name').text(penjualan_detail.penjualan_jenis || '-');
+        $('#purchase_qty').text((penjualan_detail.penjualan_qty || 0) + ' pcs');
 
         // Update table summary
         $('#type_purchase_tbl').text(penjualan_detail.produk_keterangan_kustom || '-');
@@ -416,7 +417,6 @@ function renderPurchasingTable(purchases, data) {
 
 /**
  * Process purchase (Save)
- * //! NOTE
  */
 function PurchaseProces() {
     console.log('Processing purchase...');
@@ -427,6 +427,7 @@ function PurchaseProces() {
     const productionFee = $('#production_fee').val();
     const tglDeadline = $('#tgl_deadline_purchase').val();
     const keterangan = $('#keterangan_partner').val();
+    const totalProductionFee = qty * productionFee;
 
     // Validation
     if (!partnerId) {
@@ -444,6 +445,11 @@ function PurchaseProces() {
         return;
     }
 
+    if (!totalProductionFee || totalProductionFee <= 0) {
+        showAlert('Masukkan harga yang valid', 'Perhatian');
+        return;
+    }
+
     if (!tglDeadline) {
         showAlert('Pilih tanggal deadline', 'Perhatian');
         return;
@@ -454,8 +460,9 @@ function PurchaseProces() {
         penjualan_detail_performa_id: PURCHASE_STATE.currentPerformaId,
         item: $('#item_purchase').val(),
         id_partner: partnerId,
-        jumlah_qty: qty,
+        jumlah: qty,
         harga_produksi: productionFee,
+        total_harga_produksi: totalProductionFee,
         tgl_deadline: tglDeadline,
         keterangan: keterangan
     };
@@ -503,7 +510,6 @@ function PurchaseProces() {
 
 /**
  * Delete purchase
- * //! NOTE
  */
 function deletePurchase(id_partner_transaksi) {
     console.log('Deleting purchase:', id_partner_transaksi);
@@ -645,22 +651,23 @@ function populateMaterialHeader(data) {
 
     if (data.partner_info) {
         const partnerInfo = data.partner_info;
+        const clientInfo = data.client_info;
 
-        // Set partner name
-        $('#material-partner-name').text(partnerInfo.nama_partner || '-');
+        $('#material_partner_name').text(partnerInfo.nama_partner || '-');
+        $('#material_client_name').text(clientInfo.client_nama || '-');
 
         // Set SPK code from penjualan_id
         if (partnerInfo.penjualan_id) {
             // Assuming you have the date from somewhere, otherwise use today's date
             const spkCode = formatSPKCode(partnerInfo.penjualan_id, new Date());
-            $('#material-spk-code').text(spkCode);
+            $('#material_spk_code').text(spkCode);
         }
     }
 
     // Set quantity badge (could be sum of material quantities or from partner_info)
     // const totalQty = data.material ? data.material.reduce((sum, item) => sum + parseInt(item.jumlah || 0), 0) : 0;
     const totalQty = data.partner_info.penjualan_qty;
-    $('#material-quantity').text(totalQty + ' pcs');
+    $('#material_purchase_qty').text(totalQty + ' pcs');
 }
 
 /**
@@ -916,9 +923,10 @@ function openPhotoUploadPopup(materialData) {
     MATERIAL_STATE.tempMaterialRow = materialData;
 
     // Initialize Header Data
-    $('#photo-spk-code').text(PURCHASE_STATE.currentSpkCode);
-    $('#photo-partner-name').text(MATERIAL_STATE.currentPartnerName);
-    $('#photo-purchase-qty').text(PURCHASE_STATE.currentQuantity);
+    $('#photo_spk_code').text(PURCHASE_STATE.currentSpkCode);
+    $('#photo_partner_name').text(MATERIAL_STATE.currentPartnerName);
+    $('#photo_client_name').text(PURCHASE_STATE.currentClientName);
+    $('#photo_purchase_qty').text(PURCHASE_STATE.currentQuantity);
 
     // Initialize Table Data
     $('#photo_type_purchase_tbl').text(PURCHASE_STATE.currentItem);
