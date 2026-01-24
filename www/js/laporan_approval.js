@@ -337,7 +337,7 @@ function populateApprovalPopup(data) {
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Biaya pengerjaan</span>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatRupiah(partnerTransaksi.harga_produksi) || 0}</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatRupiah(partnerTransaksi.total_harga_produksi) || 0}</span>
                     </div>
                     ${partnerTransaksi.keterangan ? `
                     <div style="display: flex; flex-direction: column; padding: 6px 0;">
@@ -405,7 +405,7 @@ function populateApprovalPopup(data) {
 
         // ========== BUILD HTML UNTUK TOTAL SUMMARY ==========
         let summaryHTML = '';
-        const biayaPengerjaan = partnerTransaksi.harga_produksi || 0;
+        const biayaPengerjaan = partnerTransaksi.total_harga_produksi || 0;
 
         if (biayaPengerjaan > 0 || totalMaterials > 0) {
             const totalBersih = biayaPengerjaan - totalMaterials;

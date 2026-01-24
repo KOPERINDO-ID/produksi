@@ -932,11 +932,4 @@ function stopSpkUrgentInterval() {
 
 setInterval(function () {
 	checkInternet();
-}, 5000);
-
-
-if (localStorage.getItem("lokasi_pabrik") != 'Pusat') {
-	setInterval(function () {
-		getPlayAudio();
-	}, 60000);
-}
+}, 10000);

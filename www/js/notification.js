@@ -27,7 +27,6 @@ var NotificationManager = {
      */
     init: function (userId, forceRefresh) {
         forceRefresh = forceRefresh || false;
-
         if (this.isInitialized && this.userId === userId && !forceRefresh) {
             this.log('Already initialized for user: ' + userId);
 
@@ -1087,7 +1086,7 @@ var NotificationManager = {
 
         // Update ke server
         $.ajax({
-            url: this.config.apiUrl + '/notifications/mark-all-read',
+            url: this.config.apiUrl + '/notifications/read-all',
             type: 'POST',
             data: {
                 user_id: this.userId
@@ -1105,6 +1104,37 @@ var NotificationManager = {
         this.saveNotifications();
         this.updateUnreadCount();
         this.renderNotifications();
+    },
+
+
+    markAllAsDelete: function () {
+        var self = this;
+
+        this.notifications.forEach(function (notif) {
+            notif.isRead = true;
+        });
+
+        // Update ke server
+        $.ajax({
+            url: this.config.apiUrl + '/notifications/delete-all-read',
+            type: 'POST',
+            data: {
+                user_id: this.userId
+            },
+            headers: this.getAuthHeaders(),
+            timeout: 10000,
+            success: function (response) {
+                self.log('All notifications deleted on server');
+            },
+            error: function (xhr, status, error) {
+                self.logError('Failed to mark all as deleted: ' + error);
+            }
+        });
+
+        this.saveNotifications();
+        this.updateUnreadCount();
+        this.renderNotifications();
+
     },
 
     /**
@@ -1276,9 +1306,7 @@ var NotificationManager = {
     clearAll: function () {
         if (confirm('Hapus semua notifikasi?')) {
             this.notifications = [];
-            this.saveNotifications();
-            this.updateUnreadCount();
-            this.renderNotifications();
+            this.markAllAsDelete();
             this.log('All notifications cleared');
         }
     },
