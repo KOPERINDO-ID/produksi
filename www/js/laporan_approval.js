@@ -124,13 +124,24 @@ function formatTanggalIndonesia(dateString) {
     return date.toLocaleDateString('id-ID', options);
 }
 
+/** 
+ * Format number dengan pemisah titik
+ * @param {number} num - Angka yang akan diformat
+ * @returns {string} - Angka terformat
+ */
+function formatNumber(num) {
+    if (!num) return '0';
+
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 /**
  * Format rupiah
- * @param {number} amount - Jumlah uang
+ * @param {number} num - Jumlah uang
  * @returns {string} - Format rupiah
  */
-function formatRupiah(amount) {
-    if (!amount && amount !== 0) return 'Rp 0';
+function formatRupiah(num) {
+    if (!num && num !== 0) return 'Rp 0';
 
     return 'Rp ' + parseInt(amount).toLocaleString('id-ID');
 }
@@ -333,11 +344,11 @@ function populateApprovalPopup(data) {
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Harga Produk</span>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatRupiah(penjualanDetail.penjualan_harga) || 0}</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(penjualanDetail.penjualan_harga) || 0}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Biaya pengerjaan</span>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatRupiah(partnerTransaksi.total_harga_produksi) || 0}</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(partnerTransaksi.total_harga_produksi) || 0}</span>
                     </div>
                     ${partnerTransaksi.keterangan ? `
                     <div style="display: flex; flex-direction: column; padding: 6px 0;">
@@ -370,8 +381,8 @@ function populateApprovalPopup(data) {
                         <td style="padding: 8px 12px; text-align: left; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${index + 1}</td>
                         <td style="padding: 8px 12px; text-align: left; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${mat.nama || mat.material_info?.nama_material || '-'}</td>
                         <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${mat.jumlah || 0}</td>
-                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${formatRupiah(mat.harga || 0)}</td>
-                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap; font-weight: 600;">${formatRupiah(materialTotal)}</td>
+                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${formatNumber(mat.harga || 0)}</td>
+                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap; font-weight: 600;">${formatNumber(materialTotal)}</td>
                     </tr>
                 `;
             }).join('');
@@ -394,7 +405,7 @@ function populateApprovalPopup(data) {
                                 ${materialsRows}
                                 <tr style="background: white; font-weight: 600; border: 2px solid #d1d5db;">
                                     <td colspan="4" style="padding: 8px 12px; text-align: right; color: #1f2937; border: 1px solid #d1d5db; white-space: nowrap;">Subtotal</td>
-                                    <td style="padding: 8px 12px; color: #056BBC; text-align: right; white-space: nowrap; font-weight: 700;">${formatRupiah(totalMaterials)}</td>
+                                    <td style="padding: 8px 12px; color: #056BBC; text-align: right; white-space: nowrap; font-weight: 700;">${formatNumber(totalMaterials)}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -415,20 +426,20 @@ function populateApprovalPopup(data) {
                     <div style="display: grid; grid-template-columns: 1fr auto 1fr; padding-bottom: 10px; gap: 10px;">
                         <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 4px;">
                             <span style="font-weight: 600; font-size: 13px; white-space: nowrap;">Biaya Pengerjaan</span>
-                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatRupiah(biayaPengerjaan)}</span>
+                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatNumber(biayaPengerjaan)}</span>
                         </div>
                         <div style="display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;">
                             <hr style="width: 24px; border: 2px solid #1c1c1d; border-radius: 2px;">
                         </div>
                         <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 4px;">
                             <span style="font-weight: 600; font-size: 13px; white-space: nowrap;">Harga Material</span>
-                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatRupiah(totalMaterials)}</span>
+                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatNumber(totalMaterials)}</span>
                         </div>
                     </div>
                     <div style="border-top: 1px solid rgba(47, 43, 43, 0.3); padding-top: 10px; margin-top: 10px;"></div>
                     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                         <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">Total</span>
-                        <span style="font-weight: 700; font-size: 20px; white-space: nowrap; margin-top: 4px;">${formatRupiah(totalBersih)}</span>
+                        <span style="font-weight: 700; font-size: 20px; white-space: nowrap; margin-top: 4px;">${formatNumber(totalBersih)}</span>
                     </div>
                 </div>
             `;

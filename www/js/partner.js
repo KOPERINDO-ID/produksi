@@ -281,6 +281,7 @@ function populatePurchaseHeader(data, transaksi) {
     const penjualan_header = data.penjualan_header;
     const penjualan_detail = data.penjualan_detail;
     const transaksi_pembelian = transaksi;
+    const partner = data.partner;
 
     if (penjualan_header && penjualan_detail && transaksi_pembelian) {
         // Update state
@@ -296,10 +297,15 @@ function populatePurchaseHeader(data, transaksi) {
 
         PURCHASE_STATE.currentSpkCode = spkCode;
 
+        let partnerInfo = partner.find(p => p.id_partner === transaksi_pembelian[0].id_partner);
+        let partnerName = partnerInfo ? partnerInfo.nama_partner : '-';
+
+        MATERIAL_STATE.currentPartnerName = partnerName ?? null;
+
         // Update UI
         $('#spk_code').text(spkCode);
         $('#client_name').text(penjualan_header.client_nama || '-');
-        $('#partner_name').text(penjualan_detail.penjualan_jenis || '-');
+        $('#partner_name').text(partnerName);
         $('#purchase_qty').text((penjualan_detail.penjualan_qty || 0) + ' pcs');
 
         // Update table summary
@@ -650,7 +656,7 @@ function populateMaterialHeader(data) {
     console.log('Populating material header:', data);
 
     if (data.partner_info) {
-        const partnerInfo = data.partner_info;
+        let partnerInfo = data.partner_info;
         const clientInfo = data.client_info;
 
         $('#material_partner_name').text(partnerInfo.nama_partner || '-');
@@ -719,7 +725,7 @@ function createMaterialRow(item, rowNumber) {
     const materialName = item.nama || '-';
     const jumlah = formatNumber(item.jumlah || 0);
     const harga = formatNumber(item.harga || 0);
-    const total = formatRupiah(item.total_harga || 0);
+    const total = formatNumber(item.total_harga || 0);
 
     // ========== PHOTO BUTTON - SIMPLIFIED ==========
     let photoButton = '';
