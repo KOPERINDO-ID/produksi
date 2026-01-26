@@ -283,7 +283,7 @@ function populatePurchaseHeader(data, transaksi) {
     const transaksi_pembelian = transaksi;
     const partner = data.partner;
 
-    if (penjualan_header && penjualan_detail && transaksi_pembelian) {
+    if (penjualan_header && penjualan_detail) {
         // Update state
         PURCHASE_STATE.currentPenjualanId = penjualan_header.penjualan_id;
         PURCHASE_STATE.currentClientId = penjualan_header.client_id;
@@ -297,15 +297,19 @@ function populatePurchaseHeader(data, transaksi) {
 
         PURCHASE_STATE.currentSpkCode = spkCode;
 
-        let partnerInfo = partner.find(p => p.id_partner === transaksi_pembelian[0].id_partner);
-        let partnerName = partnerInfo ? partnerInfo.nama_partner : '-';
+        if (transaksi_pembelian.length > 0) {
+            let partnerInfo = partner.find(p => p.id_partner === transaksi_pembelian[0].id_partner);
+            let partnerName = partnerInfo ? partnerInfo.nama_partner : '-';
 
-        MATERIAL_STATE.currentPartnerName = partnerName ?? null;
+            MATERIAL_STATE.currentPartnerName = partnerName ?? null;
+        } else {
+            MATERIAL_STATE.currentPartnerName = null;
+        }
 
         // Update UI
         $('#spk_code').text(spkCode);
         $('#client_name').text(penjualan_header.client_nama || '-');
-        $('#partner_name').text(partnerName);
+        $('#partner_name').text(MATERIAL_STATE.currentPartnerName || '-');
         $('#purchase_qty').text((penjualan_detail.penjualan_qty || 0) + ' pcs');
 
         // Update table summary
@@ -315,6 +319,9 @@ function populatePurchaseHeader(data, transaksi) {
         // Set hidden inputs
         $('#item_purchase').val(penjualan_detail.produk_keterangan_kustom || '');
         $('#penjualan_detail_performa_id_purchase').val(penjualan_detail.penjualan_detail_performa_id || '');
+    } else {
+        console.error('✗ Incomplete data to populate purchase header');
+        app.dialog.alert('Data tidak tersedia', 'Error');
     }
 }
 
