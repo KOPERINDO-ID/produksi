@@ -120,35 +120,30 @@ function formatDateIndonesia(date) {
 
 /**
  * Menentukan background color berdasarkan status dan deadline
- * @param {object} item - Data item laporan
- * @returns {string} CSS background style
+ * @param {object} item 
+ * @returns {string} 
  */
 function getRowBackgroundColor(item) {
-	// Jika sudah selesai, tidak perlu pewarnaan
-	if (item.tgl_selesai !== null) {
-		return '';
-	}
+	const currentDate = moment().startOf('day');
+	const deadlineDate = moment(item.tgl_deadline, LAPORAN_CONFIG.dateFormat.internal).startOf('day');
 
-	const currentDate = moment().format(LAPORAN_CONFIG.dateFormat.internal);
-	const deadlineDate = moment(item.tgl_deadline, LAPORAN_CONFIG.dateFormat.internal);
-
-	// Melewati deadline (merah)
-	if (deadlineDate.isBefore(currentDate)) {
+	// KONDISI 1: Jika tgl_selesai masih null DAN hari ini >= tgl_deadline -> MERAH
+	if (item.tgl_selesai === null && currentDate.isSameOrAfter(deadlineDate)) {
 		return 'background: linear-gradient(#b53737, #b20000);';
 	}
 
-	// Belum ada status (hijau - dalam proses)
-	if (!item.status || item.status === null) {
-		return 'background: linear-gradient(#4a8a4a, forestgreen);';
+	// KONDISI 2: Jika tgl_selesai terisi DAN melebihi tgl_deadline -> MERAH
+	if (item.tgl_selesai !== null) {
+		const selesaiDate = moment(item.tgl_selesai, LAPORAN_CONFIG.dateFormat.internal).startOf('day');
+		if (selesaiDate.isAfter(deadlineDate)) {
+			return 'background: linear-gradient(#b53737, #b20000);';
+		}
 	}
 
-	// Status tidak lambat (biru)
-	if (item.status === 'tidak_lambat') {
-		return 'background: linear-gradient(#067afb, #002b46);';
-	}
+	// KONDISI 3: Jika tgl_selesai terisi DAN sebelum/sama dengan tgl_deadline -> DEFAULT (tidak ada warna)
+	// Tidak perlu return apa-apa, biarkan default
 
-	// Default jika ada status lain (merah)
-	return 'background: linear-gradient(#b53737, #b20000);';
+	return '';
 }
 
 /**
@@ -225,7 +220,7 @@ function createPaginationButtons(currentPage, totalPages) {
 			Next <i class="f7-icons">chevron_right</i>
 		</button>`;
 	}
-
+	2026
 	html += '</div>';
 	return html;
 }
@@ -287,7 +282,7 @@ function createLaporanTableRow(item, index) {
                 ${formatDateIndonesia(item.tgl_deadline)}
             </td>
             <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
-                ${formatDateIndonesia(item.tanggal_penerimaan)}
+                ${formatDateIndonesia(item.tgl_selesai)}
             </td>
             <td style="border:1px solid gray !important;" class="label-cell text-align-center">
                 <button class="button button-small button-fill ${item.status_approval === 'ACC' ? 'btn-color-blueWhite' : item.status_penerimaan != null ? 'btn-color-greenWhite' : 'bg-dark-gray-young text-add-colour-black-soft'}" style="width: 116px;"
@@ -427,9 +422,9 @@ function renderLaporanData() {
 	// Clear table
 	tableBody.html('');
 
-	// Filter hanya data yang belum selesai
+	// Filter hanya data yang belum ACC
 	const activeData = LAPORAN_STATE.laporanData.filter(item =>
-		item.tgl_selesai === null || item.tgl_selesai === ''
+		item.status_approval === 'BELUM' || item.tanggal_approval === null
 	);
 
 	// Update jumlah data

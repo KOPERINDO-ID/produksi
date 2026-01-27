@@ -339,12 +339,16 @@ function populateApprovalPopup(data) {
                         <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${partnerTransaksi.item || penjualanDetail.produk_keterangan_kustom || '-'}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 14px;">Harga Produk</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(penjualanDetail.penjualan_harga) || 0}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Jumlah Diterima</span>
                         <span style="font-weight: 600; color: #056BBC; font-size: 14px;">${jumlahDiterima} pcs</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
-                        <span style="color: #6b7280; font-size: 14px;">Harga Produk</span>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(penjualanDetail.penjualan_harga) || 0}</span>
+                        <span style="color: #6b7280; font-size: 14px;">Biaya pengerjaan (Satuan)</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(partnerTransaksi.harga_produksi) || 0}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Biaya pengerjaan</span>
@@ -352,8 +356,8 @@ function populateApprovalPopup(data) {
                     </div>
                     ${partnerTransaksi.keterangan ? `
                     <div style="display: flex; flex-direction: column; padding: 6px 0;">
-                        <span style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">Catatan</span>
-                        <span style="font-weight: 500; color: #1f2937; font-size: 13px; font-style: italic;">"${partnerTransaksi.keterangan}"</span>
+                        <span style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">Catatan (tambahan)</span>
+                        <span style="font-weight: 800; color: #1f2937; font-size: 13px;">"${partnerTransaksi.keterangan}"</span>
                     </div>
                     ` : ''}
                 </div>
