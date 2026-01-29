@@ -1,582 +1,1279 @@
 /**
  * =========================================
- * LAPORAN PARTNER PAGE MANAGEMENT
+ * PARTNER MANAGEMENT - PURCHASE SYSTEM
  * =========================================
- * 
- * Refactored version - menggunakan helper.js untuk fungsi-fungsi umum
- * Tech Stack: Cordova + Framework7 v7
- * =========================================
+ * Sistem untuk mengelola purchase/pembelian dari partner
  */
 
 // =========================================
-// VARIABLES & CONSTANTS
+// GLOBAL VARIABLES & CONSTANTS
 // =========================================
-const LAPORAN_CONFIG = {
-	apiEndpoint: '/get-data-partner-laporan',
-	apiImageEndpoint: '/get-item-detail-gambar',
-	imagePath: {
-		koper: 'https://tasindo-sale-webservice.digiseminar.id/product_image_new',
-		performa: 'https://tasindo-sale-webservice.digiseminar.id/performa_image'
-	},
-	searchDelay: 1000,
-	dateFormat: {
-		display: 'DD-MM-YYYY',
-		internal: 'YYYY/MM/DD',
-		short: 'DDMMYY'
-	},
-	itemsPerPage: 20
+
+let PURCHASE_STATE = {
+	currentPerformaId: null,
+	currentPenjualanId: null,
+	currentClientId: null,
+	currentSpkCode: null,
+	currentClientName: null,
+	currentQuantity: 0,
+	currentItem: null,
+	currentTanggalKirim: null,
+	partnerList: [],
+	purchaseList: [],
+	purchaseDetailList: []
 };
 
-let LAPORAN_STATE = {
-	laporanData: [],
-	isLoading: false,
-	searchTimer: null,
-	currentFilters: {
-		partner: '',
-		customer: ''
-	},
-	currentPage: 1,
-	totalData: 0
+let MATERIAL_STATE = {
+	currentPartnerTransaksiId: null,
+	currentPartnerName: null,
+	currentItem: null,
+	currentJumlah: 0,
+	materialList: [],
+	tempMaterialRow: null
 };
 
 // =========================================
-// PAGINATION FUNCTIONS
+// BUSINESS LOGIC FUNCTIONS
 // =========================================
 
 /**
- * Membuat HTML untuk tombol paginasi sederhana
- * Sama seperti partner.js - hanya Previous, Info, dan Next
+ * Copy tanggal kirim ke deadline
+ * FUNGSI INI BISA DIPANGGIL LANGSUNG DARI ONCLICK ATAU EVENT LISTENER
  */
-function createPaginationButtons(currentPage, totalPages) {
-	if (totalPages <= 1) return '';
+function copyKirimToDeadline() {
+	console.log('copyKirimToDeadline() called');
 
-	let html = '<div class="segmented segmented-raised" style="margin: 10px 0; width: 100%; display: flex; justify-content: space-between;">';
+	// Ambil nilai dari input tanggal kirim
+	const tglKirim = $('#tgl_kirim_purchase').val();
 
-	// Tombol Previous
-	if (currentPage > 1) {
-		html += `<button class="button button-outline text-add-colour-white" style="display: flex; align-items: center; border-color: #686665 !important; flex: 1;" onclick="goToPage(${currentPage - 1})">
-            <i class="f7-icons">chevron_left</i> Previous
-        </button>`;
+	console.log('Tanggal Kirim:', tglKirim);
+
+	// Cek apakah tanggal kirim ada
+	if (tglKirim && tglKirim.trim() !== '') {
+		// Set value ke input tanggal deadline
+		$('#tgl_deadline_purchase').val(tglKirim);
+
+		// Trigger change event agar form tahu ada perubahan
+		$('#tgl_deadline_purchase').trigger('change');
+
+		console.log('Tanggal berhasil disalin:', tglKirim);
+
+		// Show success notification
+		showNotification('Tanggal berhasil disalin', 'success');
 	} else {
-		html += `<button class="button button-outline text-add-colour-white disabled" style="opacity: 0.3; display: flex; align-items: center; border-color: #686665 !important; flex: 1;">
-            <i class="f7-icons">chevron_left</i> Previous
-        </button>`;
+		console.log('Tanggal kirim kosong');
+
+		// Show error notification
+		showNotification('Tanggal kirim belum diisi', 'error');
 	}
 
-	// Info halaman
-	html += `<button class="button text-add-colour-white" style="background-color: #686665; flex: 1;">${currentPage} / ${totalPages}</button>`;
+	return false; // Prevent any default behavior
+}
 
-	// Tombol Next
-	if (currentPage < totalPages) {
-		html += `<button class="button button-outline text-add-colour-white" style="display: flex; align-items: center; border-color: #686665 !important; flex: 1;" onclick="goToPage(${currentPage + 1})">
-            Next <i class="f7-icons">chevron_right</i>
-        </button>`;
-	} else {
-		html += `<button class="button button-outline text-add-colour-white disabled" style="opacity: 0.3; display: flex; align-items: center; border-color: #686665 !important; flex: 1;">
-            Next <i class="f7-icons">chevron_right</i>
-        </button>`;
+// =========================================
+// PURCHASE MODAL FUNCTIONS
+// =========================================
+
+/**
+ * Membuka modal purchase dengan data dari API
+ */
+function openPurchaseModal(penjualan_detail_performa_id = PURCHASE_STATE.currentPerformaId) {
+	console.log('Opening purchase modal for performa_id:', penjualan_detail_performa_id);
+
+	// Validasi
+	if (!penjualan_detail_performa_id) {
+		showAlert('ID Performa tidak valid', 'Error');
+		return;
 	}
 
-	html += '</div>';
-	return html;
+	// Simpan performa id ke state
+	PURCHASE_STATE.currentPerformaId = penjualan_detail_performa_id;
+
+	// Load all data from single API
+	loadPurchaseData(penjualan_detail_performa_id);
+
+	// Open modal
+	if (typeof app !== 'undefined') {
+		app.popup.open('.proses-purchase');
+	}
 }
 
 /**
- * Pindah ke halaman tertentu
+ * Load semua data purchase dari API
  */
-function goToPage(page) {
-	LAPORAN_STATE.currentPage = page;
-	renderLaporanData();
+function loadPurchaseData(penjualan_detail_performa_id) {
+	$.ajax({
+		type: "POST",
+		url: BASE_API + "/get-popup-purchase",
+		dataType: 'json',
+		data: {
+			penjualan_detail_performa_id: penjualan_detail_performa_id
+		},
+		beforeSend: function () {
+			showLoading(true);
+		},
+		success: function (response) {
+			console.log('Purchase data loaded:', response);
 
-	// Scroll ke atas tabel
-	const tableElement = document.getElementById('tabel_laporan_partner');
-	if (tableElement) {
-		tableElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			if (response.status == 1 && response.data) {
+				// Simpan data ke state
+				PURCHASE_STATE.partnerList = response.data.partner || [];
+				PURCHASE_STATE.purchaseList = response.data.partner_transaksi || [];
+				PURCHASE_STATE.purchaseDetailList = response.data.partner_transaksi_detail || [];
+
+				$('#tgl_kirim_purchase').val(formatDate(response.data.penjualan_header.penjualan_tanggal_kirim));
+
+				// Populate header info
+				populatePurchaseHeader(response.data, response.data.partner_transaksi);
+
+				// Populate partner dropdown
+				populatePartnerDropdown(response.data.partner);
+
+				// Render purchase table
+				renderPurchasingTable(response.data.partner_transaksi, response.data);
+
+				// Calculate and update summary
+				updatePurchaseSummary(response.data);
+
+			} else {
+				showAlert(response.message || 'Gagal memuat data purchase', 'Error');
+			}
+		},
+		error: function (xhr, status, error) {
+			console.error('Error loading purchase data:', error);
+			showAlert('Terjadi kesalahan saat memuat data', 'Error');
+		},
+		complete: function () {
+			showLoading(false);
+		}
+	});
+}
+
+/**
+ * Populate header information
+ */
+function populatePurchaseHeader(data, transaksi) {
+	const penjualan_header = data.penjualan_header;
+	const penjualan_detail = data.penjualan_detail;
+	const transaksi_pembelian = transaksi;
+	const partner = data.partner;
+
+	if (penjualan_header && penjualan_detail) {
+		// Update state
+		PURCHASE_STATE.currentPenjualanId = penjualan_header.penjualan_id;
+		PURCHASE_STATE.currentClientId = penjualan_header.client_id;
+		PURCHASE_STATE.currentClientName = penjualan_header.client_nama;
+		PURCHASE_STATE.currentQuantity = penjualan_detail.penjualan_qty;
+		PURCHASE_STATE.currentItem = penjualan_detail.produk_keterangan_kustom;
+		PURCHASE_STATE.currentTanggalKirim = penjualan_header.penjualan_tanggal_kirim;
+
+		// Format SPK code (penjualan_id dengan format)
+		const spkCode = formatSPKCode(penjualan_header.penjualan_id, penjualan_header.penjualan_tanggal);
+
+		PURCHASE_STATE.currentSpkCode = spkCode;
+
+		if (transaksi_pembelian.length > 0) {
+			let partnerInfo = partner.find(p => p.id_partner === transaksi_pembelian[0].id_partner);
+			let partnerName = partnerInfo ? partnerInfo.nama_partner : '-';
+
+			MATERIAL_STATE.currentPartnerName = partnerName ?? null;
+		} else {
+			MATERIAL_STATE.currentPartnerName = null;
+		}
+
+		// Update UI
+		$('#spk_code').text(spkCode);
+		$('#client_name').text(penjualan_header.client_nama || '-');
+		$('#partner_name').text(MATERIAL_STATE.currentPartnerName || '-');
+		$('#purchase_qty').text((penjualan_detail.penjualan_qty || 0) + ' pcs');
+
+		// Update table summary
+		$('#type_purchase_tbl').text(penjualan_detail.produk_keterangan_kustom || '-');
+		$('#qty_purchase_tbl').text(penjualan_detail.penjualan_qty || 0);
+
+		// Set hidden inputs
+		$('#item_purchase').val(penjualan_detail.produk_keterangan_kustom || '');
+		$('#penjualan_detail_performa_id_purchase').val(penjualan_detail.penjualan_detail_performa_id || '');
+	} else {
+		console.error('✗ Incomplete data to populate purchase header');
+		app.dialog.alert('Data tidak tersedia', 'Error');
 	}
 }
 
 /**
- * Membuat HTML untuk baris tabel laporan
- * @param {object} item - Data item laporan
- * @param {number} index - Index/nomor urut
- * @returns {string} HTML string untuk table row
+ * Populate partner dropdown
  */
-function createLaporanTableRow(item, index) {
-	console.log('Creating table row for item:', item);
-	const bgColor = getRowBackgroundColor(item);
-	const invoiceNumber = formatInvoiceId(item.penjualan_id);
-	const invoiceDate = formatLaporanDate(item.penjualan_tanggal, LAPORAN_CONFIG.dateFormat.short);
-	const spkNumber = `${invoiceDate}-${invoiceNumber}`;
+function populatePartnerDropdown(partners) {
+	let options = '<option value="">Pilih Partner</option>';
 
-	return `
-        <tr style="${bgColor}">
-            <td style="border:1px solid gray !important;" class="label-cell text-align-center">
-                ${index}
+	if (partners && partners.length > 0) {
+		partners.forEach(function (partner) {
+			options += `<option value="${partner.id_partner}">${partner.nama_partner}</option>`;
+		});
+	}
+
+	$('#nama_partner_purchase').html(options);
+
+	// Reinit smart select
+	if (typeof app !== 'undefined') {
+		const smartSelect = app.smartSelect.get('.partner-smart-select');
+		if (smartSelect) {
+			smartSelect.destroy();
+		}
+
+		app.smartSelect.create({
+			el: '.partner-smart-select',
+			closeOnSelect: true,
+			openIn: 'popup',
+			searchbar: true,
+			searchbarPlaceholder: 'Cari Partner'
+		});
+	}
+}
+
+/**
+ * Update purchase summary table
+ */
+function updatePurchaseSummary(data) {
+	const penjualan_detail = data.penjualan_detail;
+	const partner_transaksi = data.partner_transaksi || [];
+
+	if (penjualan_detail) {
+		let totalQtyPurchase = 0;
+
+		// Calculate total qty from partner_transaksi
+		if (partner_transaksi.length > 0) {
+			partner_transaksi.forEach(function (transaksi) {
+				totalQtyPurchase += parseInt(transaksi.jumlah) || 0;
+			});
+		}
+
+		const qty = parseInt(penjualan_detail.penjualan_qty) || 0;
+		const sisa = qty - totalQtyPurchase;
+
+		// Update UI
+		$('#selesai_purchase_tbl').text(totalQtyPurchase);
+		$('#sisa_purchase_tbl').text(sisa);
+
+		// Update hidden input
+		$('#qty_total_input').val(sisa);
+	}
+}
+
+/**
+ * Render purchasing table
+ */
+function renderPurchasingTable(purchases, data) {
+	let html = '';
+
+	if (!purchases || purchases.length === 0) {
+		html = `
+            <tr>
+                <td colspan="4" align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 20px;">
+                    <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
+                    <p style="color: #999; margin-top: 10px;">Belum ada data</p>
+                </td>
+            </tr>
+        `;
+	} else {
+		purchases.forEach(function (purchase, index) {
+			html += `
+                <tr>
+                    <td align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
+                        ${index + 1}
+                    </td>
+                    <td align="left" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
+                        <div style="font-weight: bold;">${purchase.nama_partner || '-'}</div>
+                    </td>
+                    <td align="right" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
+                        <div style="font-weight: bold;">${purchase.jumlah || 0}</div>
+                    </td>
+                    <td align="center" style="border-top: solid 1px; border-left: solid 1px; border-color:gray; padding: 10px;">
+                        <button onclick="openMaterialModal('${purchase.id_partner_transaksi}', '${purchase.nama_partner}', '${data.penjualan_header.penjualan_id}', '${data.penjualan_header.penjualan_tanggal}', ${purchase.jumlah});" 
+                                class="button button-small bg-dark-gray-young text-add-colour-black-soft" 
+                                style="width: 85px;">
+                                    Material
+                        </button>
+                    </td>
+                </tr>
+            `;
+		});
+	}
+
+	$('#data_partner_purchasing').html(html);
+}
+
+/**
+ * Process purchase (Save)
+ */
+function PurchaseProces() {
+	console.log('Processing purchase...');
+
+	// Get form values
+	const partnerId = $('#nama_partner_purchase').val();
+	const qty = $('#qty_purchase').val();
+	const productionFee = $('#production_fee').val();
+	const tglDeadline = $('#tgl_deadline_purchase').val();
+	const keterangan = $('#keterangan_partner').val();
+	const totalProductionFee = qty * productionFee;
+
+	// Validation
+	if (!partnerId) {
+		showAlert('Pilih partner terlebih dahulu', 'Perhatian');
+		return;
+	}
+
+	if (!qty || qty <= 0) {
+		showAlert('Masukkan jumlah yang valid', 'Perhatian');
+		return;
+	}
+
+	if (!productionFee || productionFee <= 0) {
+		showAlert('Masukkan harga yang valid', 'Perhatian');
+		return;
+	}
+
+	if (!totalProductionFee || totalProductionFee <= 0) {
+		showAlert('Masukkan harga yang valid', 'Perhatian');
+		return;
+	}
+
+	if (!tglDeadline) {
+		showAlert('Pilih tanggal deadline', 'Perhatian');
+		return;
+	}
+
+	// Prepare data
+	const formData = {
+		penjualan_detail_performa_id: PURCHASE_STATE.currentPerformaId,
+		item: $('#item_purchase').val(),
+		id_partner: partnerId,
+		jumlah: qty,
+		harga_produksi: productionFee,
+		total_harga_produksi: totalProductionFee,
+		tgl_deadline: tglDeadline,
+		keterangan: keterangan
+	};
+
+	console.log('Sending purchase data:', formData);
+
+	// Send to API
+	$.ajax({
+		type: 'POST',
+		url: BASE_API + '/tambah-purchase-proses',
+		data: formData,
+		dataType: 'json',
+		beforeSend: function () {
+			showLoading(true);
+			$('#performa_button_save').prop('disabled', true);
+		},
+		success: function (response) {
+			console.log('Purchase save response:', response);
+
+			if (response.status === 'done') {
+				showNotification('Purchase berhasil disimpan', 'success');
+
+				// Clear form
+				$('#purchase_form')[0].reset();
+				$('#nama_partner_purchase').val('');
+
+				// Reload purchase data
+				loadPurchaseData(PURCHASE_STATE.currentPerformaId);
+
+			} else {
+				showAlert(response.message || 'Gagal menyimpan purchase', 'Error');
+			}
+		},
+		error: function (xhr, status, error) {
+			showLoading(false);
+			console.error('Purchase save error:', error);
+			showAlert('Terjadi kesalahan saat menyimpan', 'Error');
+		},
+		complete: function () {
+			showLoading(false);
+			$('#performa_button_save').prop('disabled', false);
+		}
+	});
+}
+
+/**
+ * Delete purchase
+ */
+function deletePurchase(id_partner_transaksi) {
+	console.log('Deleting purchase:', id_partner_transaksi);
+
+	showConfirm('Apakah Anda yakin ingin menghapus data ini?', 'Konfirmasi Hapus', function () {
+		$.ajax({
+			type: 'POST',
+			url: BASE_API + '/delete-partner-transaksi',
+			data: {
+				token: localStorage.getItem('token'),
+				id_partner_transaksi: id_partner_transaksi
+			},
+			dataType: 'json',
+			beforeSend: function () {
+				showLoading(true);
+			},
+			success: function (response) {
+				console.log('Delete response:', response);
+
+				if (response.status == 1) {
+					showNotification('Purchase berhasil dihapus', 'success');
+
+					// Reload data
+					loadPurchaseData(PURCHASE_STATE.currentPerformaId);
+
+				} else {
+					showAlert(response.message || 'Gagal menghapus purchase', 'Error');
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error('Delete error:', error);
+				showAlert('Terjadi kesalahan saat menghapus', 'Error');
+			},
+			complete: function () {
+				showLoading(false);
+			}
+		});
+	});
+}
+
+/**
+ * =========================================
+ * MATERIAL MANAGEMENT FUNCTIONS
+ * =========================================
+ * Fungsi untuk mengelola material partner
+ */
+
+// =========================================
+// MATERIAL TABLE FUNCTIONS
+// =========================================
+
+/**
+ * Membuka modal material dengan data dari API
+ */
+function openMaterialModal(id_partner_transaksi, partner_name = '') {
+	console.log('Opening material modal for partner transaksi:', id_partner_transaksi);
+
+	// Validasi
+	if (!id_partner_transaksi) {
+		showAlert('ID Partner Transaksi tidak valid', 'Error');
+		return;
+	}
+
+	// Simpan id ke state
+	MATERIAL_STATE.currentPartnerTransaksiId = id_partner_transaksi;
+	MATERIAL_STATE.currentPartnerName = partner_name;
+
+	// Load material data from API
+	loadMaterialData(id_partner_transaksi);
+
+	// Open modal
+	if (typeof app !== 'undefined') {
+		app.popup.open('.popup-material');
+	}
+}
+
+/**
+ * Load data material dari API
+ */
+function loadMaterialData(id_partner_transaksi) {
+	console.log('Loading material data for ID:', id_partner_transaksi);
+
+	$.ajax({
+		type: "POST",
+		url: BASE_API + "/material",
+		dataType: 'json',
+		data: {
+			id_partner_transaksi: id_partner_transaksi
+		},
+		beforeSend: function () {
+			showLoading(true);
+		},
+		success: function (response) {
+			console.log('Material data loaded:', response);
+
+			if (response.success === true && response.data) {
+				// Simpan data ke state
+				MATERIAL_STATE.materialList = response.data.material || [];
+
+				// Populate header info
+				populateMaterialHeader(response.data);
+
+				// Render material table
+				renderMaterialTable(response.data.material);
+
+				// Update material count
+				updateMaterialCount(response.data.total_items || 0);
+
+			} else {
+				showAlert(response.message || 'Gagal memuat data material', 'Error');
+				// Render empty table
+				renderEmptyMaterialTable();
+			}
+		},
+		error: function (xhr, status, error) {
+			console.error('Error loading material data:', error);
+			console.error('Response:', xhr.responseText);
+
+			// Check if 404 (no data found)
+			if (xhr.status === 404) {
+				console.log('No material data found - rendering empty table');
+				renderEmptyMaterialTable();
+				updateMaterialCount(0);
+			} else {
+				showAlert('Terjadi kesalahan saat memuat data', 'Error');
+			}
+		},
+		complete: function () {
+			showLoading(false);
+		}
+	});
+}
+
+/**
+ * Populate material header information
+ */
+function populateMaterialHeader(data) {
+	console.log('Populating material header:', data);
+
+	if (data.partner_info) {
+		let partnerInfo = data.partner_info;
+		const clientInfo = data.client_info;
+
+		$('#material_partner_name').text(partnerInfo.nama_partner || '-');
+		$('#material_client_name').text(clientInfo.client_nama || '-');
+
+		// Set SPK code from penjualan_id
+		if (partnerInfo.penjualan_id) {
+			// Assuming you have the date from somewhere, otherwise use today's date
+			const spkCode = formatSPKCode(partnerInfo.penjualan_id, new Date());
+			$('#material_spk_code').text(spkCode);
+		}
+	}
+
+	// Set quantity badge (could be sum of material quantities or from partner_info)
+	// const totalQty = data.material ? data.material.reduce((sum, item) => sum + parseInt(item.jumlah || 0), 0) : 0;
+	const totalQty = data.partner_info.penjualan_qty;
+	$('#material_purchase_qty').text(totalQty + ' pcs');
+}
+
+/**
+ * Render material table
+ */
+function renderMaterialTable(materials) {
+	console.log('Rendering material table:', materials);
+
+	const tbody = $('#material_table_body');
+	tbody.empty();
+
+	if (!materials || materials.length === 0) {
+		renderEmptyMaterialTable();
+		return;
+	}
+
+	materials.forEach((item, index) => {
+		const row = createMaterialRow(item, index + 1);
+		tbody.append(row);
+	});
+
+	console.log('Material table rendered with', materials.length, 'rows');
+}
+
+/**
+ * Render empty material table
+ */
+function renderEmptyMaterialTable() {
+	const tbody = $('#material_table_body');
+	tbody.empty();
+
+	const emptyRow = `
+        <tr>
+            <td colspan="6" align="center" style="padding: 20px; border: 1px solid #ddd;">
+                <i class="f7-icons" style="font-size: 40px; color: #999;">cube_box</i>
+                <p style="color: #999; margin-top: 10px;">Belum ada data material</p>
             </td>
-            <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-left">
-                ${escapeHtml(spkNumber)}
+        </tr>
+    `;
+
+	tbody.append(emptyRow);
+}
+
+/**
+ * Create material table row
+ */
+function createMaterialRow(item, rowNumber) {
+	const tanggal = formatDateShow(item.dt_created);
+	const materialName = item.nama || '-';
+	const jumlah = formatNumber(item.jumlah || 0);
+	const harga = formatNumber(item.harga || 0);
+	const total = formatNumber(item.total_harga || 0);
+
+	// ========== PHOTO BUTTON - SIMPLIFIED ==========
+	let photoButton = '';
+	if (item.foto_bukti_material) {
+		const photoUrl = item.foto_bukti_material;
+
+		photoButton = `
+            <button class="button button-small button-fill color-blue text-bold" 
+                    onclick="viewMaterialPhoto('${photoUrl}')" 
+                    style="margin-right: 4px;">
+                        DETAIL
+            </button>
+        `;
+	}
+
+	const row = `
+        <tr data-id="${item.id}">
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${rowNumber}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">${tanggal}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${materialName}</td>
+            <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${jumlah}</td>
+            <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">${harga}</td>
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
+                ${photoButton}
             </td>
-            <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-left">
-                ${escapeHtml(item.nama_partner || '-')}
+        </tr>
+    `;
+
+	return row;
+}
+/**
+ * Update material count
+ */
+function updateMaterialCount(count) {
+	$('#material_count').text(count + ' item');
+}
+
+/**
+ * Add new material row (inline editing)
+ */
+function addMaterialRow() {
+	console.log('Adding new material row');
+
+	// Validasi
+	if (!MATERIAL_STATE.currentPartnerTransaksiId) {
+		showAlert('ID Partner Transaksi tidak tersedia', 'Error');
+		return;
+	}
+
+	// Check if there's already an editing row
+	if ($('.editing-row').length > 0) {
+		showAlert('Selesaikan penambahan material yang sedang berlangsung', 'Perhatian');
+		return;
+	}
+
+	// Remove empty placeholder if exists
+	$('#material_table_body tr').each(function () {
+		if ($(this).find('td[colspan="6"]').length > 0) {
+			$(this).remove();
+		}
+	});
+
+	// Create new editable row
+	const newRow = createEditableMaterialRow();
+	$('#material_table_body').prepend(newRow);
+
+	// Focus on first input
+	$('#input_material_nama').focus();
+
+	console.log('Editable row added');
+}
+
+/**
+ * Create editable material row for adding new material
+ */
+function createEditableMaterialRow(item = null) {
+	const isEdit = item !== null;
+	const rowId = isEdit ? item.id : 'new';
+
+	const tanggal = isEdit ? formatDate(item.dt_created) : formatDate(new Date());
+	const materialName = isEdit ? item.nama : '';
+	const jumlah = isEdit ? item.jumlah : '';
+	const harga = isEdit ? item.harga : '';
+
+	const row = `
+        <tr class="editing-row" data-id="${rowId}">
+            <td style="padding: 8px; text-align: center; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <i class="f7-icons" style="color: #FFA500;">pencil_circle_fill</i>
             </td>
-            <td style="border:1px solid gray !important; min-width: 150px !important;" class="label-cell text-align-left">
-                ${escapeHtml(item.client_nama || '-')}
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="date" 
+                       class="form-control" 
+                       id="input_material_tanggal" 
+                       value="${tanggal}"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td onclick="lihatDetailGambar('${item.penjualan_detail_performa_id}');" 
-                style="border:1px solid gray !important; cursor: pointer; min-width: 150px !important;" 
-                class="label-cell text-align-left popup-open" 
-                data-popup=".item-detail-gambar">
-                ${escapeHtml(item.item || '-')}
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="text" 
+                       class="form-control" 
+                       id="input_material_nama" 
+                       placeholder="Nama Material"
+                       value="${materialName}"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td style="border:1px solid gray !important;" class="label-cell text-align-center">
-                ${escapeHtml(item.jumlah || '0')}
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="number" 
+                       class="form-control" 
+                       id="input_material_jumlah" 
+                       placeholder="Jumlah"
+                       value="${jumlah}"
+                       min="0"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
-                ${formatDateIndonesia(item.tgl_input)}
+            <td style="padding: 8px; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <input type="number" 
+                       class="form-control" 
+                       id="input_material_harga" 
+                       placeholder="Harga"
+                       value="${harga}"
+                       min="0"
+                       style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
             </td>
-            <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
-                ${formatDateIndonesia(item.tgl_deadline)}
-            </td>
-            <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
-                ${formatDateIndonesia(item.tgl_selesai)}
-            </td>
-            <td style="border:1px solid gray !important;" class="label-cell text-align-center">
-                <button class="button button-small button-fill ${item.status_approval === 'ACC' ? 'btn-color-blueWhite' : item.status_penerimaan != null ? 'btn-color-greenWhite' : 'bg-dark-gray-young text-add-colour-black-soft'}" style="width: 116px;"
-                    onclick="lihatDetailPenerimaan('${item.id_partner_transaksi}');">
-                    Detail
+            <td class="display-flex flex-direction-row justify-content-space-between align-items-center" style="padding: 8px; text-align: center; border: 1px solid #ddd; background-color: #FFF9E6;">
+                <button class="button button-small button-fill color-green" style="margin-right: 4px;"
+                        onclick="saveMaterialRow()">
+                    <i class="f7-icons" style="font-size: 16px;">checkmark</i>
+                </button>
+                <button class="button button-small button-fill color-red" 
+                        onclick="cancelMaterialRow()">
+                    <i class="f7-icons" style="font-size: 16px;">xmark</i>
                 </button>
             </td>
         </tr>
     `;
+
+	return row;
 }
 
-// =========================================
-// DATA MANAGEMENT FUNCTIONS
-// =========================================
-
 /**
- * Mengambil data laporan partner dari server
+ * Save material row (add new or update existing)
  */
-function fetchDataLaporanPartner() {
-	// Ambil nilai filter
-	const partnerFilter = sanitizeLaporanString(
-		jQuery('#partner_laporan_filter_search').val()
-	) || 'empty';
+function saveMaterialRow() {
+	console.log('Saving material row');
 
-	const customerFilter = sanitizeLaporanString(
-		jQuery('#partner_customer_filter_search').val()
-	) || 'empty';
+	// Get values
+	const nama = $('#input_material_nama').val().trim();
+	const jumlah = parseInt($('#input_material_jumlah').val()) || 0;
+	const harga = parseInt($('#input_material_harga').val()) || 0;
 
-	// Update state
-	LAPORAN_STATE.currentFilters = {
-		partner: partnerFilter,
-		customer: customerFilter
-	};
-
-	// Reset ke halaman pertama saat filter berubah
-	LAPORAN_STATE.currentPage = 1;
-
-	// Validasi user ID
-	const userId = localStorage.getItem('user_id');
-	if (!userId) {
-		showLaporanNotification('User ID tidak ditemukan', 'error');
+	// Validation
+	if (!nama) {
+		showAlert('Nama material harus diisi', 'Perhatian');
+		$('#input_material_nama').focus();
 		return;
 	}
 
-	showLaporanLoading(true);
+	if (jumlah <= 0) {
+		showAlert('Jumlah harus lebih dari 0', 'Perhatian');
+		$('#input_material_jumlah').focus();
+		return;
+	}
 
-	jQuery.ajax({
-		type: 'POST',
-		url: BASE_API + LAPORAN_CONFIG.apiEndpoint,
-		dataType: 'JSON',
-		data: {
-			karyawan_id: userId,
-			partner_laporan_filter_search: partnerFilter,
-			partner_customer_filter_search: customerFilter
-		},
-		success: function (response) {
-			console.log('Laporan data received:', response);
+	if (harga <= 0) {
+		showAlert('Harga harus lebih dari 0', 'Perhatian');
+		$('#input_material_harga').focus();
+		return;
+	}
 
-			if (response && response.data) {
-				LAPORAN_STATE.laporanData = response.data;
-				renderLaporanData();
-				showLaporanNotification('Data berhasil dimuat', 'success');
-			} else {
-				LAPORAN_STATE.laporanData = [];
-				renderLaporanData();
-				showLaporanNotification('Tidak ada data ditemukan', 'error');
-			}
-		},
-		error: function (xhr, status, error) {
-			console.error('Error fetching laporan data:', {
-				status: status,
-				error: error,
-				response: xhr.responseText
-			});
+	// Calculate total
+	const total_harga = jumlah * harga;
 
-			LAPORAN_STATE.laporanData = [];
-			renderLaporanData();
+	// Prepare data
+	const materialData = {
+		id_partner_transaksi: MATERIAL_STATE.currentPartnerTransaksiId,
+		nama: nama,
+		jumlah: jumlah,
+		harga: harga,
+		total_harga: total_harga
+	};
 
-			let errorMessage = 'Gagal memuat data laporan';
-			try {
-				const response = JSON.parse(xhr.responseText);
-				if (response.message) {
-					errorMessage = response.message;
-				}
-			} catch (e) {
-				console.error('Error parsing response:', e);
-			}
+	console.log('Material data to save:', materialData);
 
-			showLaporanNotification(errorMessage, 'error');
-		},
-		complete: function () {
-			showLaporanLoading(false);
-		}
-	});
+	// Check if editing existing row
+	const rowId = $('.editing-row').data('id');
+	if (rowId && rowId !== 'new') {
+		materialData.id = rowId;
+		updateMaterialToServer(materialData);
+	} else {
+		// Open photo upload popup
+		openPhotoUploadPopup(materialData);
+	}
 }
 
 /**
- * Render data laporan ke tabel
+ * Open photo upload popup
  */
-function renderLaporanData() {
-	const tableBody = jQuery('#data_laporan_partner');
+function openPhotoUploadPopup(materialData) {
+	console.log('Opening photo upload popup');
 
-	// Clear table
-	tableBody.html('');
+	// Save temp data
+	MATERIAL_STATE.tempMaterialRow = materialData;
 
-	// Filter hanya data yang belum ACC
-	const activeData = LAPORAN_STATE.laporanData.filter(item =>
-		item.status_approval === 'BELUM' || item.tanggal_approval === null
+	// Initialize Header Data
+	$('#photo_spk_code').text(PURCHASE_STATE.currentSpkCode);
+	$('#photo_partner_name').text(MATERIAL_STATE.currentPartnerName);
+	$('#photo_client_name').text(PURCHASE_STATE.currentClientName);
+	$('#photo_purchase_qty').text(PURCHASE_STATE.currentQuantity);
+
+	// Initialize Table Data
+	$('#photo_type_purchase_tbl').text(PURCHASE_STATE.currentItem);
+	$('#photo_qty_purchase_tbl').text(PURCHASE_STATE.currentQuantity);
+	$('#photo_selesai_purchase_tbl').text(MATERIAL_STATE.currentJumlah);
+
+	// Reset upload form
+	$('#photo_upload_input').val('');
+	$('#photo_preview').attr('src', '');
+	$('#photo_empty_placeholder').show();
+	$('#photo_preview_area').hide();
+	$('#btn_upload_photo').hide();
+
+	// Open popup
+	if (typeof app !== 'undefined') {
+		app.popup.open('.popup-photo-upload');
+	}
+}
+
+/**
+ * Cancel material row editing
+ */
+function cancelMaterialRow() {
+	console.log('Canceling material row');
+
+	showConfirm(
+		'Batalkan penambahan material?',
+		'Konfirmasi',
+		function () {
+			$('.editing-row').remove();
+
+			// Check if table is empty
+			if ($('#material_table_body tr').length === 0) {
+				renderEmptyMaterialTable();
+			}
+
+			console.log('Material row cancelled');
+		}
 	);
-
-	// Update jumlah data
-	LAPORAN_STATE.totalData = activeData.length;
-	jQuery('#jumlah_data_laporan').text(activeData.length);
-
-	if (activeData.length === 0) {
-		tableBody.html(`
-            <tr>
-                <td colspan="10" style="padding: 20px; text-align: center; color: #999;">
-                    Tidak ada data laporan yang ditampilkan
-                </td>
-            </tr>
-        `);
-		// Sembunyikan pagination jika tidak ada data
-		jQuery('#tombol_paginasi').html('');
-		return;
-	}
-
-	// Hitung pagination
-	const totalPages = Math.ceil(activeData.length / LAPORAN_CONFIG.itemsPerPage);
-
-	// Pastikan currentPage valid
-	if (LAPORAN_STATE.currentPage > totalPages) {
-		LAPORAN_STATE.currentPage = totalPages;
-	}
-	if (LAPORAN_STATE.currentPage < 1) {
-		LAPORAN_STATE.currentPage = 1;
-	}
-
-	// Ambil data untuk halaman saat ini
-	const startIndex = (LAPORAN_STATE.currentPage - 1) * LAPORAN_CONFIG.itemsPerPage;
-	const endIndex = startIndex + LAPORAN_CONFIG.itemsPerPage;
-	const pageData = activeData.slice(startIndex, endIndex);
-
-	// Build table rows dengan nomor yang benar (berdasarkan posisi global)
-	let html = '';
-	const startNumber = startIndex + 1;
-
-	pageData.forEach((item, index) => {
-		html += createLaporanTableRow(item, startNumber + index);
-	});
-
-	tableBody.html(html);
-
-	// Render pagination buttons (style sederhana seperti partner.js)
-	const paginationHtml = createPaginationButtons(LAPORAN_STATE.currentPage, totalPages);
-	jQuery('#tombol_paginasi').html(paginationHtml);
-
-	console.log(`Rendered page ${LAPORAN_STATE.currentPage} with ${pageData.length} items (Total: ${activeData.length} items, ${totalPages} pages)`);
 }
 
 /**
- * Melihat detail gambar item
- * @param {string} performaId - ID performa detail
+ * Edit material row
  */
-function lihatDetailGambar(performaId) {
-	if (!performaId) {
-		showLaporanNotification('ID performa tidak valid', 'error');
+function editMaterialRow(id) {
+	console.log('Editing material row:', id);
+
+	// Check if there's already an editing row
+	if ($('.editing-row').length > 0) {
+		showAlert('Selesaikan pengeditan yang sedang berlangsung', 'Perhatian');
 		return;
 	}
 
-	const userId = localStorage.getItem('user_id');
-	if (!userId) {
-		showLaporanNotification('User ID tidak ditemukan', 'error');
+	// Find material in state
+	const material = MATERIAL_STATE.materialList.find(item => item.id === id);
+
+	if (!material) {
+		showAlert('Data material tidak ditemukan', 'Error');
 		return;
 	}
 
-	showLaporanLoading(true);
+	console.log('Material to edit:', material);
 
-	jQuery.ajax({
+	// Find and replace the row
+	const targetRow = $(`#material_table_body tr[data-id="${id}"]`);
+	if (targetRow.length > 0) {
+		const editableRow = createEditableMaterialRow(material);
+		targetRow.replaceWith(editableRow);
+		$('#input_material_nama').focus();
+	}
+}
+
+/**
+ * Update material to server
+ */
+function updateMaterialToServer(materialData) {
+	console.log('Updating material to server:', materialData);
+
+	$.ajax({
 		type: 'POST',
-		url: BASE_API + LAPORAN_CONFIG.apiImageEndpoint,
-		dataType: 'JSON',
-		data: {
-			karyawan_id: userId,
-			penjualan_detail_performa_id: performaId
+		url: BASE_API + '/material/update-partner-material',
+		data: materialData,
+		dataType: 'json',
+		beforeSend: function () {
+			showLoading(true);
 		},
 		success: function (response) {
-			console.log('Image data received:', response);
+			console.log('Update response:', response);
 
-			if (response && response.data && response.data.gambar) {
-				const imagePath = getImagePath(response.data.gambar);
-				displayImageInPopup(imagePath);
+			if (response.status == 1 || response.success === true) {
+				showNotification('Material berhasil diupdate', 'success');
+
+				// Remove editing row
+				$('.editing-row').remove();
+
+				// Refresh material data
+				refreshMaterialData();
 			} else {
-				showLaporanNotification('Gambar tidak ditemukan', 'error');
+				showAlert(response.message || 'Gagal mengupdate material', 'Error');
 			}
 		},
 		error: function (xhr, status, error) {
-			console.error('Error fetching image:', {
-				status: status,
-				error: error,
-				response: xhr.responseText
-			});
-
-			let errorMessage = 'Gagal memuat gambar';
-			try {
-				const response = JSON.parse(xhr.responseText);
-				if (response.message) {
-					errorMessage = response.message;
-				}
-			} catch (e) {
-				console.error('Error parsing response:', e);
-			}
-
-			showLaporanNotification(errorMessage, 'error');
+			console.error('Update error:', error);
+			showAlert('Terjadi kesalahan saat mengupdate material', 'Error');
 		},
 		complete: function () {
-			showLaporanLoading(false);
+			showLoading(false);
 		}
 	});
 }
 
 /**
- * Menampilkan gambar dalam popup
- * @param {string} imagePath - Path lengkap ke gambar
+ * Delete material row
  */
-function displayImageInPopup(imagePath) {
-	if (!imagePath) return;
+function deleteMaterialRow(id) {
+	console.log('Deleting material row:', id);
 
-	const imageHtml = `
-        <img data-image-src="${imagePath}" 
-             class="pb-popup-dark-laporan" 
-             src="${imagePath}" 
-             width="100%"
-             alt="Detail Item Image" />
-    `;
+	showConfirm(
+		'Hapus material ini?',
+		'Konfirmasi Hapus',
+		function () {
+			$.ajax({
+				type: 'POST',
+				url: BASE_API + '/material/delete-partner-material',
+				data: {
+					id: id
+				},
+				dataType: 'json',
+				beforeSend: function () {
+					showLoading(true);
+				},
+				success: function (response) {
+					console.log('Delete response:', response);
 
-	jQuery('#item_detail_gambar').html(imageHtml);
+					if (response.status == 1 || response.success === true) {
+						showNotification('Material berhasil dihapus', 'success');
 
-	// Setup photo browser untuk zoom
-	setupPhotoBrowser(imagePath);
-}
-
-/**
- * Setup photo browser untuk zoom gambar
- * @param {string} imagePath - Path gambar
- */
-function setupPhotoBrowser(imagePath) {
-	// Remove previous event listener
-	$$('.pb-popup-dark-laporan').off('click');
-
-	// Add new event listener
-	$$('.pb-popup-dark-laporan').on('click', function () {
-		const imageUrl = $$(this).attr('data-image-src');
-
-		if (typeof app !== 'undefined' && app.photoBrowser) {
-			const photoBrowser = app.photoBrowser.create({
-				photos: [imageUrl],
-				theme: 'dark',
-				type: 'popup'
+						// Refresh material data
+						refreshMaterialData();
+					} else {
+						showAlert(response.message || 'Gagal menghapus material', 'Error');
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error('Delete error:', error);
+					showAlert('Terjadi kesalahan saat menghapus material', 'Error');
+				},
+				complete: function () {
+					showLoading(false);
+				}
 			});
-			photoBrowser.open();
-		} else {
-			console.warn('Photo Browser not available');
+		}
+	);
+}
+
+// =========================================
+// PHOTO UPLOAD FUNCTIONS
+// =========================================
+
+/**
+ * Handle photo selection
+ */
+$(document).on('change', '#photo_upload_input', function (e) {
+	console.log('=== PHOTO SELECTED ===');
+
+	const file = e.target.files[0];
+
+	if (!file) {
+		console.log('✗ No file selected');
+		return;
+	}
+
+	console.log('File:', file.name, file.size, file.type);
+
+	// Validate file type
+	const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+	if (!validTypes.includes(file.type)) {
+		console.log('✗ Invalid file type:', file.type);
+		showAlert('File harus berformat JPG, JPEG, atau PNG', 'Error');
+		$(this).val('');
+		return;
+	}
+
+	// Validate file size (max 5MB)
+	const maxSize = 5 * 1024 * 1024;
+	if (file.size > maxSize) {
+		console.log('✗ File too large:', file.size);
+		showAlert('Ukuran file maksimal 5MB', 'Error');
+		$(this).val('');
+		return;
+	}
+
+	console.log('✓ File validation passed');
+
+	// Preview image
+	const reader = new FileReader();
+
+	reader.onload = function (e) {
+		console.log('✓ File loaded for preview');
+		$('#photo_preview').attr('src', e.target.result);
+		$('#photo_empty_placeholder').hide();
+		$('#photo_preview_area').show();
+		$('#btn_upload_photo').show();
+		console.log('✓ Preview displayed');
+	};
+
+	reader.onerror = function (e) {
+		console.error('✗ Error reading file:', e);
+		showAlert('Gagal membaca file', 'Error');
+	};
+
+	reader.readAsDataURL(file);
+	console.log('Reading file...');
+});
+
+/**
+ * Upload material with photo
+ */
+function uploadMaterialPhoto() {
+	console.log('=== UPLOAD MATERIAL PHOTO ===');
+
+	const fileInput = document.getElementById('photo_upload_input');
+	const file = fileInput ? fileInput.files[0] : null;
+
+	if (!file) {
+		console.log('✗ No file selected');
+		showAlert('Pilih foto terlebih dahulu', 'Perhatian');
+		return;
+	}
+
+	if (!MATERIAL_STATE.tempMaterialRow) {
+		console.error('✗ No temp material data');
+		showAlert('Data material tidak tersedia', 'Error');
+		return;
+	}
+
+	console.log('File:', file.name);
+	console.log('Temp data:', MATERIAL_STATE.tempMaterialRow);
+
+	// Prepare form data
+	const formData = new FormData();
+	formData.append('id_partner_transaksi', MATERIAL_STATE.tempMaterialRow.id_partner_transaksi);
+	formData.append('nama', MATERIAL_STATE.tempMaterialRow.nama);
+	formData.append('jumlah', MATERIAL_STATE.tempMaterialRow.jumlah);
+	formData.append('harga', MATERIAL_STATE.tempMaterialRow.harga);
+	formData.append('total_harga', MATERIAL_STATE.tempMaterialRow.total_harga);
+	formData.append('foto_bukti_material', file);
+
+	console.log('FormData prepared');
+
+	// Upload
+	$.ajax({
+		type: 'POST',
+		url: BASE_API + '/material/add-partner-material',
+		data: formData,
+		processData: false,
+		contentType: false,
+		dataType: 'json',
+		beforeSend: function (xhr) {
+			console.log('Sending upload request...');
+			showLoading(true);
+			$('#btn_upload_photo').prop('disabled', true).text('Uploading...');
+		},
+		success: function (response) {
+			console.log('=== UPLOAD SUCCESS ===');
+			console.log('Response:', response);
+
+			if (response.status == 1 || response.success === true) {
+				console.log('✓ Material saved successfully');
+				showNotification('Material berhasil ditambahkan', 'success');
+
+				// Close upload popup
+				if (typeof app !== 'undefined' && app.popup) {
+					console.log('Closing upload popup...');
+					app.popup.close('.popup-photo-upload');
+				}
+
+				// Remove editing row
+				$('.editing-row').remove();
+				console.log('✓ Editing row removed');
+
+				// Clear temp data
+				MATERIAL_STATE.tempMaterialRow = null;
+				console.log('✓ Temp data cleared');
+
+				// Refresh material data
+				console.log('Refreshing material data...');
+				refreshMaterialData();
+
+			} else {
+				console.error('✗ Save failed:', response.message);
+				showAlert(response.message || 'Gagal menambahkan material', 'Error');
+			}
+		},
+		error: function (xhr, status, error) {
+			console.error('=== UPLOAD ERROR ===');
+			console.error('Status:', status);
+			console.error('Error:', error);
+			console.error('Response:', xhr.responseText);
+
+			showAlert('Terjadi kesalahan saat upload', 'Error');
+		},
+		complete: function () {
+			console.log('Upload request complete');
+			showLoading(false);
+			$('#btn_upload_photo').prop('disabled', false).text('Upload Foto');
 		}
 	});
 }
 
-// =========================================
-// SEARCH & FILTER FUNCTIONS
-// =========================================
-
 /**
- * Search dengan debouncing untuk partner
+ * View material photo
  */
-function doSearchPartnerLaporan() {
-	clearTimeout(LAPORAN_STATE.searchTimer);
+function viewMaterialPhoto(photoUrl) {
+	console.log('=== VIEW MATERIAL PHOTO ===');
+	console.log('Photo URL:', photoUrl);
 
-	LAPORAN_STATE.searchTimer = setTimeout(function () {
-		console.log('Searching partner...');
-		fetchDataLaporanPartner();
-	}, LAPORAN_CONFIG.searchDelay);
+	if (!photoUrl) {
+		showAlert('Foto tidak tersedia', 'Info');
+		return;
+	}
+
+	const url = BASE_API.slice(0, -3) + photoUrl;
+
+	// ✅ URL sudah lengkap dari backend, tidak perlu concat lagi
+	$('#photo_viewer_image').attr('src', url);
+
+	// Set download link
+	$('#photo_download_link').attr('href', url);
+
+	// Open popup
+	if (typeof app !== 'undefined' && app.popup) {
+		app.popup.open('.popup-photo-viewer');
+	} else {
+		window.open(url, '_blank');
+	}
 }
-
 /**
- * Search dengan debouncing untuk customer
+ * Refresh material data
+ * VERSI YANG SUDAH DIPERBAIKI
  */
-function doSearchCustomerLaporan() {
-	clearTimeout(LAPORAN_STATE.searchTimer);
+function refreshMaterialData() {
+	console.log('=== REFRESH MATERIAL DATA ===');
 
-	LAPORAN_STATE.searchTimer = setTimeout(function () {
-		console.log('Searching customer...');
-		fetchDataLaporanPartner();
-	}, LAPORAN_CONFIG.searchDelay);
-}
+	if (!MATERIAL_STATE.currentPartnerTransaksiId) {
+		console.error('✗ No currentPartnerTransaksiId');
+		showAlert('ID Partner Transaksi tidak tersedia', 'Error');
+		return;
+	}
 
-/**
- * Reset semua filter pencarian
- */
-function resetLaporanFilters() {
-	jQuery('#partner_laporan_filter_search').val('');
-	jQuery('#partner_customer_filter_search').val('');
+	console.log('Refreshing for ID:', MATERIAL_STATE.currentPartnerTransaksiId);
 
-	LAPORAN_STATE.currentFilters = {
-		partner: '',
-		customer: ''
-	};
+	// Call loadMaterialData
+	loadMaterialData(MATERIAL_STATE.currentPartnerTransaksiId);
 
-	fetchDataLaporanPartner();
-}
+	// Show notification
+	showNotification('Data material diperbarui', 'success');
 
-/**
- * Refresh data laporan
- */
-function refreshLaporanData() {
-	console.log('Refreshing laporan data...');
-	fetchDataLaporanPartner();
-}
-
-// Alias untuk backward compatibility
-function refreshDataLaporan() {
-	refreshLaporanData();
+	console.log('=== REFRESH MATERIAL DATA COMPLETE ===');
 }
 
 // =========================================
-// INITIALIZATION & CLEANUP
+// EVENT LISTENERS
 // =========================================
 
 /**
- * Inisialisasi halaman laporan partner
+ * Initialize event listeners
+ * MENGGUNAKAN DELEGATION PATTERN - EVENT LISTENER TERDAFTAR DI DOCUMENT
+ * SEHINGGA BEKERJA BAHKAN UNTUK ELEMEN YANG DI-RENDER DINAMIS
  */
-function initLaporanPartnerPage() {
-	console.log('Initializing Laporan Partner Page...');
+function initPurchaseEventListeners() {
+	console.log('Initializing event listeners...');
+
+	// Remove existing listeners to avoid duplicates
+	$(document).off('click', '#close_purchase_modal');
+	$(document).off('click', '#close_material_modal');
+	$(document).off('click', '#btn_copy_kirim_to_deadline');
+
+	// Copy button - Copy tanggal kirim ke deadline
+	$(document).on('click', '#btn_copy_kirim_to_deadline', function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		console.log('Copy button clicked via event delegation');
+		copyKirimToDeadline();
+		return false;
+	});
+
+	$(document).on('input', '#qty_purchase', function () {
+		let val = parseInt($(this).val());
+		let max = parseInt($('#qty_total_input').val());
+
+		if (val < 0) {
+			$(this).val(0);
+		}
+
+		if (val > max) {
+			$(this).val(max);
+			showNotification(`Jumlah maksimal ${max} pcs`, 'error');
+		}
+	});
+
+	$(document).on('input', '#production_fee', function () {
+		let val = parseInt($(this).val());
+
+		if (val < 0) {
+			$(this).val(0);
+		}
+	});
+
+	console.log('Purchase event listeners initialized');
+}
+
+// =========================================
+// INITIALIZATION
+// =========================================
+
+/**
+ * Initialize purchase management
+ */
+function initPurchaseManagement() {
+	console.log('Initializing Purchase Management...');
 
 	// Reset state
-	LAPORAN_STATE = {
-		laporanData: [],
-		isLoading: false,
-		searchTimer: null,
-		currentFilters: {
-			partner: '',
-			customer: ''
-		},
-		currentPage: 1,
-		totalData: 0
+	PURCHASE_STATE = {
+		currentPerformaId: null,
+		currentPenjualanId: null,
+		currentClientId: null,
+		currentClientName: null,
+		currentQuantity: 0,
+		currentItem: null,
+		currentTanggalKirim: null,
+		partnerList: [],
+		purchaseList: [],
+		purchaseDetailList: []
 	};
 
-	// Setup event listeners
-	const partnerSearchInput = jQuery('#partner_laporan_filter_search');
-	const customerSearchInput = jQuery('#partner_customer_filter_search');
-
-	if (partnerSearchInput.length > 0) {
-		partnerSearchInput.off('keyup').on('keyup', doSearchPartnerLaporan);
-	}
-
-	if (customerSearchInput.length > 0) {
-		customerSearchInput.off('keyup').on('keyup', doSearchCustomerLaporan);
-	}
-
-	// Fetch initial data
-	fetchDataLaporanPartner();
-
-	console.log('Laporan Partner Page initialized successfully');
-}
-
-/**
- * Cleanup saat halaman di-destroy
- */
-function destroyLaporanPartnerPage() {
-	console.log('Destroying Laporan Partner Page...');
-
-	// Clear timer
-	if (LAPORAN_STATE.searchTimer) {
-		clearTimeout(LAPORAN_STATE.searchTimer);
-		LAPORAN_STATE.searchTimer = null;
-	}
-
-	// Remove event listeners
-	jQuery('#partner_laporan_filter_search').off('keyup');
-	jQuery('#partner_customer_filter_search').off('keyup');
-	$$('.pb-popup-dark-laporan').off('click');
-
-	// Reset state
-	LAPORAN_STATE = {
-		laporanData: [],
-		isLoading: false,
-		searchTimer: null,
-		currentFilters: {
-			partner: '',
-			customer: ''
-		},
-		currentPage: 1,
-		totalData: 0
+	MATERIAL_STATE = {
+		currentPartnerTransaksiId: null,
+		currentPartnerName: null,
+		currentItem: null,
+		currentJumlah: 0,
+		materialList: []
 	};
 
-	console.log('Laporan Partner Page destroyed');
-}
+	// Initialize event listeners
+	initPurchaseEventListeners();
 
-// =========================================
-// BACKWARD COMPATIBILITY
-// =========================================
-// Fungsi-fungsi ini untuk backward compatibility dengan code lama
-
-/**
- * @deprecated Use lihatDetailGambar() instead
- */
-function itemDetailGambar(performaId) {
-	console.warn('itemDetailGambar() is deprecated. Use lihatDetailGambar() instead');
-	lihatDetailGambar(performaId);
-}
-
-/**
- * @deprecated Use fetchDataLaporanPartner() instead
- */
-function getDataPartnerLaporan() {
-	console.warn('getDataPartnerLaporan() is deprecated. Use fetchDataLaporanPartner() instead');
-	fetchDataLaporanPartner();
+	console.log('Purchase Management initialized successfully');
 }
 
 // =========================================
 // AUTO INITIALIZATION
 // =========================================
 
-// Auto initialize jika DOM sudah ready dan halaman laporan aktif
-jQuery(document).ready(function () {
-	// Cek apakah halaman laporan partner aktif
-	if (jQuery('[data-name="laporan-partner-page"]').length > 0) {
-		initLaporanPartnerPage();
-	}
-});
+$(document).ready(function () {
+	console.log('Document ready - Initializing...');
 
-// Export untuk module pattern (optional)
-if (typeof module !== 'undefined' && module.exports) {
-	module.exports = {
-		init: initLaporanPartnerPage,
-		destroy: destroyLaporanPartnerPage,
-		refresh: refreshLaporanData,
-		resetFilters: resetLaporanFilters,
-		searchPartner: doSearchPartnerLaporan,
-		searchCustomer: doSearchCustomerLaporan
-	};
-}
+	// Initialize purchase management
+	initPurchaseManagement();
+
+	console.log('Initialization complete');
+});

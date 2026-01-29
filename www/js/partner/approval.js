@@ -1,9 +1,6 @@
 // =========================================
 // APPROVAL PENERIMAAN FUNCTIONS
 // =========================================
-// Refactored version - menggunakan helper.js untuk fungsi-fungsi umum
-// Tech Stack: Cordova + Framework7 v7
-// =========================================
 
 // State untuk menyimpan data penerimaan yang sedang di-review
 let APPROVAL_STATE = {
@@ -177,9 +174,9 @@ function populateApprovalPopup(data) {
 
         // Build HTML untuk 2 gambar berjajar dengan zoom
         const imagesHTML = `
-            <div style="display: flex; justify-content: center; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
+            <div style="display: flex; justify-content: center; align-items: flex-start; gap: 0.25rem; flex-wrap: wrap;">
                 <!-- Foto SPK -->
-                <div style="flex: 1; min-width: 180px; max-width: 250px;">
+                <div class="image-container" style="flex: 1; min-width: 180px; max-width: 250px;">
                     ${isImageDokumen ? `
                         <div style="position: relative;">
                             <img 
@@ -193,129 +190,120 @@ function populateApprovalPopup(data) {
                                 <i class="f7-icons" style="color: white; font-size: 16px;">zoom_in</i>
                             </div>
                         </div>
-                        <div class="text-align-center" style="margin-top: 0.5rem; font-size: 13px; color: #666;">
-                            <i class="f7-icons" style="font-size: 14px;">doc_text_fill</i> Foto SPK
-                        </div>
                     ` : `
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 0.5rem; border: 2px solid #CFECFE; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                            <i class="f7-icons" style="font-size: 48px; color: white; margin-bottom: 8px;">doc_text_fill</i>
-                            <span style="color: white; font-size: 12px; text-align: center; padding: 0 12px;">${dokumenExt.toUpperCase()}</span>
-                        </div>
-                        <div class="text-align-center" style="margin-top: 0.5rem; font-size: 13px; color: #666;">
-                            <i class="f7-icons" style="font-size: 14px;">doc_text_fill</i> Dokumen SPK
-                        </div>
-                        <div class="text-align-center" style="margin-top: 0.25rem;">
-                            <a href="${fotoProdukSpk}" target="_blank" class="button button-small button-outline" style="font-size: 11px; padding: 4px 12px;">
-                                <i class="f7-icons" style="font-size: 12px; margin-right: 4px;">arrow_down_circle</i>
-                                Download
-                            </a>
+                        <div style="width: 100%; height: 180px; border-radius: 0.5rem; border: 2px solid #CFECFE; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: #f5f5f5; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer;" onclick="window.open('${fotoProdukSpk}', '_blank')">
+                            <i class="f7-icons" style="font-size: 48px; color: #e53935;">doc_text_fill</i>
+                            <p style="margin-top: 0.5rem; font-size: 0.75rem; color: #666; text-align: center; padding: 0 0.5rem;">${dokumenFilename}</p>
                         </div>
                     `}
                 </div>
 
-                <!-- Foto Penerimaan -->
-                <div style="flex: 1; min-width: 180px; max-width: 250px;">
+                <!-- Foto Bukti Penerimaan -->
+                <div class="image-container" style="flex: 1; min-width: 180px; max-width: 250px;">
                     <div style="position: relative;">
                         <img 
                             src="${fotoPenerimaanUrl}" 
-                            alt="Penerimaan" 
+                            alt="Bukti Penerimaan" 
                             style="width: 100%; height: 180px; object-fit: cover; border-radius: 0.5rem; border: 2px solid #CFECFE; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer;"
                             onerror="this.src='https://via.placeholder.com/250x180?text=Tidak+Ada+Foto'"
-                            onclick="zoomImage('${fotoPenerimaanUrl}', 'Foto Penerimaan')"
+                            onclick="zoomImage('${fotoPenerimaanUrl}', 'Bukti Penerimaan')"
                         />
                         <div style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); padding: 4px 8px; border-radius: 4px;">
                             <i class="f7-icons" style="color: white; font-size: 16px;">zoom_in</i>
                         </div>
                     </div>
-                    <div class="text-align-center" style="margin-top: 0.5rem; font-size: 13px; color: #666;">
-                        <i class="f7-icons" style="font-size: 14px;">camera_fill</i> Foto Penerimaan
-                    </div>
                 </div>
             </div>
         `;
 
-        // Build SPK Description
+        // Build HTML untuk keterangan SPK
         const spkDescription = `
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; border-radius: 0.5rem; color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <span style="font-weight: 600; font-size: 14px;">
-                        <i class="f7-icons" style="font-size: 16px; margin-right: 4px;">cube_box_fill</i>
-                        ${escapeHtml(penjualanDetail?.item || 'Tidak ada informasi item')}
-                    </span>
-                </div>
-                <div style="font-size: 12px; opacity: 0.9; line-height: 1.5;">
-                    ${escapeHtml(penjualanDetail?.keterangan || 'Tidak ada keterangan')}
+            <div style="display: flex; flex-direction: column; justify-content: gap: 0.75rem; space-between; align-items: start; padding: 14px; border-radius: 0.5rem; border: 2px solid #CFECFE;">
+                <h3 style="font-size: 16px; font-weight: 600; color: #fff; margin-top: 4px; margin-bottom: 8px; text-align: left;">Keterangan</h3>
+                <div style="max-height: 4.5em; overflow-y: auto; line-height: 1.5em; width: 100%;">
+                    ${partnerTransaksi.keterangan ?? '-'}
                 </div>
             </div>
         `;
 
-        // Build Detail Info HTML
+        // Build HTML untuk detail informasi
         const detailHTML = `
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
-                <!-- Tanggal SPK -->
-                <div style="background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #CFECFE;">
-                    <div style="font-size: 11px; color: #6b7280; margin-bottom: 0.25rem;">Tanggal SPK</div>
-                    <div style="font-weight: 600; font-size: 13px; color: #111827;">
-                        ${formatTanggalIndonesia(penjualanHeader?.penjualan_tanggal) || '-'}
+            <div>
+                <div style="font-size: 16px; font-weight: 600; color: #1c1c1d; background: #CFECFE; padding: 8px 0; text-align: center; border-radius: 8px 8px 0 0;">Detail</div>
+                <div style="display: flex; flex-direction: column; gap: 8px; background: #f9fafb; padding: 14px; border-radius: 0 0 8px 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 14px;">Tipe</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${partnerTransaksi.item || penjualanDetail.produk_keterangan_kustom || '-'}</span>
                     </div>
-                </div>
-
-                <!-- Tanggal Deadline -->
-                <div style="background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #fbbf24;">
-                    <div style="font-size: 11px; color: #6b7280; margin-bottom: 0.25rem;">Deadline</div>
-                    <div style="font-weight: 600; font-size: 13px; color: #111827;">
-                        ${formatTanggalIndonesia(partnerTransaksi?.tgl_deadline) || '-'}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 14px;">Jumlah</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${partnerTransaksi.jumlah || 0} pcs</span>
                     </div>
-                </div>
-
-                <!-- Jumlah SPK -->
-                <div style="background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #10b981;">
-                    <div style="font-size: 11px; color: #6b7280; margin-bottom: 0.25rem;">Jumlah SPK</div>
-                    <div style="font-weight: 600; font-size: 13px; color: #111827;">
-                        ${formatNumber(partnerTransaksi?.jumlah || 0)} pcs
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 14px;">Harga Satuan</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(partnerTransaksi.harga_produksi) || 0}</span>
                     </div>
-                </div>
-
-                <!-- Harga Satuan -->
-                <div style="background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #8b5cf6;">
-                    <div style="font-size: 11px; color: #6b7280; margin-bottom: 0.25rem;">Harga Satuan</div>
-                    <div style="font-weight: 600; font-size: 13px; color: #111827;">
-                        ${formatRupiah(partnerTransaksi?.harga || 0)}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                        <span style="color: #6b7280; font-size: 14px;">Harga Total</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${formatNumber(partnerTransaksi.total_harga_produksi) || 0}</span>
                     </div>
+                    ${partnerTransaksi.keterangan ? `
+                    <div style="display: flex; flex-direction: column; padding: 6px 0;">
+                        <span style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">Catatan (tambahan)</span>
+                        <span style="font-weight: 800; color: #1f2937; font-size: 13px;">"${partnerTransaksi.keterangan}"</span>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         `;
 
-        // Build Materials Table HTML
+        // ========== BUILD HTML UNTUK LIST MATERIAL ==========
         let materialsTableHTML = '';
+        let totalMaterials = summary.total_harga_material || 0;
+
         if (materials && materials.length > 0) {
-            const materialRows = materials.map(material => `
-                <tr>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">${escapeHtml(material.nama_material || '-')}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">${material.jumlah || 0}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 12px;">${formatRupiah(material.harga || 0)}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 12px; font-weight: 600;">${formatRupiah((material.jumlah || 0) * (material.harga || 0))}</td>
-                </tr>
-            `).join('');
+            // Jika total dari summary adalah 0, hitung manual
+            if (totalMaterials === 0) {
+                totalMaterials = materials.reduce((acc, mat) => {
+                    return acc + ((mat.jumlah || 0) * (mat.harga || 0));
+                }, 0);
+            }
+
+            const materialsRows = materials.map((mat, index) => {
+                // PERBAIKAN: Gunakan total_harga dari backend jika ada
+                const materialTotal = mat.total_harga || ((mat.jumlah || 0) * (mat.harga || 0));
+
+                return `
+                    <tr style="border-bottom: 1px solid #d1d5db;">
+                        <td style="padding: 8px 12px; text-align: left; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${index + 1}</td>
+                        <td style="padding: 8px 12px; text-align: left; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${mat.nama || mat.material_info?.nama_material || '-'}</td>
+                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${mat.jumlah || 0}</td>
+                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap;">${formatNumber(mat.harga || 0)}</td>
+                        <td style="padding: 8px 12px; text-align: right; font-size: 13px; border: 1px solid #d1d5db; color: #1f2937; white-space: nowrap; font-weight: 600;">${formatNumber(materialTotal)}</td>
+                    </tr>
+                `;
+            }).join('');
 
             materialsTableHTML = `
-                <div style="margin-top: 1rem;">
-                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: #111827; font-size: 14px;">
-                        <i class="f7-icons" style="font-size: 16px; margin-right: 4px;">layers_fill</i>
-                        Material
-                    </div>
-                    <div style="overflow-x: auto; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-                        <table style="width: 100%; border-collapse: collapse; background: white;">
-                            <thead style="background: #f9fafb;">
+                <div>
+                    <h3 style="font-size: 16px; text-align: center; font-weight: 600; margin: 8px 0px; color: #fff;">List Material</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; font-size: 13px; border: 1px solid #9ca3af; border-radius: 8px; overflow: hidden; border-collapse: collapse;">
+                            <thead class="table-header-theme">
                                 <tr>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left; font-size: 12px;">Nama Material</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">Jumlah</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 12px;">Harga Satuan</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 12px;">Total</th>
+                                    <th style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; white-space: nowrap;">No</th>
+                                    <th style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; white-space: nowrap;">Material</th>
+                                    <th style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; white-space: nowrap;">Jumlah</th>
+                                    <th style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; white-space: nowrap;">Harga Satuan</th>
+                                    <th style="padding: 8px 12px; border: 1px solid #d1d5db; text-align: center; white-space: nowrap;">Total</th>
                                 </tr>
                             </thead>
                             <tbody class="table-body-theme">
-                                ${materialRows}
+                                ${materialsRows}
+                                <tr style="background: white; font-weight: 600; border: 2px solid #d1d5db;">
+                                    <td colspan="4" style="padding: 8px 12px; text-align: right; color: #1f2937; border: 1px solid #d1d5db; white-space: nowrap;">Subtotal</td>
+                                    <td style="padding: 8px 12px; color: #056BBC; text-align: right; white-space: nowrap; font-weight: 700;">${formatNumber(totalMaterials)}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -323,66 +311,62 @@ function populateApprovalPopup(data) {
             `;
         }
 
-        // Build Pengiriman History HTML
+        // ========== BUILD HTML UNTUK TOTAL SUMMARY ==========
+        let summaryHTML = '';
+        const biayaPengerjaan = partnerTransaksi.total_harga_produksi || 0;
+
+        if (biayaPengerjaan > 0 || totalMaterials > 0) {
+            const totalBersih = biayaPengerjaan - totalMaterials;
+
+            summaryHTML = `
+                <div style="padding: 15px; background: #CFECFE; color: #1c1c1d; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; padding-bottom: 10px; gap: 10px;">
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 4px;">
+                            <span style="font-weight: 600; font-size: 13px; white-space: nowrap;">Biaya Pengerjaan</span>
+                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatNumber(biayaPengerjaan)}</span>
+                        </div>
+                        <div style="display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;">
+                            <hr style="width: 24px; border: 2px solid #1c1c1d; border-radius: 2px;">
+                        </div>
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 4px;">
+                            <span style="font-weight: 600; font-size: 13px; white-space: nowrap;">Harga Material</span>
+                            <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">${formatNumber(totalMaterials)}</span>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(47, 43, 43, 0.3); padding-top: 10px; margin-top: 10px;"></div>
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                        <span style="font-weight: 700; font-size: 16px; white-space: nowrap;">Total</span>
+                        <span style="font-weight: 700; font-size: 20px; white-space: nowrap; margin-top: 4px;">${formatNumber(totalBersih)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== BUILD HTML UNTUK RIWAYAT PENGIRIMAN ==========
         let pengirimanHistoryHTML = '';
+
         if (pengiriman && pengiriman.length > 0) {
-            const pengirimanRows = pengiriman.map((p, idx) => `
-                <tr>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">${idx + 1}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-size: 12px;">${formatTanggalIndonesia(p.tanggal_diterima || p.dt_record) || '-'}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">${p.jumlah_kirim || 0}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #CFECFE;">${p.jumlah_diterima || 0}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #ef4444;">${p.jumlah_rusak || 0}</td>
-                </tr>
-            `).join('');
+            const pengirimanRows = pengiriman.map((item, index) => {
+                return `
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 8px; text-align: center; font-size: 12px; color: #1f2937;">${index + 1}</td>
+                        <td style="padding: 8px; text-align: center; font-size: 12px; color: #1f2937;">${formatTanggalIndonesia(item.tanggal_kirim)}</td>
+                        <td style="padding: 8px; text-align: center; font-size: 12px; color: #1f2937;">${item.jumlah_kirim || 0}</td>
+                        <td style="padding: 8px; text-align: center; font-size: 12px; color: #CFECFE; font-weight: 600;">${item.jumlah_diterima || 0}</td>
+                        <td style="padding: 8px; text-align: center; font-size: 12px; color: #ef4444;">${item.jumlah_rusak || 0}</td>
+                    </tr>
+                `;
+            }).join('');
 
             pengirimanHistoryHTML = `
-                <div style="margin-top: 1rem;">
-                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: #111827; font-size: 14px;">
-                        <i class="f7-icons" style="font-size: 16px; margin-right: 4px;">cube_box</i>
-                        Riwayat Pengiriman
-                    </div>
-                    <div style="overflow-x: auto; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-                        <table style="width: 100%; border-collapse: collapse; background: white;">
-                            <thead style="background: #f9fafb;">
-                                <tr>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">No</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left; font-size: 12px;">Tanggal</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">Kirim</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">Diterima</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center; font-size: 12px;">Rusak</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-body-theme">
-                                ${pengirimanRows}
-                                <tr style="background: #f9fafb; font-weight: 600;">
-                                    <td colspan="2" style="padding: 8px; text-align: right; font-size: 12px;">Total:</td>
-                                    <td style="padding: 8px; text-align: center; font-size: 12px;">${summary.total_kirim || 0}</td>
-                                    <td style="padding: 8px; text-align: center; font-size: 12px; color: #CFECFE;">${summary.total_diterima || 0}</td>
-                                    <td style="padding: 8px; text-align: center; font-size: 12px; color: #ef4444;">${pengiriman.reduce((acc, p) => acc + (p.jumlah_rusak || 0), 0)}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Build Summary HTML
-        let summaryHTML = '';
-        if (summary && Object.keys(summary).length > 0) {
-            summaryHTML = `
-                <div style="margin-top: 1rem;">
-                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: #111827; font-size: 14px;">
-                        <i class="f7-icons" style="font-size: 16px; margin-right: 4px;">chart_bar_fill</i>
-                        Summary
-                    </div>
-                    <div style="overflow-x: auto; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
-                        <table style="width: 100%; border-collapse: collapse; background: white;">
-                            <thead style="background: #f9fafb;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 16px; text-align: center; font-weight: 600; margin-bottom: 12px; color: #CFECFE;">Riwayat Pengiriman</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; font-size: 12px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; border-collapse: collapse;">
+                            <thead class="table-header-theme">
                                 <tr>
                                     <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">No</th>
-                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: left;">Keterangan</th>
+                                    <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">Tgl Kirim</th>
                                     <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">Kirim</th>
                                     <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">Diterima</th>
                                     <th style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">Rusak</th>

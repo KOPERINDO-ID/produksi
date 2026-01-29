@@ -3,73 +3,37 @@
  * PARTNER HELPER FUNCTIONS
  * =========================================
  * File ini berisi fungsi-fungsi helper yang digunakan
- * di berbagai halaman partner (approval, detail, index)
- * 
- * Tech Stack: Cordova + Framework7 v7
- * =========================================
+ * di seluruh sistem partner management
  */
 
 // =========================================
-// FORMAT HELPER FUNCTIONS
+// FORMAT FUNCTIONS
 // =========================================
 
 /**
  * Format angka dengan separator ribuan (titik)
  * @param {number|string} num - Angka yang akan diformat
- * @returns {string} Angka terformat dengan titik sebagai separator ribuan
- * @example formatNumber(1000) => "1.000"
+ * @returns {string} - Angka terformat dengan separator titik
  */
 function formatNumber(num) {
-    if (!num && num !== 0) return '0';
+    if (!num) return '0';
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-/**
- * Format angka dengan titik ribuan untuk display (sama dengan formatNumber)
- * @param {number|string} num - Angka yang akan diformat
- * @returns {string} Angka terformat dengan titik sebagai separator ribuan
- * @example formatNumberWithDots(1000) => "1.000"
- */
-function formatNumberWithDots(num) {
-    if (!num && num !== 0) return '';
-    // Hapus semua karakter non-digit
-    let cleanNum = num.toString().replace(/\D/g, '');
-    // Format dengan titik sebagai separator ribuan
-    return cleanNum.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-
-/**
- * Parse angka dari format display (dengan titik) ke angka biasa
- * @param {string} displayNum - String angka dengan format display (menggunakan titik)
- * @returns {number} Angka integer tanpa format
- * @example parseNumberFromDisplay("1.000") => 1000
- */
-function parseNumberFromDisplay(displayNum) {
-    if (!displayNum) return 0;
-    // Hapus semua titik
-    return parseInt(displayNum.toString().replace(/\./g, '')) || 0;
 }
 
 /**
  * Format mata uang Rupiah
  * @param {number|string} angka - Jumlah uang yang akan diformat
- * @returns {string} Format rupiah dengan prefix "Rp"
- * @example formatRupiah(10000) => "Rp 10.000"
+ * @returns {string} - Format rupiah (Rp X.XXX.XXX)
  */
 function formatRupiah(angka) {
     if (!angka && angka !== 0) return 'Rp 0';
     return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
 }
 
-// =========================================
-// DATE HELPER FUNCTIONS
-// =========================================
-
 /**
- * Format tanggal ke format YYYY-MM-DD
- * @param {string|Date} dateString - String atau object tanggal
- * @returns {string} Tanggal dalam format YYYY-MM-DD
- * @example formatDate("2025-01-29") => "2025-01-29"
+ * Format tanggal ke format yyyy-mm-dd
+ * @param {string|Date} dateString - Tanggal yang akan diformat
+ * @returns {string} - Tanggal dalam format yyyy-mm-dd
  */
 function formatDate(dateString) {
     if (!dateString) return '-';
@@ -83,13 +47,12 @@ function formatDate(dateString) {
 }
 
 /**
- * Format tanggal untuk ditampilkan (format: "24-Des-25")
- * @param {string|Date} dateString - String atau object tanggal
- * @returns {string} Tanggal dalam format DD-MMM-YY
- * @example formatDateShow("2025-01-29") => "29-Jan-25"
+ * Format tanggal untuk ditampilkan (format: "10 Des 25")
+ * @param {string|Date} dateString - Tanggal yang akan diformat
+ * @returns {string} - Tanggal dalam format "DD MMM YY"
  */
 function formatDateShow(dateString) {
-    if (!dateString) return '';
+    if (!dateString) return '-';
 
     const monthNames = [
         'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
@@ -97,44 +60,17 @@ function formatDateShow(dateString) {
     ];
 
     let date = new Date(dateString);
-    let day = ('0' + date.getDate()).slice(-2);
+    let day = date.getDate();
     let month = monthNames[date.getMonth()];
     let year = date.getFullYear().toString().slice(-2);
 
-    return `${day}-${month}-${year}`;
+    return `${day} ${month} ${year}`;
 }
 
 /**
- * Parse tanggal dari format display (24-Des-25) ke format YYYY-MM-DD
- * @param {string} displayDate - Tanggal dalam format display (DD-MMM-YY)
- * @returns {string} Tanggal dalam format YYYY-MM-DD
- * @example parseDateFromDisplay("29-Jan-25") => "2025-01-29"
- */
-function parseDateFromDisplay(displayDate) {
-    if (!displayDate) return '';
-
-    const monthNames = {
-        'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04',
-        'Mei': '05', 'Jun': '06', 'Jul': '07', 'Agu': '08',
-        'Sep': '09', 'Okt': '10', 'Nov': '11', 'Des': '12'
-    };
-
-    // Format: 24-Des-25
-    const parts = displayDate.split('-');
-    if (parts.length !== 3) return '';
-
-    const day = parts[0];
-    const month = monthNames[parts[1]];
-    const year = '20' + parts[2]; // Tambahkan 20 di depan tahun
-
-    return `${year}-${month}-${day}`;
-}
-
-/**
- * Format tanggal ke format Indonesia: "29 Jan 2025"
- * @param {string|Date} date - Tanggal yang akan diformat
- * @returns {string} Tanggal dalam format "DD MMM YYYY"
- * @example formatDateIndonesia("2025-01-29") => "29 Jan 2025"
+ * Format tanggal ke format Indonesia: "10 Des 2024"
+ * @param {string|Date} date - Tanggal yang akan diformat (format: YYYY-MM-DD atau Date object)
+ * @returns {string} Tanggal dalam format "10 Des 2024"
  */
 function formatDateIndonesia(date) {
     if (!date) return '-';
@@ -174,45 +110,23 @@ function formatDateIndonesia(date) {
 }
 
 /**
- * Format tanggal Indonesia (alias untuk formatDateIndonesia)
- * @param {string|Date} dateString - String atau object tanggal
- * @returns {string} Tanggal terformat
+ * Format tanggal ke format Indonesia (untuk approval)
+ * @param {string} dateString - String tanggal
+ * @returns {string} - Tanggal terformat
  */
 function formatTanggalIndonesia(dateString) {
-    return formatDateIndonesia(dateString);
+    if (!dateString) return '-';
+
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('id-ID', options);
 }
-
-/**
- * Format tanggal untuk laporan dengan format custom
- * @param {string|Date} date - Tanggal yang akan diformat
- * @param {string} format - Format output (default: DD-MM-YYYY)
- * @returns {string} Tanggal yang sudah diformat
- */
-function formatLaporanDate(date, format = 'DD-MM-YYYY') {
-    if (!date) return '-';
-
-    try {
-        if (typeof moment !== 'undefined') {
-            const m = moment(date);
-            return m.isValid() ? m.format(format) : '-';
-        }
-        return date;
-    } catch (error) {
-        console.error('Error formatting date:', error);
-        return '-';
-    }
-}
-
-// =========================================
-// SPK & INVOICE HELPER FUNCTIONS
-// =========================================
 
 /**
  * Format SPK Code dari penjualan_id dan tanggal
  * @param {string|number} penjualan_id - ID penjualan
  * @param {string|Date} tanggal - Tanggal penjualan
- * @returns {string} SPK code dalam format DDMMYY-ID
- * @example formatSPKCode("INV_001", "2025-01-29") => "290125-1"
+ * @returns {string} - SPK Code dalam format DDMMYY-ID
  */
 function formatSPKCode(penjualan_id, tanggal) {
     if (!penjualan_id || !tanggal) return '-';
@@ -236,7 +150,6 @@ function formatSPKCode(penjualan_id, tanggal) {
  * Format nomor invoice dengan menghilangkan prefix dan leading zeros
  * @param {string} invoiceId - ID invoice
  * @returns {string} Invoice ID yang sudah diformat
- * @example formatInvoiceId("INV_00123") => "123"
  */
 function formatInvoiceId(invoiceId) {
     if (!invoiceId) return '-';
@@ -244,7 +157,7 @@ function formatInvoiceId(invoiceId) {
 }
 
 // =========================================
-// STRING & SANITIZATION HELPER FUNCTIONS
+// STRING & SECURITY FUNCTIONS
 // =========================================
 
 /**
@@ -295,18 +208,11 @@ function showLoading(show = true) {
 /**
  * Menampilkan notifikasi toast
  * @param {string} message - Pesan yang akan ditampilkan
- * @param {string} type - Tipe notifikasi: 'success', 'error', 'warning'
+ * @param {string} type - Tipe notifikasi ('success' atau 'error')
  */
 function showNotification(message, type = 'success') {
     if (typeof app !== 'undefined' && app.toast) {
-        let cssClass = 'bg-color-green';
-
-        if (type === 'error') {
-            cssClass = 'bg-color-red';
-        } else if (type === 'warning') {
-            cssClass = 'bg-color-orange';
-        }
-
+        const cssClass = type === 'success' ? 'bg-color-green' : 'bg-color-red';
         app.toast.create({
             text: message,
             position: 'center',
@@ -321,23 +227,9 @@ function showNotification(message, type = 'success') {
 }
 
 /**
- * Alias untuk showNotification (untuk backward compatibility)
- */
-function showLaporanNotification(message, type = 'success') {
-    showNotification(message, type);
-}
-
-/**
- * Alias untuk showLoading (untuk backward compatibility)
- */
-function showLaporanLoading(show = true) {
-    showLoading(show);
-}
-
-/**
  * Menampilkan alert dialog
  * @param {string} message - Pesan alert
- * @param {string} title - Judul alert (default: 'Perhatian')
+ * @param {string} title - Judul alert
  */
 function showAlert(message, title = 'Perhatian') {
     if (typeof app !== 'undefined' && app.dialog) {
@@ -350,8 +242,8 @@ function showAlert(message, title = 'Perhatian') {
 /**
  * Menampilkan confirm dialog
  * @param {string} message - Pesan konfirmasi
- * @param {string} title - Judul dialog (default: 'Konfirmasi')
- * @param {Function} callback - Callback function jika user menekan OK
+ * @param {string} title - Judul konfirmasi
+ * @param {function} callback - Fungsi yang dipanggil jika user mengkonfirmasi
  */
 function showConfirm(message, title = 'Konfirmasi', callback) {
     if (typeof app !== 'undefined' && app.dialog) {
@@ -363,36 +255,9 @@ function showConfirm(message, title = 'Konfirmasi', callback) {
     }
 }
 
-// =========================================
-// INPUT VALIDATION HELPER FUNCTIONS
-// =========================================
-
-/**
- * Clear error styling from input
- * @param {string} inputId - ID dari input element
- */
-function clearInputError(inputId) {
-    $(`#${inputId}`).css('border-color', '');
-}
-
-/**
- * Set error styling to input
- * @param {string} inputId - ID dari input element
- */
-function setInputError(inputId) {
-    $(`#${inputId}`).css({
-        'border': '2px solid #ff3b30',
-        'border-radius': '4px'
-    });
-}
-
-// =========================================
-// IMAGE HELPER FUNCTIONS
-// =========================================
-
 /**
  * Zoom image in popup
- * @param {string} imageUrl - URL gambar yang akan di-zoom
+ * @param {string} imageUrl - URL gambar
  * @param {string} title - Judul gambar
  */
 function zoomImage(imageUrl, title) {
@@ -435,129 +300,4 @@ function zoomImage(imageUrl, title) {
     if (typeof app !== 'undefined') {
         app.popup.open('.popup-zoom-image');
     }
-}
-
-/**
- * Mendapatkan path gambar berdasarkan nama file
- * @param {string} filename - Nama file gambar
- * @returns {string} Full path ke gambar
- */
-function getImagePath(filename) {
-    if (!filename) return '';
-
-    const imagePath = {
-        koper: 'https://tasindo-sale-webservice.digiseminar.id/product_image_new',
-        performa: 'https://tasindo-sale-webservice.digiseminar.id/performa_image'
-    };
-
-    const isKoperImage = filename.substring(0, 5) === 'koper';
-    const basePath = isKoperImage ? imagePath.koper : imagePath.performa;
-
-    return `${basePath}/${filename}`;
-}
-
-// =========================================
-// UTILITY FUNCTIONS
-// =========================================
-
-/**
- * Copy tanggal kirim ke deadline
- * Fungsi ini akan menyalin nilai dari input tanggal kirim ke tanggal deadline
- */
-function copyKirimToDeadline() {
-    console.log('copyKirimToDeadline() called');
-
-    const tglKirimDisplay = $('#tgl_kirim_purchase_display').val();
-    const tglKirimHidden = $('#tgl_kirim_purchase').val();
-
-    if (tglKirimDisplay && tglKirimDisplay.trim() !== '') {
-        $('#tgl_deadline_purchase_display').val(tglKirimDisplay);
-
-        if (tglKirimHidden) {
-            $('#tgl_deadline_purchase').val(tglKirimHidden);
-        }
-
-        $('#tgl_deadline_purchase_display').trigger('change');
-        showNotification('Tanggal berhasil disalin', 'success');
-    } else {
-        showNotification('Tanggal kirim belum diisi', 'error');
-    }
-
-    return false;
-}
-
-/**
- * Menentukan background color berdasarkan status dan deadline
- * @param {object} item - Data item laporan
- * @returns {string} CSS style untuk background color
- */
-function getRowBackgroundColor(item) {
-    const currentDate = moment().startOf('day');
-    const deadlineDate = moment(item.tgl_deadline, 'YYYY/MM/DD').startOf('day');
-
-    // KONDISI 1: Jika tgl_selesai masih null DAN hari ini >= tgl_deadline -> MERAH
-    if (item.tgl_selesai === null && currentDate.isSameOrAfter(deadlineDate)) {
-        return 'background: linear-gradient(#b53737, #b20000);';
-    }
-
-    // KONDISI 2: Jika tgl_selesai terisi DAN melebihi tgl_deadline -> MERAH
-    if (item.tgl_selesai !== null) {
-        const selesaiDate = moment(item.tgl_selesai, 'YYYY/MM/DD').startOf('day');
-        if (selesaiDate.isAfter(deadlineDate)) {
-            return 'background: linear-gradient(#b53737, #b20000);';
-        }
-    }
-
-    // KONDISI 3: Default - tidak ada warna khusus
-    return '';
-}
-
-// =========================================
-// EXPORT FUNCTIONS (untuk module pattern)
-// =========================================
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        // Format helpers
-        formatNumber,
-        formatNumberWithDots,
-        parseNumberFromDisplay,
-        formatRupiah,
-
-        // Date helpers
-        formatDate,
-        formatDateShow,
-        parseDateFromDisplay,
-        formatDateIndonesia,
-        formatTanggalIndonesia,
-        formatLaporanDate,
-
-        // SPK & Invoice helpers
-        formatSPKCode,
-        formatInvoiceId,
-
-        // String helpers
-        sanitizeLaporanString,
-        escapeHtml,
-
-        // UI helpers
-        showLoading,
-        showNotification,
-        showLaporanNotification,
-        showLaporanLoading,
-        showAlert,
-        showConfirm,
-
-        // Input validation helpers
-        clearInputError,
-        setInputError,
-
-        // Image helpers
-        zoomImage,
-        getImagePath,
-
-        // Utility functions
-        copyKirimToDeadline,
-        getRowBackgroundColor
-    };
 }

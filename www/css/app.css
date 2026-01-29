@@ -918,4 +918,12 @@ div[class*="col-border"] {
   padding-right: 16px;
 }
 
+@media only screen and (max-width: 323px) {
+  .image-container {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
 /* End of custom CSS by Aryakk */
