@@ -414,6 +414,12 @@
                               name="penjualan_detail_performa_id_purchase" value="">
                             <input type="hidden" id="qty_total_input" name="qty_total_input" value="0">
 
+                            <!-- Hidden inputs untuk nilai asli (tanpa format) -->
+                            <input type="hidden" id="qty_purchase" name="qty_purchase" value="">
+                            <input type="hidden" id="production_fee" name="production_fee" value="">
+                            <input type="hidden" id="tgl_kirim_purchase" name="tgl_kirim_purchase" value="">
+                            <input type="hidden" id="tgl_deadline_purchase" name="tgl_deadline_purchase" value="">
+
                             <ul>
                               <!-- Partner Selection -->
                               <li>
@@ -431,14 +437,14 @@
                                 </a>
                               </li>
 
-                              <!-- Jumlah & Harga -->
+                              <!-- Jumlah & Harga - DIMODIFIKASI -->
                               <li class="item-content item-input">
                                 <div class="item-inner col-50">
                                   <div class="item-input-wrap">
                                     <input type="text" placeholder="Jumlah" class="label-input" readonly value="Jumlah"
                                       style="border: none; font-size: 16px; padding: 0;">
-                                    <input type="number" id="qty_purchase" name="qty_purchase" placeholder="0" value=""
-                                      min="0" required>
+                                    <!-- Input display dengan format x.xxx.xxx -->
+                                    <input type="text" id="qty_purchase_display" placeholder="0" value="" required>
                                     <span class="input-clear-button"></span>
                                   </div>
                                 </div>
@@ -446,26 +452,27 @@
                                   <div class="item-input-wrap">
                                     <input type="text" placeholder="Harga" class="label-input" readonly value="Harga"
                                       style="border: none; font-size: 16px; padding: 0;">
-                                    <input type="number" id="production_fee" name="production_fee" placeholder="0"
-                                      value="" min="0" required>
+                                    <!-- Input display dengan format x.xxx.xxx -->
+                                    <input type="text" id="production_fee_display" placeholder="0" value="" required>
+                                    <span class="input-clear-button"></span>
                                   </div>
                                 </div>
                               </li>
 
-                              <!-- Tanggal Kirim & Deadline -->
+                              <!-- Tanggal Kirim & Deadline - DIMODIFIKASI -->
                               <li class="item-content item-input">
                                 <div class="item-inner col-50">
                                   <div class="item-input-wrap">
                                     <input type="text" placeholder="Kirim" class="label-input" readonly value="Kirim"
                                       style="border: none; font-size: 16px; padding: 0;">
-                                    <input type="date" id="tgl_kirim_purchase" name="tgl_kirim_purchase"
-                                      placeholder="Tanggal Kirim" value="" readonly>
+                                    <!-- Input display dengan format 24-Des-25 -->
+                                    <input type="text" id="tgl_kirim_purchase_display" placeholder="DD-MMM-YY" value=""
+                                      readonly>
                                   </div>
                                 </div>
                                 <div class="item-inner col-50">
                                   <div class="item-input-wrap" style="position: relative;">
-                                    <div
-                                      style="display: flex; align-items: start; justify-content: space-between; margin-bottom: 5px;">
+                                    <div style="display: flex; align-items: start; justify-content: space-between;">
                                       <input type="text" placeholder="Deadline" class="label-input" readonly
                                         value="Deadline" style="border: none; font-size: 16px; padding: 0; flex: 1;">
 
@@ -476,8 +483,9 @@
                                         <i class="f7-icons" style="font-size: 24px;">doc_on_clipboard_fill</i>
                                       </button>
                                     </div>
-                                    <input type="date" id="tgl_deadline_purchase" name="tgl_deadline_purchase"
-                                      placeholder="Tanggal Deadline" value="" required>
+                                    <!-- Input display dengan format 24-Des-25 -->
+                                    <input type="text" id="tgl_deadline_purchase_display" placeholder="DD-MMM-YY"
+                                      value="" required>
                                   </div>
                                 </div>
                               </li>
@@ -795,7 +803,7 @@
 
                         <button class="button button-fill button-large color-blue" id="btn_upload_photo"
                           onclick="uploadMaterialPhoto();" style="width: 100%; display: none;">
-                          UNGGAH
+                          SIMPAN
                         </button>
                       </div>
                     </div>
@@ -1720,7 +1728,7 @@
         <div onclick="chooseDataProduksiCabangRedirect();" class="col col-border text-bold jakartaFilterCabangBtnPusat">
           <a class="text-add-colour-white" href="/cabang_pusat">IND-BAR</a>
         </div>
-        <div class="col col-border text-bold"><a class="text-add-colour-white" href="/laporan">PARTNER</a></div>
+        <div class="col col-border text-bold"><a class="text-add-colour-white" href="/partner">PARTNER</a></div>
       </div>
 
       <div style="text-align: center;" class="row no-gap bg-dark-gray-young nav-surabaya">

@@ -247,7 +247,7 @@ $$(document).on('page:afterin', '.page[data-name="produksi-body"]', function (e)
 })
 
 
-$$(document).on('page:afterin', '.page[data-name="laporan"]', function (e) {
+$$(document).on('page:afterin', '.page[data-name="partner"]', function (e) {
   checkLogin();
   getDataPartnerLaporan();
   checkConnection();

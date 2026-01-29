@@ -2,7 +2,11 @@
  * =========================================
  * LAPORAN PARTNER PAGE MANAGEMENT
  * =========================================
-*/
+ * 
+ * Refactored version - menggunakan helper.js untuk fungsi-fungsi umum
+ * Tech Stack: Cordova + Framework7 v7
+ * =========================================
+ */
 
 // =========================================
 // VARIABLES & CONSTANTS
@@ -20,7 +24,7 @@ const LAPORAN_CONFIG = {
 		internal: 'YYYY/MM/DD',
 		short: 'DDMMYY'
 	},
-	itemsPerPage: 20  // Sama dengan partner.js
+	itemsPerPage: 20
 };
 
 let LAPORAN_STATE = {
@@ -34,154 +38,6 @@ let LAPORAN_STATE = {
 	currentPage: 1,
 	totalData: 0
 };
-
-// =========================================
-// HELPER FUNCTIONS
-// =========================================
-
-/**
- * Sanitize string untuk pencarian
- * @param {string} str - String yang akan dibersihkan
- * @returns {string} String yang sudah dibersihkan
- */
-function sanitizeLaporanString(str) {
-	if (!str) return '';
-	return str.toString().trim();
-}
-
-/**
- * Escape HTML untuk mencegah XSS
- * @param {string} text - Text yang akan di-escape
- * @returns {string} Text yang sudah aman dari XSS
- */
-function escapeHtml(text) {
-	if (!text) return '';
-	const map = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#039;'
-	};
-	return text.toString().replace(/[&<>"']/g, m => map[m]);
-}
-
-/**
- * Format nomor invoice dengan menghilangkan prefix dan leading zeros
- * @param {string} invoiceId - ID invoice
- * @returns {string} Invoice ID yang sudah diformat
- */
-function formatInvoiceId(invoiceId) {
-	if (!invoiceId) return '-';
-	return invoiceId.replace(/INV_/g, '').replace(/^0+/, '');
-}
-
-/**
- * Format tanggal ke format Indonesia: "10 Des 2024"
- * @param {string|Date} date - Tanggal yang akan diformat (format: YYYY-MM-DD atau Date object)
- * @returns {string} Tanggal dalam format "10 Des 2024"
- */
-function formatDateIndonesia(date) {
-	if (!date) return '-';
-
-	// Array nama bulan dalam bahasa Indonesia (singkat)
-	const bulanIndonesia = [
-		'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-		'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
-	];
-
-	try {
-		// Parse tanggal menggunakan moment.js jika tersedia
-		if (typeof moment !== 'undefined') {
-			const m = moment(date);
-			if (!m.isValid()) return '-';
-
-			const tanggal = m.date();
-			const bulan = bulanIndonesia[m.month()];
-			const tahun = m.year();
-
-			return `${tanggal} ${bulan} ${tahun}`;
-		}
-
-		// Fallback jika moment.js tidak tersedia
-		const d = new Date(date);
-		if (isNaN(d.getTime())) return '-';
-
-		const tanggal = d.getDate();
-		const bulan = bulanIndonesia[d.getMonth()];
-		const tahun = d.getFullYear();
-
-		return `${tanggal} ${bulan} ${tahun}`;
-	} catch (error) {
-		console.error('Error formatting date:', error);
-		return '-';
-	}
-}
-
-/**
- * Menentukan background color berdasarkan status dan deadline
- * @param {object} item 
- * @returns {string} 
- */
-function getRowBackgroundColor(item) {
-	const currentDate = moment().startOf('day');
-	const deadlineDate = moment(item.tgl_deadline, LAPORAN_CONFIG.dateFormat.internal).startOf('day');
-
-	// KONDISI 1: Jika tgl_selesai masih null DAN hari ini >= tgl_deadline -> MERAH
-	if (item.tgl_selesai === null && currentDate.isSameOrAfter(deadlineDate)) {
-		return 'background: linear-gradient(#b53737, #b20000);';
-	}
-
-	// KONDISI 2: Jika tgl_selesai terisi DAN melebihi tgl_deadline -> MERAH
-	if (item.tgl_selesai !== null) {
-		const selesaiDate = moment(item.tgl_selesai, LAPORAN_CONFIG.dateFormat.internal).startOf('day');
-		if (selesaiDate.isAfter(deadlineDate)) {
-			return 'background: linear-gradient(#b53737, #b20000);';
-		}
-	}
-
-	// KONDISI 3: Jika tgl_selesai terisi DAN sebelum/sama dengan tgl_deadline -> DEFAULT (tidak ada warna)
-	// Tidak perlu return apa-apa, biarkan default
-
-	return '';
-}
-
-/**
- * Mendapatkan path gambar berdasarkan nama file
- * @param {string} filename - Nama file gambar
- * @returns {string} Full path ke gambar
- */
-function getImagePath(filename) {
-	if (!filename) return '';
-
-	const isKoperImage = filename.substring(0, 5) === 'koper';
-	const basePath = isKoperImage
-		? LAPORAN_CONFIG.imagePath.koper
-		: LAPORAN_CONFIG.imagePath.performa;
-
-	return `${basePath}/${filename}`;
-}
-
-/**
- * Format tanggal untuk display
- * @param {string|Date} date - Tanggal yang akan diformat
- * @param {string} format - Format output (default: DD-MM-YYYY)
- * @returns {string} Tanggal yang sudah diformat
- */
-function formatLaporanDate(date, format = LAPORAN_CONFIG.dateFormat.display) {
-	if (!date) return '-';
-
-	try {
-		if (typeof moment !== 'undefined') {
-			const m = moment(date);
-			return m.isValid() ? m.format(format) : '-';
-		}
-		return date;
-	} catch (error) {
-		console.error('Error formatting date:', error);
-		return '-';
-	}
-}
 
 // =========================================
 // PAGINATION FUNCTIONS
@@ -199,12 +55,12 @@ function createPaginationButtons(currentPage, totalPages) {
 	// Tombol Previous
 	if (currentPage > 1) {
 		html += `<button class="button button-outline text-add-colour-white" style="display: flex; align-items: center; border-color: #686665 !important; flex: 1;" onclick="goToPage(${currentPage - 1})">
-			<i class="f7-icons">chevron_left</i> Previous
-		</button>`;
+            <i class="f7-icons">chevron_left</i> Previous
+        </button>`;
 	} else {
 		html += `<button class="button button-outline text-add-colour-white disabled" style="opacity: 0.3; display: flex; align-items: center; border-color: #686665 !important; flex: 1;">
-			<i class="f7-icons">chevron_left</i> Previous
-		</button>`;
+            <i class="f7-icons">chevron_left</i> Previous
+        </button>`;
 	}
 
 	// Info halaman
@@ -213,14 +69,14 @@ function createPaginationButtons(currentPage, totalPages) {
 	// Tombol Next
 	if (currentPage < totalPages) {
 		html += `<button class="button button-outline text-add-colour-white" style="display: flex; align-items: center; border-color: #686665 !important; flex: 1;" onclick="goToPage(${currentPage + 1})">
-			Next <i class="f7-icons">chevron_right</i>
-		</button>`;
+            Next <i class="f7-icons">chevron_right</i>
+        </button>`;
 	} else {
 		html += `<button class="button button-outline text-add-colour-white disabled" style="opacity: 0.3; display: flex; align-items: center; border-color: #686665 !important; flex: 1;">
-			Next <i class="f7-icons">chevron_right</i>
-		</button>`;
+            Next <i class="f7-icons">chevron_right</i>
+        </button>`;
 	}
-	2026
+
 	html += '</div>';
 	return html;
 }
@@ -286,46 +142,12 @@ function createLaporanTableRow(item, index) {
             </td>
             <td style="border:1px solid gray !important;" class="label-cell text-align-center">
                 <button class="button button-small button-fill ${item.status_approval === 'ACC' ? 'btn-color-blueWhite' : item.status_penerimaan != null ? 'btn-color-greenWhite' : 'bg-dark-gray-young text-add-colour-black-soft'}" style="width: 116px;"
-					onclick="lihatDetailPenerimaan('${item.id_partner_transaksi}');">
-					Detail
-				</button>
+                    onclick="lihatDetailPenerimaan('${item.id_partner_transaksi}');">
+                    Detail
+                </button>
             </td>
         </tr>
     `;
-}
-
-/**
- * Menampilkan loading indicator
- * @param {boolean} show - True untuk menampilkan, false untuk menyembunyikan
- */
-function showLaporanLoading(show = true) {
-	LAPORAN_STATE.isLoading = show;
-	if (typeof app !== 'undefined' && app.dialog) {
-		if (show) {
-			app.dialog.preloader('Mengambil Data, Harap Tunggu');
-		} else {
-			app.dialog.close();
-		}
-	}
-}
-
-/**
- * Menampilkan notifikasi
- * @param {string} message - Pesan yang akan ditampilkan
- * @param {string} type - Tipe notifikasi (success/error)
- */
-function showLaporanNotification(message, type = 'success') {
-	if (typeof app !== 'undefined' && app.toast) {
-		const color = type === 'success' ? 'green' : 'red';
-		app.toast.create({
-			text: message,
-			position: 'center',
-			closeTimeout: type === 'error' ? 4000 : 2000,
-			cssClass: `bg-color-${color}`
-		}).open();
-	} else {
-		console.log(`[${type.toUpperCase()}] ${message}`);
-	}
 }
 
 // =========================================
@@ -635,6 +457,11 @@ function refreshLaporanData() {
 	fetchDataLaporanPartner();
 }
 
+// Alias untuk backward compatibility
+function refreshDataLaporan() {
+	refreshLaporanData();
+}
+
 // =========================================
 // INITIALIZATION & CLEANUP
 // =========================================
@@ -729,8 +556,6 @@ function getDataPartnerLaporan() {
 	console.warn('getDataPartnerLaporan() is deprecated. Use fetchDataLaporanPartner() instead');
 	fetchDataLaporanPartner();
 }
-
-
 
 // =========================================
 // AUTO INITIALIZATION
