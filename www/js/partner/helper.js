@@ -21,6 +21,31 @@ function formatNumber(num) {
 }
 
 /**
+ * Format angka untuk display dengan separator ribuan (1.234.567)
+ * @param {number|string} num - Angka yang akan diformat
+ * @returns {string} - Angka terformat dengan separator titik
+ */
+function formatNumberToDisplay(num) {
+    if (!num && num !== 0) return '';
+    // Hapus semua karakter non-digit
+    let cleanNum = num.toString().replace(/\D/g, '');
+    // Format dengan separator titik
+    return cleanNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/**
+ * Parse angka dari format display (1.234.567) ke angka biasa
+ * @param {string} displayNum - Angka dalam format display dengan separator titik
+ * @returns {number} - Angka tanpa separator
+ */
+function parseNumberFromDisplay(displayNum) {
+    if (!displayNum) return 0;
+    // Hapus semua titik separator
+    let cleanNum = displayNum.toString().replace(/\./g, '');
+    return parseInt(cleanNum, 10) || 0;
+}
+
+/**
  * Format mata uang Rupiah
  * @param {number|string} angka - Jumlah uang yang akan diformat
  * @returns {string} - Format rupiah (Rp X.XXX.XXX)
@@ -65,6 +90,64 @@ function formatDateShow(dateString) {
     let year = date.getFullYear().toString().slice(-2);
 
     return `${day} ${month} ${year}`;
+}
+
+/**
+ * Format tanggal ke format display DD-MMM-YY (24-Des-25)
+ * @param {string|Date} dateString - Tanggal yang akan diformat (format: YYYY-MM-DD)
+ * @returns {string} - Tanggal dalam format "DD-MMM-YY"
+ */
+function formatDateToDisplay(dateString) {
+    if (!dateString) return '';
+
+    const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+        'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+    ];
+
+    let date = new Date(dateString);
+    let day = ('0' + date.getDate()).slice(-2);
+    let month = monthNames[date.getMonth()];
+    let year = date.getFullYear().toString().slice(-2);
+
+    return `${day}-${month}-${year}`;
+}
+
+/**
+ * Parse tanggal dari format display DD-MMM-YY ke YYYY-MM-DD
+ * @param {string} displayDate - Tanggal dalam format "DD-MMM-YY" (24-Des-25)
+ * @returns {string} - Tanggal dalam format "YYYY-MM-DD"
+ */
+function parseDateFromDisplay(displayDate) {
+    if (!displayDate) return '';
+
+    const monthNames = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+        'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+    };
+
+    try {
+        const parts = displayDate.split('-');
+        if (parts.length !== 3) return '';
+
+        const day = parseInt(parts[0], 10);
+        const monthIndex = monthNames[parts[1]];
+        const year = parseInt('20' + parts[2], 10); // Tambahkan '20' di depan tahun
+
+        if (monthIndex === undefined) return '';
+
+        const date = new Date(year, monthIndex, day);
+
+        // Format ke YYYY-MM-DD
+        const yyyy = date.getFullYear();
+        const mm = ('0' + (date.getMonth() + 1)).slice(-2);
+        const dd = ('0' + date.getDate()).slice(-2);
+
+        return `${yyyy}-${mm}-${dd}`;
+    } catch (error) {
+        console.error('Error parsing date:', error);
+        return '';
+    }
 }
 
 /**
@@ -301,3 +384,208 @@ function zoomImage(imageUrl, title) {
         app.popup.open('.popup-zoom-image');
     }
 }
+
+/**
+ * =========================================
+ * PURCHASE FORMAT HANDLERS
+ * =========================================
+ * File ini berisi event listeners untuk auto-format
+ * angka dan tanggal pada form purchase
+ * 
+ * CARA PENGGUNAAN:
+ * Include file ini setelah helper.js dan index.js
+ * File ini akan otomatis menginisialisasi event listeners
+ */
+
+$(document).ready(function () {
+    console.log('Initializing purchase format handlers...');
+
+    // =========================================
+    // AUTO FORMAT UNTUK QTY PURCHASE DISPLAY
+    // =========================================
+    $(document).on('input', '#qty_purchase_display', function () {
+        let val = $(this).val();
+
+        // Hapus semua karakter non-digit
+        val = val.replace(/\D/g, '');
+
+        // Format dengan separator titik
+        let formatted = formatNumberToDisplay(val);
+
+        // Set value display
+        $(this).val(formatted);
+
+        // Set value asli (tanpa format) ke hidden input
+        $('#qty_purchase').val(val);
+
+        // Validasi max quantity
+        let numVal = parseInt(val) || 0;
+        let max = parseInt($('#qty_total_input').val()) || 0;
+
+        if (numVal < 0) {
+            $(this).val('0');
+            $('#qty_purchase').val('0');
+        }
+
+        if (numVal > max) {
+            let maxFormatted = formatNumberToDisplay(max);
+            $(this).val(maxFormatted);
+            $('#qty_purchase').val(max);
+            if (typeof showNotification !== 'undefined') {
+                showNotification(`Jumlah maksimal ${maxFormatted} pcs`, 'error');
+            }
+        }
+    });
+
+    // =========================================
+    // AUTO FORMAT UNTUK PRODUCTION FEE DISPLAY
+    // =========================================
+    $(document).on('input', '#production_fee_display', function () {
+        let val = $(this).val();
+
+        // Hapus semua karakter non-digit
+        val = val.replace(/\D/g, '');
+
+        // Format dengan separator titik
+        let formatted = formatNumberToDisplay(val);
+
+        // Set value display
+        $(this).val(formatted);
+
+        // Set value asli (tanpa format) ke hidden input
+        $('#production_fee').val(val);
+
+        // Validasi min 0
+        let numVal = parseInt(val) || 0;
+        if (numVal < 0) {
+            $(this).val('0');
+            $('#production_fee').val('0');
+        }
+    });
+
+    // =========================================
+    // AUTO FORMAT UNTUK TANGGAL KIRIM
+    // =========================================
+    $(document).on('click', '#tgl_kirim_purchase_display', function () {
+        // Buat calendar picker
+        if (typeof app !== 'undefined' && app.calendar) {
+            const calendarKirim = app.calendar.create({
+                inputEl: '#tgl_kirim_purchase_display',
+                dateFormat: 'dd-M-yy',
+                openIn: 'customModal',
+                header: true,
+                footer: true,
+                closeOnSelect: true,
+                on: {
+                    change: function (calendar, value) {
+                        if (value && value.length > 0) {
+                            const date = value[0];
+
+                            // Format untuk display (24-Des-25)
+                            const displayDate = formatDateToDisplay(date);
+                            $('#tgl_kirim_purchase_display').val(displayDate);
+
+                            // Format untuk hidden input (YYYY-MM-DD)
+                            const hiddenDate = formatDate(date);
+                            $('#tgl_kirim_purchase').val(hiddenDate);
+
+                            console.log('Tanggal Kirim - Display:', displayDate, 'Hidden:', hiddenDate);
+                        }
+                    }
+                }
+            });
+            calendarKirim.open();
+        }
+    });
+
+    // =========================================
+    // AUTO FORMAT UNTUK TANGGAL DEADLINE
+    // =========================================
+    $(document).on('click', '#tgl_deadline_purchase_display', function () {
+        // Buat calendar picker
+        if (typeof app !== 'undefined' && app.calendar) {
+            const calendarDeadline = app.calendar.create({
+                inputEl: '#tgl_deadline_purchase_display',
+                dateFormat: 'dd-M-yy',
+                openIn: 'customModal',
+                header: true,
+                footer: true,
+                closeOnSelect: true,
+                on: {
+                    change: function (calendar, value) {
+                        if (value && value.length > 0) {
+                            const date = value[0];
+
+                            // Format untuk display (24-Des-25)
+                            const displayDate = formatDateToDisplay(date);
+                            $('#tgl_deadline_purchase_display').val(displayDate);
+
+                            // Format untuk hidden input (YYYY-MM-DD)
+                            const hiddenDate = formatDate(date);
+                            $('#tgl_deadline_purchase').val(hiddenDate);
+
+                            console.log('Tanggal Deadline - Display:', displayDate, 'Hidden:', hiddenDate);
+                        }
+                    }
+                }
+            });
+            calendarDeadline.open();
+        }
+    });
+
+    // =========================================
+    // UPDATE COPY KIRIM TO DEADLINE FUNCTION
+    // =========================================
+    // Override fungsi copyKirimToDeadline untuk menggunakan display value
+    if (typeof window.copyKirimToDeadline === 'function') {
+        const originalCopyFunction = window.copyKirimToDeadline;
+
+        window.copyKirimToDeadline = function () {
+            console.log('copyKirimToDeadline() called (with format support)');
+
+            // Ambil nilai dari hidden input tanggal kirim
+            const tglKirimHidden = $('#tgl_kirim_purchase').val();
+            const tglKirimDisplay = $('#tgl_kirim_purchase_display').val();
+
+            console.log('Tanggal Kirim Hidden:', tglKirimHidden);
+            console.log('Tanggal Kirim Display:', tglKirimDisplay);
+
+            // Cek apakah tanggal kirim ada
+            if (tglKirimHidden && tglKirimHidden.trim() !== '') {
+                // Set value ke input tanggal deadline (hidden)
+                $('#tgl_deadline_purchase').val(tglKirimHidden);
+
+                // Set value ke input tanggal deadline (display)
+                if (tglKirimDisplay && tglKirimDisplay.trim() !== '') {
+                    $('#tgl_deadline_purchase_display').val(tglKirimDisplay);
+                } else {
+                    // Jika display kosong, format dari hidden
+                    const displayDate = formatDateToDisplay(tglKirimHidden);
+                    $('#tgl_deadline_purchase_display').val(displayDate);
+                }
+
+                // Trigger change event agar form tahu ada perubahan
+                $('#tgl_deadline_purchase').trigger('change');
+                $('#tgl_deadline_purchase_display').trigger('change');
+
+                console.log('Tanggal berhasil disalin');
+
+                // Show success notification
+                if (typeof showNotification !== 'undefined') {
+                    showNotification('Tanggal berhasil disalin', 'success');
+                }
+            } else {
+                console.log('Tanggal kirim kosong');
+
+                // Show error notification
+                if (typeof showNotification !== 'undefined') {
+                    showNotification('Tanggal kirim belum diisi', 'error');
+                }
+            }
+
+            return false; // Prevent any default behavior
+        };
+    }
+
+    console.log('Purchase format handlers initialized successfully');
+});

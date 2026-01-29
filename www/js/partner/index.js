@@ -121,7 +121,11 @@ function loadPurchaseData(penjualan_detail_performa_id) {
 				PURCHASE_STATE.purchaseList = response.data.partner_transaksi || [];
 				PURCHASE_STATE.purchaseDetailList = response.data.partner_transaksi_detail || [];
 
-				$('#tgl_kirim_purchase').val(formatDate(response.data.penjualan_header.penjualan_tanggal_kirim));
+				const displayDate = formatDateToDisplay(response.data.penjualan_header.penjualan_tanggal_kirim);
+				$('#tgl_kirim_purchase_display').val(displayDate);
+
+				const hiddenDate = formatDate(response.data.penjualan_header.penjualan_tanggal_kirim);
+				$('#tgl_kirim_purchase').val(hiddenDate);
 
 				// Populate header info
 				populatePurchaseHeader(response.data, response.data.partner_transaksi);
