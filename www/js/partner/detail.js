@@ -506,6 +506,105 @@ function setupPhotoBrowser(imagePath) {
 }
 
 // =========================================
+// HISTORY FUNCTIONS
+// =========================================
+
+/**
+ * Membuka popup history laporan
+ * Menampilkan data dengan kondisi: status_approval === 'ACC' || tanggal_approval !== null
+ */
+function bukaHistoryLaporan() {
+    console.log('Opening history popup...');
+
+    // Filter data berdasarkan kondisi
+    const historyData = LAPORAN_STATE.laporanData.filter(item => {
+        return item.status_approval === 'ACC' || item.tanggal_approval !== null;
+    });
+
+    console.log('History data filtered:', historyData.length, 'items');
+
+    // Render history data ke dalam popup
+    renderHistoryPopup(historyData);
+
+    // Buka popup
+    if (typeof app !== 'undefined' && app.popup) {
+        app.popup.open('.popup-history-laporan');
+    }
+}
+
+/**
+ * Render data history ke dalam popup
+ * @param {Array} historyData - Array data yang sudah difilter
+ */
+function renderHistoryPopup(historyData) {
+    let html = '';
+
+    if (historyData.length === 0) {
+        html = `
+            <tr>
+                <td colspan="10" style="border:1px solid gray !important; padding: 20px;" class="text-align-center">
+                    <div style="color: #999;">
+                        <i class="f7-icons" style="font-size: 48px;">doc_text</i>
+                        <p style="margin-top: 10px;">Belum ada data history</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    } else {
+        historyData.forEach((item, index) => {
+            const bgColor = getRowBackgroundColor(item);
+            const invoiceNumber = formatInvoiceId(item.penjualan_id);
+            const invoiceDate = formatLaporanDate(item.penjualan_tanggal, LAPORAN_CONFIG.dateFormat.short);
+            const spkNumber = `${invoiceDate}-${invoiceNumber}`;
+
+            html += `
+                <tr style="${bgColor}">
+                    <td style="border:1px solid gray !important;" class="label-cell text-align-center">
+                        ${index + 1}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-left">
+                        ${escapeHtml(spkNumber)}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-left">
+                        ${escapeHtml(item.nama_partner || '-')}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 150px !important;" class="label-cell text-align-left">
+                        ${escapeHtml(item.client_nama || '-')}
+                    </td>
+                    <td onclick="lihatDetailGambar('${item.penjualan_detail_performa_id}');" 
+                        style="border:1px solid gray !important; cursor: pointer; min-width: 150px !important;" 
+                        class="label-cell text-align-left popup-open" 
+                        data-popup=".item-detail-gambar">
+                        ${escapeHtml(item.item || '-')}
+                    </td>
+                    <td style="border:1px solid gray !important;" class="label-cell text-align-center">
+                        ${escapeHtml(item.jumlah || '0')}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
+                        ${formatDateIndonesia(item.tgl_input)}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
+                        ${formatDateIndonesia(item.tgl_deadline)}
+                    </td>
+                    <td style="border:1px solid gray !important; min-width: 100px !important;" class="label-cell text-align-center">
+                        ${formatDateIndonesia(item.tgl_selesai)}
+                    </td>
+                    <td style="border:1px solid gray !important;" class="label-cell text-align-center">
+                        <button class="button button-small button-fill ${item.status_approval === 'ACC' ? 'btn-color-blueWhite' : item.status_penerimaan != null ? 'btn-color-greenWhite' : 'bg-dark-gray-young text-add-colour-black-soft'}" style="width: 116px;"
+                            onclick="lihatDetailPenerimaan('${item.id_partner_transaksi}');">
+                            Detail
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    jQuery('#data_history_laporan').html(html);
+    jQuery('#jumlah_data_history').text(historyData.length);
+}
+
+// =========================================
 // SEARCH & FILTER FUNCTIONS
 // =========================================
 

@@ -78,8 +78,6 @@ function copyKirimToDeadline() {
  * Membuka modal purchase dengan data dari API
  */
 function openPurchaseModal(penjualan_detail_performa_id = PURCHASE_STATE.currentPerformaId) {
-	console.log("TEST :", penjualan_detail_performa_id);
-
 	console.log('Opening purchase modal for performa_id:', penjualan_detail_performa_id);
 
 	// Validasi

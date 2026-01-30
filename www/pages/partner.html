@@ -25,11 +25,14 @@
           style="margin-bottom:4px; padding: 4px 0px;">
           <div class="display-flex justify-content-start align-items-center"
             style="font-size:20px; font-weight:bold; color:#1C1C1D;">
-            <span style="border-right: 1px solid #1C1C1D; padding-right: 16px; margin-right: 16px;">Data Laporan</span>
+            <span style="border-right: 1px solid #1C1C1D; padding-right: 16px; margin-right: 16px;">Data</span>
             <span id="jumlah_data_laporan">0</span>
           </div>
-          <i class="f7-icons" style="font-size:30px; color:#009100;"
-            onclick="refreshLaporanData()">arrow_2_circlepath_circle_fill</i>
+          <div class="display-flex justify-content-space-between align-items-center">
+            <i class="f7-icons" style="font-size:30px; color:#fff;" onclick="bukaHistoryLaporan()">clock_fill</i>
+            <i class="f7-icons" style="font-size:30px; color:#009100;"
+              onclick="refreshLaporanData()">arrow_2_circlepath_circle_fill</i>
+          </div>
         </div>
         <!-- Search Boxes -->
         <div class="display-flex flex-direction-row justify-content-space-between align-items-center">
@@ -216,6 +219,91 @@
                         </div>
                       </div>
 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup History Laporan -->
+  <div class="popup popup-history-laporan">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner bg-dark-gray-medium">
+            <div class="title">History Laporan</div>
+            <div class="right">
+              <a class="link popup-close" data-popup=".popup-history-laporan">
+                <i class="f7-icons" style="margin-right:5px; color: #fff;">xmark_rectangle_fill</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content">
+          <div class="card card-outline margin-top">
+            <div class="card-content">
+              <div class="row">
+                <div class="col-100">
+                  <div class="card">
+                    <!-- Header -->
+                    <div class="col-100 bg-dark-gray-young" style="padding:10px; font-size:18px; font-weight:bold;">
+                      <div class="display-flex justify-content-space-between align-items-center">
+                        <div class="display-flex justify-content-start align-items-center"
+                          style="font-size:20px; font-weight:bold; color:#1C1C1D;">
+                          <span
+                            style="border-right: 1px solid #1C1C1D; padding-right: 16px; margin-right: 16px;">Data</span>
+                          <span id="jumlah_data_history">0</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Table Content -->
+                    <div class="col-100" style="overflow-x: auto;">
+                      <table cellspacing="1" cellpadding="1" width="100%">
+                        <thead class="bg-dark-gray-medium text-align-center">
+                          <tr>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                              align="center">No</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Spk</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Partner</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Customer</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Item</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Jumlah</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Tanggal</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Deadline</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Selesai</th>
+                            <th class="label-cell"
+                              style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                              Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody class="text-align-center" id="data_history_laporan">
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
