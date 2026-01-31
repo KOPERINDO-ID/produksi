@@ -233,7 +233,7 @@ function populateApprovalPopup(data) {
                 <div style="display: flex; flex-direction: column; gap: 8px; background: #f9fafb; padding: 14px; border-radius: 0 0 8px 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Tipe</span>
-                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${partnerTransaksi.item || penjualanDetail.produk_keterangan_kustom || '-'}</span>
+                        <span style="font-weight: 600; color: #1f2937; font-size: 14px;">${penjualanDetail.penjualan_jenis || '-'}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
                         <span style="color: #6b7280; font-size: 14px;">Jumlah</span>
