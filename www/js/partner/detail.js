@@ -344,9 +344,16 @@ function renderLaporanData() {
     tableBody.html('');
 
     // Filter hanya data yang belum ACC
-    const activeData = LAPORAN_STATE.laporanData.filter(item =>
-        item.status_approval === 'BELUM' || item.tanggal_approval === null
-    );
+
+    //tambahkan filter agar menampulkan data 3 bulan kebelakang
+    const activeData = LAPORAN_STATE.laporanData.filter(item => {
+        const itemDate = new Date(item.tgl_deadline);
+        const threeMonthsAgo = new Date();
+
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+        return (item.status_approval === 'BELUM' || item.tanggal_approval === null) && itemDate >= threeMonthsAgo;
+    });
 
     // Update jumlah data
     LAPORAN_STATE.totalData = activeData.length;
