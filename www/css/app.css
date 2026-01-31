@@ -918,7 +918,7 @@ div[class*="col-border"] {
   padding-right: 16px;
 }
 
-@media only screen and (max-width: 323px) {
+@media only screen and (max-width: 399px) {
   .image-container {
     flex: 1 1 100% !important;
     max-width: 100% !important;
