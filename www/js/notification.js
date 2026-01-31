@@ -992,14 +992,14 @@ var NotificationManager = {
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="page-content" style="background: #1a1a2e;">' +
+                '<div class="page-content" style="background: #000;">' +
                 '<div class="block" style="margin-top: 0; padding: 20px;">' +
-                '<div style="background: #0f0f1e; border-radius: 12px; padding: 20px; border-left: 4px solid #ff6b35;">' +
+                '<div style="background: #1c1c1d; border-radius: 12px; padding: 20px; border: 1px solid #056BBC; border-left: 4px solid #056BBC;">' +
                 '<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">' +
                 '<h3 style="margin: 0; color: #fff; font-size: 18px; font-weight: 600;">' + self.escapeHtml(notif.title) + '</h3>' +
-                (notif.isRead ? '' : '<span style="background: #ff6b35; color: white; font-size: 10px; padding: 4px 8px; border-radius: 4px;">BARU</span>') +
+                (notif.isRead ? '' : '<span style="background: #14418F; color: white; font-size: 10px; padding: 4px 8px; border-radius: 4px;">BARU</span>') +
                 '</div>' +
-                '<div style="color: #ff6b35; font-size: 12px; margin-bottom: 15px;">' +
+                '<div style="color: #fff; font-size: 12px; font-weight: 700; margin-bottom: 15px;">' +
                 '<i class="f7-icons" style="font-size: 12px; vertical-align: middle;">clock</i> ' +
                 self.getTimeAgo(notif.timestamp) +
                 '</div>' +
@@ -1281,7 +1281,7 @@ var NotificationManager = {
             if (panel.style.display === 'none' || panel.style.display === '') {
                 panel.style.display = 'block';
                 // Refresh notifikasi dari server saat buka panel
-                this.fetchNotificationsFromServer();
+                // this.fetchNotificationsFromServer();
                 this.log('Panel opened');
             } else {
                 panel.style.display = 'none';

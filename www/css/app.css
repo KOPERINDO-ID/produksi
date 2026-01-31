@@ -926,4 +926,185 @@ div[class*="col-border"] {
   }
 }
 
+/* ========== NOTIFICATION STYLES ========== */
+#notifIcon {
+  position: relative;
+  cursor: pointer;
+  margin-right: 4px;
+}
+
+#notifIcon i {
+  color: #fff;
+  font-size: 22px;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: #ff6b35;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+#notifPanel {
+  position: fixed;
+  top: 50px;
+  right: 5px;
+  width: 320px;
+  max-height: 70vh;
+  background: #1c1c1d;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: 99998;
+  overflow: hidden;
+}
+
+.notif-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #1d1d1c;
+  border-bottom: 1px solid #cecece;
+}
+
+.notif-panel-header button i {
+  font-size: 24px;
+}
+
+.notif-panel-body {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+#notifList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#notifList .notification-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #2d3a4f;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#notifList .notification-item:active {
+  transform: scale(0.98);
+  background: rgba(20, 65, 143, 0.5) !important;
+}
+
+#notifList .notification-item.unread {
+  background: rgba(20, 65, 143, 0.5) !important;
+  border-left: 4px solid #ff6b35;
+}
+
+#notifList .notif-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+#notifList .notif-body {
+  font-size: 12px;
+  color: #a0a0a0;
+  margin-bottom: 6px;
+}
+
+#notifList .notification-item:not(.unread) .notif-body {
+  color: #666;
+}
+
+#notifList .notif-time {
+  font-size: 10px;
+  color: #fff;
+}
+
+#notifList .empty-notification {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+#notifList .empty-notification p {
+  margin: 0;
+}
+
+.toast-notification {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  z-index: 99999;
+  background: linear-gradient(135deg, #ea480a 0%, #ff6b35 100%);
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 320px;
+  min-width: 260px;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.toast-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.toast-text h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.toast-text p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+/* ========== NOTIFICATION DETAIL POPUP ========== */
+.notif-detail-popup .page-content {
+  background: #1d1d1c !important;
+}
+
+.notif-detail-popup .navbar {
+  --f7-navbar-bg-color: #14418F;
+  --f7-navbar-text-color: #fff;
+  --f7-navbar-link-color: #fff;
+}
+
+.notif-detail-popup .block {
+  margin-top: 0;
+}
+
 /* End of custom CSS by Aryakk */
