@@ -867,13 +867,16 @@ function startTimeMain() {
 
   // Array nama bulan dalam Bahasa Indonesia
   var namaBulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-    "Jul", "Agustus", "Sep", "Okt", "Nov", "Des"];
+    "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
+  // Format tanggal dan tahun
+  d = checkTimeMain(d);
+  var tahunSingkat = String(y).slice(-2);
   m = checkTimeMain(m);
   s = checkTimeMain(s);
 
   document.getElementById('clock_view').innerHTML =
-    "<b>" + d + " " + namaBulan[mon] + " " + y + "<br>" + h + ":" + m + ":" + s + "</b>";
+    "<b>" + d + "-" + namaBulan[mon] + "-" + tahunSingkat + "<br>" + h + ":" + m + ":" + s + "</b>";
   var t = setTimeout(startTimeMain, 500);
 }
 
