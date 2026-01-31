@@ -115,7 +115,7 @@ function formatLaporanDate(date, format = LAPORAN_CONFIG.dateFormat.display) {
 function createPaginationButtons(currentPage, totalPages) {
     if (totalPages <= 1) return '';
 
-    let html = '<div class="segmented segmented-raised" style="margin: 10px 0; width: 100%; display: flex; justify-content: space-between;">';
+    let html = '<div class="segmented segmented-raised" style="margin-top: 8px; width: 100%; display: flex; justify-content: space-between;">';
 
     // Tombol Previous
     if (currentPage > 1) {
@@ -345,12 +345,12 @@ function renderLaporanData() {
 
     // Filter hanya data yang belum ACC
 
-    //tambahkan filter agar menampulkan data 3 bulan kebelakang
+    //tambahkan filter agar menampulkan data 1 tahun kebelakang
     const activeData = LAPORAN_STATE.laporanData.filter(item => {
         const itemDate = new Date(item.tgl_deadline);
         const threeMonthsAgo = new Date();
 
-        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 12);
 
         return (item.status_approval === 'BELUM' || item.tanggal_approval === null) && itemDate >= threeMonthsAgo;
     });
