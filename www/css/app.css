@@ -926,6 +926,10 @@ div[class*="col-border"] {
   }
 }
 
+/* ========================================
+   NOTIFICATION STYLES
+   ======================================== */
+
 /* ========== NOTIFICATION STYLES ========== */
 #notifIcon {
   position: relative;
@@ -940,8 +944,8 @@ div[class*="col-border"] {
 
 .notif-badge {
   position: absolute;
-  top: -5px;
-  right: -8px;
+  top: -4px;
+  right: -6px;
   background: #ff6b35;
   color: white;
   font-size: 10px;
@@ -952,14 +956,15 @@ div[class*="col-border"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
+  padding: 1px;
 }
 
 #notifPanel {
   position: fixed;
   top: 50px;
   right: 5px;
-  width: 320px;
+  width: 280px;
+  max-width: calc(100vw - 10px);
   max-height: 70vh;
   background: #1c1c1d;
   border-radius: 12px;
@@ -1092,6 +1097,14 @@ div[class*="col-border"] {
   line-height: 1.4;
 }
 
+.no-notifications {
+  height: 54px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* ========== NOTIFICATION DETAIL POPUP ========== */
 .notif-detail-popup .page-content {
   background: #1d1d1c !important;
@@ -1105,6 +1118,42 @@ div[class*="col-border"] {
 
 .notif-detail-popup .block {
   margin-top: 0;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+  #notifPanel {
+    top: 64px;
+    right: 12px;
+    width: 85%;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .toast-notification {
+    right: 10px;
+    left: 10px;
+    max-width: calc(100vw - 20px);
+    min-width: auto;
+  }
+}
+
+/* Scrollbar Styling */
+.notif-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notif-panel-body::-webkit-scrollbar-track {
+  background: #1c1c1d;
+}
+
+.notif-panel-body::-webkit-scrollbar-thumb {
+  background: #3a3a3c;
+  border-radius: 3px;
+}
+
+.notif-panel-body::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4c;
 }
 
 /* End of custom CSS by Aryakk */

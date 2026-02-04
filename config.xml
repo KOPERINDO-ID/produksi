@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.produksi13.vertice" version="4.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" android-versionCode="6" ios-CFBundleVersion="4.0.5">
     <name>Produksi</name>
+    
     <description>Aplikasi Produksi KOPERINDO.ID</description>
+    
     <author email="vertice15@gmail.com" href="https://vertice.id">
         Vertice Team
     </author>
-    <author email="vertice15@gmail.com" href="https://vertice.id">
-        Vertice Team
-    </author>
+    
     <content src="index.html" />
+    
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -17,38 +18,96 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
 
+    <!-- ============================================ -->
+    <!-- GLOBAL PREFERENCES -->
+    <!-- ============================================ -->
     <preference name="AndroidXEnabled" value="true" />
     <preference name="GradlePluginGoogleServicesEnabled" value="true" />
     <preference name="GradlePluginGoogleServicesVersion" value="4.4.0" />
 
+    <!-- ============================================ -->
+    <!-- ANDROID PLATFORM -->
+    <!-- ============================================ -->
     <platform name="android">
         <plugin name="cordova-plugin-camera" spec="./plugins/cordova-plugin-camera">
             <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
         </plugin>
+        
         <preference name="AutoHideSplashScreen" value="true" />
         <preference name="SplashScreenDelay" value="2500" />
         <preference name="SplashMaintainAspectRatio" value="true" />
         <preference name="SplashShowOnlyFirstTime" value="true" />
         <preference name="ShowSplashScreenSpinner" value="false" />
         <preference name="AndroidWindowSplashScreenAnimatedIcon" value="icon.png" />
+        
         <preference name="AndroidPersistentFileLocation" value="Internal" />
         <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root" />
         <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
+        
         <preference name="StatusBarOverlaysWebView" value="false" />
         <preference name="StatusBarBackgroundColor" value="#0000" />
         <preference name="StatusBarStyle" value="lightcontent" />
-        <allow-intent href="market:*" />
-        <preference name="Orientation" value="portrait" />
-        <icon density="hdpi" src="icon.png" />
-
-        <resource-file src="google-services.json" target="app/google-services.json" />
+        
+        <!-- CRITICAL: Launch Mode for FCM -->
         <preference name="AndroidLaunchMode" value="singleTop" />
+        
+        <preference name="Orientation" value="portrait" />
+        
+        <icon density="hdpi" src="icon.png" />
+        
+        <allow-intent href="market:*" />
+
+        <!-- Google Services JSON -->
+        <resource-file src="google-services.json" target="app/google-services.json" />
+        
+        <!-- Firebase Preferences -->
+        <preference name="FIREBASE_ANALYTICS_COLLECTION_ENABLED" value="true" />
+        <preference name="FIREBASE_PERFORMANCE_COLLECTION_ENABLED" value="false" />
+        <preference name="FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" value="false" />
     </platform>
+
+    <!-- ============================================ -->
+    <!-- iOS PLATFORM -->
+    <!-- ============================================ -->
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <preference name="iosUsePushNotification" value="true" />
     </platform>
+
+    <!-- ============================================ -->
+    <!-- PLUGINS -->
+    <!-- ============================================ -->
+    
     <plugin name="cordova-plugin-statusbar" spec="^4.0.0" />
+    
+    <!-- FirebaseX Plugin -->
+    <plugin name="cordova-plugin-firebasex" spec="^16.5.0">
+        <!-- Firebase SDK Versions -->
+        <variable name="FIREBASE_ANALYTICS_VERSION" value="21.5.0" />
+        <variable name="FIREBASE_MESSAGING_VERSION" value="23.4.0" />
+        <variable name="FIREBASE_CONFIG_VERSION" value="21.5.0" />
+        
+        <!-- AndroidX Versions -->
+        <variable name="ANDROIDX_CORE_VERSION" value="1.12.0" />
+        <variable name="ANDROIDX_ANNOTATION_VERSION" value="1.7.1" />
+        
+        <!-- Google Play Services -->
+        <variable name="GOOGLE_PLAY_SERVICES_TAGMANAGER_VERSION" value="18.0.4" />
+        <variable name="GOOGLE_PLAY_SERVICES_AUTH_VERSION" value="20.7.0" />
+        
+        <!-- iOS Configuration -->
+        <variable name="IOS_DEPLOYMENT_TARGET" value="11.0" />
+        <variable name="IOS_PUSH_CAPABILITY" value="true" />
+        
+        <!-- FCM Behavior -->
+        <variable name="FIREBASE_MESSAGING_AUTO_INIT_ENABLED" value="true" />
+        <variable name="FIREBASE_ANALYTICS_COLLECTION_ENABLED" value="true" />
+    </plugin>
+
+    <!-- ============================================ -->
+    <!-- ENGINES -->
+    <!-- ============================================ -->
     <engine name="browser" spec="^6.0.0" />
     
 </widget>

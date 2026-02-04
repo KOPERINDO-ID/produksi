@@ -31,34 +31,25 @@ var app = new Framework7({
     type: 'popup',
     toolbar: false
   },
-  root: '#app', // App root element
-  id: 'id.vertice.tasindosalesapp', // App bundle ID
-  name: 'Produksi App', // App name
-  theme: 'md', // Automatic theme detection
-  // App root data
+  root: '#app',
+  id: 'id.vertice.tasindosalesapp',
+  name: 'Produksi App',
+  theme: 'md',
   data: function () {
-    return {
-    };
+    return {};
   },
-  // App root methods
-  methods: {
-  },
-  // App routes
+  methods: {},
   routes: routes,
-
-  // Input settings
   input: {
     scrollIntoViewOnFocus: Framework7.device.cordova && !Framework7.device.electron,
     scrollIntoViewCentered: Framework7.device.cordova && !Framework7.device.electron,
   },
-  // Cordova Statusbar settings
   statusbar: {
     iosOverlaysWebView: true,
     androidOverlaysWebView: false,
   },
   on: {
     init: function () {
-
       var f7 = this;
       if (f7.device.cordova) {
         cordovaApp.init(f7);
@@ -69,8 +60,36 @@ var app = new Framework7({
           return app.views.main.router.navigate('/login');
         }, 300);
       } else {
+        // ============================================
+        // PERBAIKAN: Init notification SETELAH deviceready
+        // ============================================
+        console.log('[App] User logged in, initializing notification...');
 
-        initNotificationManager(true);
+        // Cek apakah Cordova app
+        if (f7.device.cordova) {
+          console.log('[App] Cordova app detected, waiting for deviceready...');
+
+          // Set flag untuk track deviceready
+          if (!window.cordovaDeviceReady) {
+            document.addEventListener('deviceready', function () {
+              console.log('[App] ✅ deviceready event fired!');
+              window.cordovaDeviceReady = true;
+
+              // Init notification setelah deviceready
+              initNotificationManagerOnStartup();
+            }, false);
+          } else {
+            // deviceready sudah fired sebelumnya
+            console.log('[App] deviceready already fired, init now');
+            initNotificationManagerOnStartup();
+          }
+        } else {
+          // Bukan Cordova app (web browser)
+          console.log('[App] Not a Cordova app, init directly');
+          setTimeout(function () {
+            initNotificationManagerOnStartup();
+          }, 500);
+        }
 
         var lower_api = localStorage.getItem("lokasi_pabrik").toLowerCase();
 
@@ -98,7 +117,6 @@ var app = new Framework7({
             getYearPointProduksi();
             getYearHistoryProduksiPusat()
             return app.views.main.router.navigate('/produksi_pusat');
-
           }, 100);
         } else {
           setTimeout(function () {
@@ -189,8 +207,6 @@ $$(document).on('page:afterin', '.page[data-name="penjualan_input"]', function (
   selectBank();
   penjualanGetPerformaData();
   checkConnection();
-
-
   jQuery('#tanggal_pemesanan_1').val(moment().format('YYYY-MM-DD'));
 });
 
@@ -207,22 +223,18 @@ $$(document).on('page:afterin', '.page[data-name="cabang-pusat"]', function (e) 
   getYearProduksiSelesai();
 })
 
-
 $$(document).on('page:afterin', '.page[data-name="cabang"]', function (e) {
   checkLogin();
   chooseDataProduksiCabangRedirect('pusat');
   dateRangeDeclarationProduksiCabang();
   getYearHistoryPointProduksi();
-  // startSpkUrgentInterval();
   localStorage.removeItem('arsip');
 })
-
 
 $$(document).on('page:afterin', '.page[data-name="purchasing"]', function (e) {
   checkLogin();
   initPurchasingPage();
 })
-
 
 $$(document).on('page:afterin', '.page[data-name="produksi-pusat"]', function (e) {
   checkLogin();
@@ -234,7 +246,6 @@ $$(document).on('page:afterin', '.page[data-name="produksi-pusat"]', function (e
   checkConnection();
   getYearPointProduksi();
   getYearHistoryProduksiPusat();
-  // startSpkUrgentInterval();
   choosePabrikSby('Sby');
 })
 
@@ -245,7 +256,6 @@ $$(document).on('page:afterin', '.page[data-name="produksi-body"]', function (e)
   dateRangeDeclarationProduksiBody();
   checkConnection();
 })
-
 
 $$(document).on('page:afterin', '.page[data-name="partner"]', function (e) {
   checkLogin();
@@ -283,14 +293,12 @@ $$(document).on('page:afterin', '.page[data-name="produksi-harian"]', function (
   checkConnection();
 })
 
-// Page penjualan input On load
 $$(document).on('page:afterin', '.page[data-name="login"]', function (e) {
   jQuery('#logout_logo').hide();
   jQuery('#notifIcon').hide();
   checkConnection();
 });
 
-// Page performa input On load
 $$(document).on('page:afterin', '.page[data-name="performa_input"]', function (e) {
   checkLogin();
   selectBoxClient();
@@ -299,71 +307,198 @@ $$(document).on('page:afterin', '.page[data-name="performa_input"]', function (e
   checkConnection();
 });
 
-
-// Page Non performa input On load
 $$(document).on('page:afterin', '.page[data-name="penjualan_input_non_performa"]', function (e) {
   checkLogin();
   addNonPerforma();
   checkConnection();
 });
 
+// ============================================
+// NOTIFICATION MANAGER HELPER FUNCTIONS
+// ============================================
+
 /**
- * Inisialisasi NotificationManager
- * Dipanggil setelah login berhasil
- * @param {boolean} forceRefresh - true jika setelah login (bukan app init)
+ * Init NotificationManager saat app startup (user sudah login sebelumnya)
+ * MODE: STARTUP - Load dari localStorage, tidak fetch dari server
  */
-function initNotificationManager(forceRefresh) {
+function initNotificationManagerOnStartup() {
   var userId = localStorage.getItem("user_id");
 
   if (!userId) {
-    console.log('[App] No user_id found, skipping notification init');
+    console.log('[App] No user_id, skipping notification init');
     return;
   }
 
-  if (typeof cordova !== 'undefined' && document.readyState !== 'complete') {
-    document.addEventListener('deviceready', function () {
-      _doInitNotification(userId, forceRefresh);
-    }, false);
+  console.log('[App] 🚀 Initializing NotificationManager on startup');
+  console.log('[App]    User ID:', userId);
+  console.log('[App]    Mode: STARTUP (no fetch)');
+
+  // Cek NotificationManager tersedia
+  if (typeof NotificationManager === 'undefined') {
+    console.error('[App] ❌ NotificationManager not loaded!');
+    console.error('[App]    Make sure notification.js is included in index.html');
+    return;
+  }
+
+  // Update API URL
+  if (typeof BASE_API !== 'undefined') {
+    NotificationManager.config.apiUrl = BASE_API;
+    console.log('[App]    API URL:', BASE_API);
+  }
+
+  // Init dengan forceRefresh = FALSE
+  // Ini akan:
+  // 1. Load notifikasi dari localStorage
+  // 2. Setup UI listeners
+  // 3. Setup Firebase listeners (jika token sudah ada)
+  // 4. TIDAK fetch dari server
+  // 5. TIDAK request token baru
+  NotificationManager.init(userId, false);
+
+  console.log('[App] ✅ NotificationManager initialized (startup mode)');
+}
+
+/**
+ * Init NotificationManager setelah login berhasil
+ * MODE: LOGIN - Request token, register ke server, fetch dari server
+ */
+function initNotificationManagerAfterLogin() {
+  var userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    console.error('[Login] ❌ No user_id after login');
+    return;
+  }
+
+  console.log('[Login] 🚀 Initializing NotificationManager after login');
+  console.log('[Login]    User ID:', userId);
+  console.log('[Login]    Mode: LOGIN (full init)');
+
+  // Cek NotificationManager tersedia
+  if (typeof NotificationManager === 'undefined') {
+    console.error('[Login] ❌ NotificationManager not loaded!');
+    return;
+  }
+
+  // Update API URL
+  if (typeof BASE_API !== 'undefined') {
+    NotificationManager.config.apiUrl = BASE_API;
+    console.log('[Login]    API URL:', BASE_API);
+  }
+
+  // CRITICAL: Cek apakah Cordova ready
+  if (typeof cordova !== 'undefined') {
+    console.log('[Login] 📱 Cordova detected');
+
+    if (window.cordovaDeviceReady) {
+      // deviceready sudah fired
+      console.log('[Login] ✅ deviceready already fired, init now');
+      _doInitNotificationLogin(userId);
+    } else {
+      // Tunggu deviceready
+      console.log('[Login] ⏳ Waiting for deviceready event...');
+
+      // Set timeout sebagai fallback
+      var timeoutId = setTimeout(function () {
+        console.warn('[Login] ⚠️ deviceready timeout, init anyway');
+        _doInitNotificationLogin(userId);
+      }, 5000); // 5 detik timeout
+
+      document.addEventListener('deviceready', function deviceReadyHandler() {
+        console.log('[Login] ✅ deviceready fired!');
+        clearTimeout(timeoutId);
+        window.cordovaDeviceReady = true;
+
+        // Remove listener to prevent multiple calls
+        document.removeEventListener('deviceready', deviceReadyHandler);
+
+        _doInitNotificationLogin(userId);
+      }, false);
+    }
   } else {
+    // Bukan Cordova app
+    console.log('[Login] 🌐 Not Cordova, init directly');
     setTimeout(function () {
-      _doInitNotification(userId, forceRefresh);
+      _doInitNotificationLogin(userId);
     }, 500);
   }
 }
 
-function _doInitNotification(userId, forceRefresh) {
-  if (typeof NotificationManager === 'undefined') {
-    console.warn('[App] NotificationManager not loaded');
-    return;
+/**
+ * Actual initialization setelah deviceready
+ */
+function _doInitNotificationLogin(userId) {
+  console.log('[Login] 🔧 _doInitNotificationLogin executing...');
+
+  // Debug: Cek Firebase plugin availability
+  if (typeof cordova !== 'undefined') {
+    console.log('[Login] 🔍 Debug Info:');
+    console.log('[Login]    cordova.platformId:', cordova.platformId);
+    console.log('[Login]    cordova.plugins:', cordova.plugins ? Object.keys(cordova.plugins).join(', ') : 'undefined');
+
+    if (cordova.plugins && cordova.plugins.firebase) {
+      console.log('[Login]    ✅ cordova.plugins.firebase exists');
+      console.log('[Login]    firebase properties:', Object.keys(cordova.plugins.firebase).join(', '));
+
+      if (cordova.plugins.firebase.messaging) {
+        console.log('[Login]    ✅ firebase.messaging exists!');
+      } else {
+        console.error('[Login]    ❌ firebase.messaging NOT FOUND');
+      }
+    } else {
+      console.error('[Login]    ❌ cordova.plugins.firebase NOT FOUND');
+      console.error('[Login]    Available plugins:', cordova.plugins ? Object.keys(cordova.plugins).join(', ') : 'none');
+    }
   }
 
-  if (typeof BASE_API !== 'undefined') {
-    NotificationManager.config.apiUrl = BASE_API;
-  }
+  // Init dengan forceRefresh = TRUE
+  // Ini akan:
+  // 1. Request notification permission
+  // 2. Get FCM token dari Firebase
+  // 3. Register token ke server
+  // 4. Setup Firebase listeners
+  // 5. Fetch notifications dari server
+  console.log('[Login] 🎯 Calling NotificationManager.init(userId, true)...');
+  NotificationManager.init(userId, true);
 
-  NotificationManager.init(userId, forceRefresh || false);
+  console.log('[Login] ✅ NotificationManager.init called');
 
-  if (forceRefresh && NotificationManager.forceRefreshToken) {
-    setTimeout(function () {
-      NotificationManager.forceRefreshToken();
-    }, 1000);
-  }
+  // Force refresh token setelah delay untuk memastikan Firebase ready
+  setTimeout(function () {
+    console.log('[Login] 🔄 Force refreshing FCM token...');
 
-  console.log('[App] NotificationManager initialized for user:', userId);
+    if (NotificationManager.isFirebaseAvailable && NotificationManager.isFirebaseAvailable()) {
+      console.log('[Login]    ✅ Firebase available, getting token');
+
+      if (typeof NotificationManager.getFirebaseToken === 'function') {
+        NotificationManager.getFirebaseToken();
+      } else {
+        console.warn('[Login]    ⚠️ getFirebaseToken method not found');
+      }
+    } else {
+      console.error('[Login]    ❌ Firebase NOT available!');
+      console.error('[Login]    Possible causes:');
+      console.error('[Login]    1. Plugin not installed: cordova plugin add cordova-plugin-firebase-messaging');
+      console.error('[Login]    2. google-services.json missing');
+      console.error('[Login]    3. App not built for Android');
+      console.error('[Login]    4. deviceready not fired yet (should not happen here)');
+    }
+  }, 2000);
 }
 
 /**
  * Cleanup NotificationManager sebelum logout
- * Panggil ini di fungsi logOut()
  */
 function cleanupNotificationManager(callback) {
-  if (typeof NotificationManager !== 'undefined' && NotificationManager.isInitialized) {
+  console.log('[App] 🧹 Cleaning up NotificationManager...');
+
+  if (typeof NotificationManager !== 'undefined') {
     NotificationManager.cleanup(function () {
-      console.log('[App] NotificationManager cleaned up');
+      console.log('[App] ✅ NotificationManager cleaned up');
       if (callback) callback();
     });
   } else {
+    console.warn('[App] ⚠️ NotificationManager not found, skipping cleanup');
     if (callback) callback();
   }
 }
-

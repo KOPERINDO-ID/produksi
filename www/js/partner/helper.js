@@ -586,6 +586,4 @@ $(document).ready(function () {
             return false; // Prevent any default behavior
         };
     }
-
-    console.log('Purchase format handlers initialized successfully');
 });

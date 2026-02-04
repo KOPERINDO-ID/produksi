@@ -1,0 +1,18 @@
+No scripts found for hook "before_run".
+No scripts found for hook "before_prepare".
+Checking for saved platforms that haven't been added to the project
+Loaded API for android project /home/iostream-code/Work/InternalApps/produksi/platforms/android/cordova/Api.js
+Checking for saved plugins that haven't been added to the project
+Generating platform-specific config.xml from defaults for android at /home/iostream-code/Work/InternalApps/produksi/platforms/android/app/src/main/res/xml/config.xml
+Merging project's config.xml into platform-specific android config.xml
+[Gradle Properties] Preparing Configuration
+[Gradle Properties] Appending default configuration properties
+[Gradle Properties] Appending custom configuration properties
+[Gradle Properties] Updating and Saving File
+Merging and updating files from [www, platforms/android/platform_www] to platforms/android/app/src/main/assets/www
+Cannot read properties of null (reading 'replace')
+TypeError: Cannot read properties of null (reading 'replace')
+    at updateProjectStrings (/home/iostream-code/Work/InternalApps/produksi/node_modules/cordova-android/lib/prepare.js:353:58)
+    at updateProjectAccordingTo (/home/iostream-code/Work/InternalApps/produksi/node_modules/cordova-android/lib/prepare.js:273:5)
+    at /home/iostream-code/Work/InternalApps/produksi/node_modules/cordova-android/lib/prepare.js:69:21
+    at async Promise.all (index 0)
