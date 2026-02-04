@@ -64,6 +64,7 @@
         <preference name="FIREBASE_ANALYTICS_COLLECTION_ENABLED" value="true" />
         <preference name="FIREBASE_PERFORMANCE_COLLECTION_ENABLED" value="false" />
         <preference name="FIREBASE_CRASHLYTICS_COLLECTION_ENABLED" value="false" />
+        <preference name="FIREBASE_MESSAGING_ICON_COLOR" value="#045DAB" />
     </platform>
 
     <!-- ============================================ -->

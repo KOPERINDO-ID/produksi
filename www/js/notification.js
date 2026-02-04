@@ -34,8 +34,53 @@ var NotificationManager = (function () {
         storageKey: 'app_notifications',
         maxNotifications: 50,
         toastDuration: 5000,
-        debugMode: true
+        debugMode: true,
+        soundEnabled: true,
+        soundPath: 'audio/notification.mp3'
     };
+
+    // ========== AUDIO FUNCTIONS ==========
+    var notificationSound = null;
+
+    function initNotificationSound() {
+        try {
+            notificationSound = new Audio(config.soundPath);
+            notificationSound.volume = 1.0;
+            log('🔊 Notification sound initialized');
+        } catch (e) {
+            log('❌ Failed to initialize notification sound:', e);
+        }
+    }
+
+    function playNotificationSound() {
+        if (!config.soundEnabled) {
+            log('🔇 Sound disabled');
+            return;
+        }
+
+        try {
+            if (!notificationSound) {
+                initNotificationSound();
+            }
+
+            if (notificationSound) {
+                // Reset audio to beginning if already playing
+                notificationSound.currentTime = 0;
+
+                var playPromise = notificationSound.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(function () {
+                        log('🔊 Notification sound played');
+                    }).catch(function (error) {
+                        log('❌ Failed to play notification sound:', error);
+                    });
+                }
+            }
+        } catch (e) {
+            log('❌ Error playing notification sound:', e);
+        }
+    }
 
     // ========== UTILITY FUNCTIONS ==========
     function log(message, data) {
@@ -557,6 +602,9 @@ var NotificationManager = (function () {
             // Show toast notification
             showToastNotification(title, body);
 
+            // Play notification sound
+            playNotificationSound();
+
             log('✅ Notification processed');
         } catch (e) {
             log('❌ Error processing notification: ' + e);
@@ -622,6 +670,11 @@ var NotificationManager = (function () {
         } else {
             panel.style.display = 'block';
             renderNotificationList();
+
+            // Play sound if there are unread notifications
+            if (state.unreadCount > 0) {
+                playNotificationSound();
+            }
         }
     }
 
@@ -944,6 +997,26 @@ var NotificationManager = (function () {
             return state.isInitialized;
         },
 
+        // Sound control functions
+        enableSound: function () {
+            config.soundEnabled = true;
+            log('🔊 Notification sound enabled');
+        },
+
+        disableSound: function () {
+            config.soundEnabled = false;
+            log('🔇 Notification sound disabled');
+        },
+
+        isSoundEnabled: function () {
+            return config.soundEnabled;
+        },
+
+        testSound: function () {
+            log('🔊 Testing notification sound...');
+            playNotificationSound();
+        },
+
         // Debug functions
         debugInfo: function () {
             console.log('=== Notification Manager Debug Info ===');
@@ -955,6 +1028,8 @@ var NotificationManager = (function () {
             console.log('Total Notifications:', state.notifications.length);
             console.log('Initialized:', state.isInitialized);
             console.log('API URL:', config.apiUrl);
+            console.log('Sound Enabled:', config.soundEnabled);
+            console.log('Sound Path:', config.soundPath);
             console.log('========================================');
         },
 
