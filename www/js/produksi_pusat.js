@@ -812,7 +812,6 @@ function downloadPointProduksiPdf() {
 			var jumlah_point_produksi = 0;
 			$.each(data.data, function (i, item) {
 
-
 				if (item.status_produksi == 'selesai') {
 					if (item.status_pengirman == 'selesai') {
 						if (item.bantuan_cabang == 'Jakarta') {
@@ -1117,17 +1116,26 @@ function getDataMaterial(penjualan_id, penjualan_tanggal) {
 }
 
 function rubahCabangBantuan(penjualan_detail_performa_id, penjualan_id) {
-	console.log(jQuery('#bantuan_cabang_' + penjualan_id + '').val());
+	// Gunakan penjualan_detail_performa_id, bukan penjualan_id
+	const bantuanCabang = jQuery('#bantuan_cabang_' + penjualan_detail_performa_id).val();
+
+	console.log('Bantuan Cabang:', bantuanCabang);
+	console.log('Penjualan Detail Performa ID:', penjualan_detail_performa_id);
+
+	if (!bantuanCabang) {
+		app.dialog.alert('Silakan pilih cabang bantuan terlebih dahulu');
+		return;
+	}
+
 	jQuery.ajax({
 		type: 'POST',
-		url: "" + BASE_API + "/rubah-cabang-bantuan",
+		url: BASE_API + "/rubah-cabang-bantuan",
 		dataType: 'JSON',
 		data: {
 			penjualan_detail_performa_id: penjualan_detail_performa_id,
-			bantuan_cabang: jQuery('#bantuan_cabang_' + penjualan_detail_performa_id + '').val()
+			bantuan_cabang: bantuanCabang  // Sudah terisi dengan benar
 		},
 		beforeSend: function () {
-			$$('#detail_sales_data').html('');
 			app.dialog.preloader('Harap Tunggu');
 		},
 		success: function (data) {
@@ -1141,10 +1149,11 @@ function rubahCabangBantuan(penjualan_detail_performa_id, penjualan_id) {
 			}
 		},
 		error: function (xmlhttprequest, textstatus, message) {
+			app.dialog.close();
+			app.dialog.alert('Terjadi kesalahan: ' + message);
 		}
 	});
 }
-
 function detailPenjualanProduksi(penjualan_id) {
 	detail_sales_data = '';
 	jQuery.ajax({
