@@ -1328,6 +1328,7 @@ div[class*="col-border"] {
 
 /* Date */
 .spk-cell-date {
+  text-align: center;
   white-space: nowrap;
   color: #495057;
   border: 1px solid #dee2e6;
@@ -1335,7 +1336,7 @@ div[class*="col-border"] {
 
 /* Numbers */
 .spk-cell-number {
-  text-align: center;
+  text-align: right;
   font-weight: 600;
   color: #495057;
   border: 1px solid #dee2e6;
@@ -1345,10 +1346,10 @@ div[class*="col-border"] {
    BADGE (Terlambat)
    ============================================ */
 .spk-terlambat-badge {
-  display: inline-block;
+  display: inline-flex;
   padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 10px;
+  border-radius: 4px;
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
   white-space: nowrap;
@@ -1374,22 +1375,24 @@ div[class*="col-border"] {
    STATUS PRODUKSI
    ============================================ */
 .spk-status {
-  display: inline-block;
+  display: inline-flex;
   padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: capitalize;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
   white-space: nowrap;
+  text-align: center;
+  text-transform: capitalize;
 }
 
-.spk-status.selesai {
+.spk-status.proses {
   background: linear-gradient(135deg, #66bb6a, #43a047);
   color: #fff;
   box-shadow: 0 2px 4px rgba(102, 187, 106, 0.3);
 }
 
-.spk-status.proses {
+.spk-status.selesai {
   background: linear-gradient(135deg, #42a5f5, #1e88e5);
   color: #fff;
   box-shadow: 0 2px 4px rgba(66, 165, 245, 0.3);
@@ -1441,8 +1444,33 @@ div[class*="col-border"] {
 }
 
 /* ============================================
+   SUMMARY CARD WARNING
+   ============================================ */
+.spk-summary-card {
+  animation: warningPulse 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================
    ANIMATIONS
    ============================================ */
+
+/* Warning Pulse - untuk background card */
+@keyframes warningPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 2px 8px rgb(238, 90, 111, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 4px 20px rgb(238, 90, 111, 0.8),
+      0 0 30px rgb(238, 90, 111, 0.4);
+  }
+}
+
+/* Badge Glow */
 @keyframes badgeGlow {
 
   0%,

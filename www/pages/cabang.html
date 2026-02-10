@@ -787,7 +787,7 @@
         <div class="navbar-bg bg-dark-gray-medium"></div>
         <div class="navbar-inner">
           <div class="left">
-            <div class="title" style="color: #fff;">SPK Deadline</div>
+            <div class="title" style="color: #fff;">SPK Terlambat</div>
           </div>
           <div class="right">
             <a href="#" class="link popup-close" style="color: #fff;" data-popup="#spk-warning-popup">
@@ -801,21 +801,13 @@
       <div class="page-content" style="background: #1c1c1e;">
 
         <!-- Summary Cards -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px;">
-          <div
-            style="background: linear-gradient(135deg, #CFECFE, #3498db); border-radius: 10px; text-align: center; padding: 14px 8px;">
-            <div id="spk-total-item" style="font-size: 26px; font-weight: 700; color: #2d3a4f;">
-              0
-            </div>
-            <div style="font-size: 11px; color: rgba(45, 58, 79, 0.9); margin-top: 2px;">Total Item</div>
+        <div class="spk-summary-card display-flex flex-direction-column justify-content-center align-items-center"
+          style="background: #ec1c3b; border-radius: 10px; text-align: center; margin: 6px; padding: 14px 8px;">
+          <div id="spk-total-item" style="font-size: 26px; font-weight: 700; color: #fff;">
+            0
           </div>
-          <div
-            style="background: linear-gradient(135deg, #CFECFE, #3498db); border-radius: 10px; text-align: center; padding: 14px 8px;">
-            <div id="spk-total-spk" style="font-size: 26px; font-weight: 700; color: #2d3a4f;">
-              0
-            </div>
-            <div style="font-size: 11px; color: rgba(45, 58, 79, 0.9); margin-top: 2px;">Total SPK</div>
-          </div>
+          <div class="spk-total-note" style="font-size: 14px; color: #fff; margin-top: 2px;">SPK
+            Terlambat</div>
         </div>
 
         <!-- Tabel SPK Warning -->
@@ -829,12 +821,11 @@
                 <th style="min-width: 130px; height: 24px;">
                   SPK</th>
                 <th style="min-width: 140px; height: 24px;">
-                  Client</th>
+                  Nama</th>
                 <th style="min-width: 80px; height: 24px;">
                   Kota
                 </th>
                 <th style="min-width: 100px; height: 24px;">
-                  Tgl
                   Deadline</th>
                 <th style="min-width: 60px; height: 24px;">
                   Item
@@ -868,15 +859,15 @@
     <div class="page">
       <!-- Navbar -->
       <div class="navbar no-shadow">
-        <div class="navbar-bg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+        <div class="navbar-bg bg-dark-gray-medium"></div>
         <div class="navbar-inner">
           <div class="left">
+            <span id="spk-detail-title">Detail SPK</span>
+          </div>
+          <div class="right">
             <a href="#" class="link popup-close" style="color: #fff;" data-popup="#spk-detail-popup">
               <i class="f7-icons">xmark</i>
             </a>
-          </div>
-          <div class="title" style="color: #fff;">
-            <span id="spk-detail-title">Detail SPK</span>
           </div>
         </div>
       </div>
@@ -884,29 +875,16 @@
       <!-- Page Content -->
       <div class="page-content" style="background: #1c1c1e;">
 
-        <!-- Detail Subheader -->
-        <div id="spk-detail-subheader"
-          style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0 16px 16px 16px;">
-          <p style="margin: 0 0 4px 0; color: rgba(255,255,255,0.9); font-size: 12px;">
-            <i class="f7-icons" style="font-size: 11px;">person_fill</i>
-            <span id="spk-detail-client">-</span>
-          </p>
-          <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 11px;">
-            <i class="f7-icons" style="font-size: 10px;">map_pin_fill</i>
-            <span id="spk-detail-kota">-</span>
-          </p>
-        </div>
-
         <!-- Tabel Detail -->
-        <div class="spk-table-wrap">
+        <div class="spk-table-wrap" style="margin-top: 6px;">
           <table class="spk-table">
             <thead>
               <tr>
-                <th style="min-width: 40px;">#</th>
+                <th style="min-width: 40px;">No</th>
                 <th style="min-width: 160px;">Produk</th>
                 <th style="min-width: 100px;">Deadline</th>
                 <th style="min-width: 80px;">Status</th>
-                <th style="min-width: 100px;">Qty Belum</th>
+                <th style="min-width: 100px;">Jumlah</th>
                 <th style="min-width: 70px;">Jenis</th>
                 <th style="min-width: 90px;">Terlambat</th>
                 <th style="min-width: 140px;">Keterangan</th>

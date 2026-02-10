@@ -206,6 +206,51 @@ function loadScheduledTriggered() {
 }
 
 // ============================================
+// HELPER FUNCTIONS: Formatting
+// ============================================
+function formatSpkDate(dateString) {
+    if (!dateString) return '-';
+    var m = moment(dateString);
+    if (!m.isValid()) return '-';
+
+    var day = m.format('DD');
+    var monthMap = {
+        '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr',
+        '05': 'Mei', '06': 'Jun', '07': 'Jul', '08': 'Agt',
+        '09': 'Sep', '10': 'Okt', '11': 'Nov', '12': 'Des'
+    };
+    var month = monthMap[m.format('MM')];
+    var year = m.format('YY');
+
+    return day + '-' + month + '-' + year;
+}
+
+function formatSpkNumber(penjualanId, tanggal) {
+    if (!penjualanId) return '-';
+
+    // Hilangkan 4 karakter paling kiri dari penjualanId
+    var formattedPenjualanId = penjualanId.toString().substring(4);
+
+    var prefix = '';
+    if (tanggal) {
+        var m = moment(tanggal);
+        if (m.isValid()) {
+            prefix = m.format('DDMMYY') + '-';
+        }
+    }
+
+    return prefix + formattedPenjualanId;
+}
+
+function formatNumber(num) {
+    if (num === null || num === undefined) return '0';
+    var n = parseInt(num);
+    if (isNaN(n)) return '0';
+
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+// ============================================
 // FILTER: 1 tahun terakhir
 // ============================================
 function getOneYearAgoDate() {
@@ -281,8 +326,8 @@ function openSpkWarningPopup(summary, details, filterInfo) {
     // Summary numbers
     var totalItemEl = document.getElementById('spk-total-item');
     var totalSpkEl = document.getElementById('spk-total-spk');
-    if (totalItemEl) totalItemEl.textContent = details.length;
-    if (totalSpkEl) totalSpkEl.textContent = summary.length;
+    if (totalItemEl) totalItemEl.textContent = formatNumber(details.length);
+    if (totalSpkEl) totalSpkEl.textContent = formatNumber(summary.length);
 
     // Build table rows
     var tbody = document.getElementById('spk-warning-tbody');
@@ -294,16 +339,18 @@ function openSpkWarningPopup(summary, details, filterInfo) {
         var badgeClass = hari > 7 ? 'red' : (hari > 3 ? 'orange' : 'blue');
 
         var tglAcuan = spk.tanggal_acuan_terdekat || spk.tgl_kirim_cabang_terdekat;
-        var tglDisplay = tglAcuan ? moment(tglAcuan).format('DD MMM YYYY') : '-';
+        var tglDisplay = formatSpkDate(tglAcuan);
+
+        var noSpkFormatted = formatSpkNumber(spk.penjualan_id, tglAcuan);
 
         rows += '<tr class="spk-row-link table-body-theme" style="height: 36px;" onclick="showSpkDeadlineDetail(\'' + spk.penjualan_id + '\')">';
         rows += '<td class="spk-cell-rownum">' + (idx + 1) + '</td>';
-        rows += '<td class="spk-cell-spk">' + (spk.no_spk || spk.penjualan_id) + '</td>';
+        rows += '<td class="spk-cell-spk">' + noSpkFormatted + '</td>';
         rows += '<td class="spk-cell-client">' + (spk.client_nama || '-') + '</td>';
         rows += '<td class="spk-cell-kota">' + (spk.client_kota || '-') + '</td>';
         rows += '<td class="spk-cell-date">' + tglDisplay + '</td>';
-        rows += '<td class="spk-cell-number">' + (spk.total_item || 0) + '</td>';
-        rows += '<td class="spk-cell-number">' + (spk.total_qty_belum_kirim || 0) + '</td>';
+        rows += '<td class="spk-cell-number">' + formatNumber(spk.total_item || 0) + '</td>';
+        rows += '<td class="spk-cell-number">' + formatNumber(spk.total_qty_belum_kirim || 0) + '</td>';
         rows += '<td style="text-align: center;"><span class="spk-terlambat-badge ' + badgeClass + '">' + hari + ' Hari</span></td>';
         rows += '</tr>';
     });
@@ -364,7 +411,10 @@ function openSpkDetailPopup(details, filterInfo) {
     var clientEl = document.getElementById('spk-detail-client');
     var kotaEl = document.getElementById('spk-detail-kota');
 
-    if (titleEl) titleEl.textContent = first.no_spk || first.penjualan_id || 'Detail SPK';
+    var tglAcuanHeader = first.tanggal_acuan || first.tgl_kirim_cabang || first.penjualan_tanggal_kirim;
+    var headerSpkNumber = formatSpkNumber(first.penjualan_id, tglAcuanHeader);
+
+    if (titleEl) titleEl.textContent = headerSpkNumber;
     if (clientEl) clientEl.textContent = first.client_nama || '-';
     if (kotaEl) kotaEl.textContent = first.client_kota || '-';
 
@@ -377,11 +427,11 @@ function openSpkDetailPopup(details, filterInfo) {
         var hari = item.hari_terlambat || 0;
         var badgeClass = hari > 7 ? 'red' : (hari > 3 ? 'orange' : 'blue');
 
-        var namaProduk = item.nama_produk || item.produk_keterangan_kustom || 'Tanpa nama';
+        var namaProduk = item.nama_produk || '-';
 
         var tglAcuan = item.tanggal_acuan || item.tgl_kirim_cabang ||
             (item.penjualan_tanggal_kirim ? moment(item.penjualan_tanggal_kirim).format('YYYY-MM-DD') : null);
-        var tglDisplay = tglAcuan ? moment(tglAcuan).format('DD MMM YYYY') : '-';
+        var tglDisplay = formatSpkDate(tglAcuan);
 
         var deadlineSrc = '';
         if (item.tgl_kirim_cabang) deadlineSrc = 'Cabang';
@@ -393,19 +443,18 @@ function openSpkDetailPopup(details, filterInfo) {
         else if (status === 'proses') statusClass = 'proses';
         else if (status === 'body') statusClass = 'body';
 
-        var qtyBelum = (item.qty_belum_kirim || 0) + ' / ' + (item.penjualan_qty || 0);
-        var keterangan = item.detail_keterangan || '-';
+        var keterangan = item.produk_keterangan_kustom || '-';
 
         rows += '<tr>';
         rows += '<td class="spk-cell-rownum">' + (idx + 1) + '</td>';
         rows += '<td class="spk-cell-client">' + namaProduk + '</td>';
         rows += '<td class="spk-cell-date">' + tglDisplay;
-        if (deadlineSrc) rows += '<br><span style="font-size:9px;color:rgba(255,255,255,0.4);">' + deadlineSrc + '</span>';
+        // if (deadlineSrc) rows += '<br><span style="font-size:9px;color:rgba(255,255,255,0.4);">' + deadlineSrc + '</span>';
         rows += '</td>';
-        rows += '<td><span class="spk-status ' + statusClass + '">' + status + '</span></td>';
-        rows += '<td class="spk-cell-qty-belum">' + qtyBelum + '</td>';
+        rows += '<td style="text-align: center;"><span class="spk-status ' + statusClass + '">' + (status !== 'body' ? status : 'SPK') + '</span></td>';
+        rows += '<td class="spk-cell-qty-belum">' + formatNumber(item.qty_belum_kirim || 0) + '</td>';
         rows += '<td class="spk-cell-kota">' + (item.penjualan_jenis || '-') + '</td>';
-        rows += '<td><span class="spk-terlambat-badge ' + badgeClass + '">' + hari + ' Hari</span></td>';
+        rows += '<td style="text-align: center;"><span class="spk-terlambat-badge ' + badgeClass + '">' + hari + ' Hari</span></td>';
         rows += '<td class="spk-cell-keterangan">' + keterangan + '</td>';
         rows += '</tr>';
     });
