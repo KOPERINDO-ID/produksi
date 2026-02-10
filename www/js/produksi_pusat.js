@@ -2160,10 +2160,13 @@ function getDataProduksi() {
 						data_produksi += '<td style="border-bottom: solid 1px; border-right: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="left">';
 
 						let bg_color_select = 'background-color:#121212; color:white;';
+
 						if (val.bantuan_cabang != null) {
-							bg_color_select = (val.bantuan_cabang != 'Milano')
-								? 'background-color:#b20000; color:white;'
-								: 'background-color:#ed1b99; color:white;';
+							bg_color_select = (val.bantuan_cabang == 'Jakarta')
+								? 'background-color:#fff; color:#000;'
+								: (val.bantuan_cabang != 'Milano')
+									? 'background-color:#b20000; color:white;'
+									: 'background-color:#ed1b99; color:white;';
 						}
 
 						data_produksi += '<select onchange="rubahCabangBantuan(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_id + '\');" style="width:100%; float:center; ' + bg_color_select + '" name="bantuan_cabang_' + val.penjualan_detail_performa_id + '" id="bantuan_cabang_' + val.penjualan_detail_performa_id + '">';
@@ -4401,12 +4404,12 @@ function getDataProduksiCabangPusatSpk() {
 						data_produksi += '<td>';
 
 						if (val.bantuan_cabang != null) {
-							var bg_color_select = 'background-color:#b20000; color:white;';
-
-						} else {
-							var bg_color_select = 'background-color:#121212; color:white;';
+							bg_color_select = (val.bantuan_cabang == 'Jakarta')
+								? 'background-color:#fff; color:#000;'
+								: (val.bantuan_cabang != 'Milano')
+									? 'background-color:#b20000; color:white;'
+									: 'background-color:#ed1b99; color:white;';
 						}
-
 
 						data_produksi += '	<select onchange="rubahCabangBantuanPusatSpk(\'' + val.penjualan_detail_performa_id + '\',\'' + val.penjualan_id + '\');" style="width:100%; float:center; ' + bg_color_select + '" name="bantuan_cabang_pusat_spk_' + val.penjualan_detail_performa_id + '" id="bantuan_cabang_pusat_spk_' + val.penjualan_detail_performa_id + '"  >';
 

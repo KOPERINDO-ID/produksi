@@ -125,6 +125,7 @@ var app = new Framework7({
             chooseDataProduksiCabangRedirect('pusat');
             dateRangeDeclarationProduksiCabangPusat();
             getYearProduksiSelesai();
+            initSpkWarning();
             return app.views.main.router.navigate('/cabang');
           }, 100);
         }

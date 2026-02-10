@@ -867,17 +867,21 @@ div[class*="col-border"] {
 /* Custom CSS by Aryakk */
 
 .table-header-theme {
-  color: #1C1C1D;
-  background-color: #CFECFE;
-  border-top: solid 1px;
-  border-left: solid 1px;
-  border-color: #737373;
-  font-weight: bold;
+  color: #1C1C1D !important;
+  background-color: #CFECFE !important;
+  border-top: solid 1px !important;
+  border-left: solid 1px !important;
+  border-color: #737373 !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  text-align: center !important;
 }
 
 .table-body-theme {
-  color: #1C1C1D;
-  background-color: #FFFFFF;
+  color: #1C1C1D !important;
+  background-color: #FFFFFF !important;
+  font-size: 14px !important;
+  ;
 }
 
 .btn-primary-theme {
@@ -1154,6 +1158,339 @@ div[class*="col-border"] {
 
 .notif-panel-body::-webkit-scrollbar-thumb:hover {
   background: #4a4a4c;
+}
+
+/*  
+ * ============================================
+ * SPK WARNING POPUP STYLES
+ * ============================================
+ * F7 v7 fullscreen popup + table layout
+ */
+
+/* ============================================
+   POPUP FULLSCREEN
+   ============================================ */
+#spk-warning-popup,
+#spk-detail-popup {
+  --f7-popup-tablet-width: 100%;
+  --f7-popup-tablet-height: 100%;
+}
+
+#spk-warning-popup .page-content,
+#spk-detail-popup .page-content {
+  background: #1c1c1e;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+#spk-warning-popup .navbar,
+#spk-detail-popup .navbar {
+  --f7-navbar-text-color: #fff;
+  --f7-navbar-link-color: #fff;
+}
+
+#spk-warning-popup .navbar .title,
+#spk-detail-popup .navbar .title {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ============================================
+   TABLE WRAPPER - horizontal scroll
+   ============================================ */
+.spk-table-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 12px 0;
+  margin: 0 6px 6px 6px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   TABLE
+   ============================================ */
+.spk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: #2c3e50;
+  table-layout: auto;
+  background: #fff;
+}
+
+/* ----- Head ----- */
+.spk-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #CFECFE;
+  color: #1c1c1d;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ----- Body rows ----- */
+.spk-table tbody tr {
+  border-bottom: 1px solid #dee2e6;
+  transition: background 0.15s ease;
+  background: #fff;
+}
+
+.spk-table tbody tr:active {
+  background: #e9ecef;
+}
+
+.spk-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Alternating rows - subtle */
+.spk-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.spk-table tbody tr:nth-child(even):active {
+  background: #e9ecef;
+}
+
+.table-body-theme {
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table-body-theme:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.table-body-theme:active {
+  background: #e9ecef;
+}
+
+/* ----- Cells ----- */
+.spk-table tbody td {
+  padding: 10px 12px;
+  vertical-align: middle;
+  font-size: 14px;
+  line-height: 1.4;
+  border: 1px solid #dee2e6;
+  color: #2c3e50;
+}
+
+/* Clickable row */
+.spk-table tbody tr.spk-row-link {
+  cursor: pointer;
+}
+
+.spk-table tbody tr.spk-row-link:hover {
+  background: #e9ecef;
+}
+
+.spk-table tbody tr.spk-row-link:active {
+  background: #dee2e6;
+}
+
+/* ============================================
+   TABLE CELL HELPERS
+   ============================================ */
+
+/* No SPK - bold */
+.spk-cell-spk {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+  border: 1px solid #dee2e6;
+}
+
+/* Client name - wrap allowed */
+.spk-cell-client {
+  color: #495057;
+  max-width: 160px;
+  border: 1px solid #dee2e6;
+}
+
+/* Kota */
+.spk-cell-kota {
+  color: #6c757d;
+  white-space: nowrap;
+  border: 1px solid #dee2e6;
+}
+
+/* Date */
+.spk-cell-date {
+  white-space: nowrap;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+/* Numbers */
+.spk-cell-number {
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+/* ============================================
+   BADGE (Terlambat)
+   ============================================ */
+.spk-terlambat-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.spk-terlambat-badge.red {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+}
+
+.spk-terlambat-badge.orange {
+  background: linear-gradient(135deg, #ffa726, #fb8c00);
+  box-shadow: 0 2px 4px rgba(255, 167, 38, 0.3);
+}
+
+.spk-terlambat-badge.blue {
+  background: linear-gradient(135deg, #42a5f5, #1e88e5);
+  box-shadow: 0 2px 4px rgba(66, 165, 245, 0.3);
+}
+
+/* ============================================
+   STATUS PRODUKSI
+   ============================================ */
+.spk-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.spk-status.selesai {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(102, 187, 106, 0.3);
+}
+
+.spk-status.proses {
+  background: linear-gradient(135deg, #42a5f5, #1e88e5);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(66, 165, 245, 0.3);
+}
+
+.spk-status.body {
+  background: linear-gradient(135deg, #ffa726, #fb8c00);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(255, 167, 38, 0.3);
+}
+
+.spk-status.default {
+  background: linear-gradient(135deg, #bdbdbd, #9e9e9e);
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(189, 189, 189, 0.3);
+}
+
+/* ============================================
+   QTY BELUM KIRIM (merah)
+   ============================================ */
+.spk-cell-qty-belum {
+  color: #e74c3c;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+/* ============================================
+   KETERANGAN
+   ============================================ */
+.spk-cell-keterangan {
+  color: #6c757d;
+  font-size: 11px;
+  max-width: 180px;
+  word-break: break-word;
+  border: 1px solid #dee2e6;
+}
+
+/* ============================================
+   ROW NUMBER
+   ============================================ */
+.spk-cell-rownum {
+  color: #6c757d;
+  font-size: 11px;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #dee2e6;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes badgeGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 2px 4px currentColor;
+  }
+
+  50% {
+    box-shadow: 0 4px 12px currentColor;
+  }
+}
+
+/* ============================================
+   SCROLLBAR (table horizontal)
+   ============================================ */
+.spk-table-wrap::-webkit-scrollbar {
+  height: 8px;
+}
+
+.spk-table-wrap::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.spk-table-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
+  border-radius: 4px;
+}
+
+.spk-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.spk-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+}
+
+.spk-empty-state i {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.15);
 }
 
 /* End of custom CSS by Aryakk */
