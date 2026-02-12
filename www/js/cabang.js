@@ -458,7 +458,6 @@ function doSearchProduksiByPerusahaanCabang(text) {
 }
 
 function chooseDataProduksiCabangRedirect(cabang_value) {
-
 	var pusat = 'https://tasindo-sale-webservice.digiseminar.id/api';
 	localStorage.setItem('server_pilihan_cabang', pusat);
 	console.log(cabang_value);
