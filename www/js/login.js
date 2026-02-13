@@ -98,6 +98,7 @@ function getDataUser() {
 						reloadCurrent: false,
 						ignoreCache: true
 					});
+					initSpkWarning();
 				}
 			}, 1000);
 		},

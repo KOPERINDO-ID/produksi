@@ -458,7 +458,6 @@ function doSearchProduksiByPerusahaanCabang(text) {
 }
 
 function chooseDataProduksiCabangRedirect(cabang_value) {
-
 	var pusat = 'https://tasindo-sale-webservice.digiseminar.id/api';
 	localStorage.setItem('server_pilihan_cabang', pusat);
 	console.log(cabang_value);
@@ -903,7 +902,7 @@ function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_i
 			}
 
 			app.dialog.close();
-			console.log(data.data.length);
+			console.log("TUS: ", data.data);
 			if (data.data.length != 0) {
 				jQuery.each(data.data, function (i, val) {
 					detail_sales_data += '<table  width="100%" style="border-collapse: collapse; border:1px solid gray;" border="1">';
@@ -913,6 +912,9 @@ function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_i
 					detail_sales_data += '   Produk #1';
 					detail_sales_data += ' </td>';
 					detail_sales_data += '</tr>';
+
+					console.log("TEST: ", val);
+
 					if (val.style != null && val.style != 'none') {
 						var style = val.style.replace(',', '<br>');
 					} else {
@@ -924,8 +926,7 @@ function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_i
 						var keterangan_fix = '';
 					}
 
-
-					if (val.gambar.substring(0, 5) == "koper") {
+					if (val.gambar.substring(0, 5) == "koper" || val.gambar_xinyao != null) {
 						var path_image_cabang = image_server + '/product_image_new';
 					} else {
 						var path_image_cabang = image_server + '/performa_image';
@@ -939,7 +940,7 @@ function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_i
 
 					detail_sales_data += ' <tr>';
 					detail_sales_data += '   <td colspan="1" class="label-cell text-align-center" width="40%">' + val.penjualan_jenis + '<br>';
-					detail_sales_data += '   	<img onclick="zoom_view(this.src);" width="100%" src="' + path_image_cabang + '/' + val.gambar + '" />';
+					detail_sales_data += '   	<img onclick="zoom_view(this.src);" width="100%" src="' + path_image_cabang + '/' + ((val.gambar_xinyao == null && val.produk_id_xinyao == null) ? val.gambar : val.gambar_xinyao) + '" />';
 					detail_sales_data += '	 </td>';
 					detail_sales_data += '   <td colspan="2" class="label-cell text-align-center" width="60%" style="white-space: pre;">' + val.produk_keterangan_kustom + '<br>' + style + '<br>' + kode_warna + '<br><font color="red">' + keterangan_fix + '</font></td>';
 					detail_sales_data += '</tr>';

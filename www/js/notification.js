@@ -694,8 +694,8 @@ var NotificationManager = (function () {
         if (statusEl) {
             statusEl.textContent = notification.is_read == 1 ? 'Dibaca' : 'Belum Dibaca';
             statusEl.style.background = notification.is_read == 1 ?
-                'rgba(76, 175, 80, 0.2)' : 'rgba(0, 122, 255, 0.2)';
-            statusEl.style.color = notification.is_read == 1 ? '#4caf50' : '#007aff';
+                'rgba(0, 122, 255, 0.2)' : 'rgba(234, 74, 10, 0.2)';
+            statusEl.style.color = notification.is_read == 1 ? '#007aff' : '#ea480a';
         }
 
         // Mark as read
