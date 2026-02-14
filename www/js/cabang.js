@@ -876,9 +876,10 @@ function rubahStatusProduksi(penjualan_detail_perofrma_id, penjualan_id, status)
 
 function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_id) {
 	detail_sales_data = '';
+
 	var server_pilihan_cabang = localStorage.getItem("server_pilihan_cabang");
 	var image_server = server_pilihan_cabang.replace('/api', '');
-	console.log(image_server);
+
 	jQuery.ajax({
 		type: 'POST',
 		url: BASE_API + "/get-penjualan-detail-performa-produksi-new",
@@ -902,7 +903,6 @@ function detailPenjualanProduksiCabang(penjualan_id, penjualan_detail_performa_i
 			}
 
 			app.dialog.close();
-			console.log("TUS: ", data.data);
 			if (data.data.length != 0) {
 				jQuery.each(data.data, function (i, val) {
 					detail_sales_data += '<table  width="100%" style="border-collapse: collapse; border:1px solid gray;" border="1">';
