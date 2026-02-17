@@ -900,131 +900,321 @@
     </div>
   </div>
 
-  <div class="page-content theme-dark">
-
-    <div class="card">
-      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
-        <!-- <div class="col col-border text-bold"><a class="text-add-colour-white" href="/produksi">SPK</a></div> -->
-        <div onclick="chooseDataProduksiCabangRedirect('pusat');"
-          class="col col-border text-bold surabayaFilterCabangBtn bg-dark-gray-medium"><a class="text-add-colour-white"
-            href="/cabang">XTRA</a></div>
-        <div onclick="chooseDataProduksiCabangRedirect('extra');" class="col col-border text-bold extraFilterCabangBtn">
-          <a class="text-add-colour-white">GROSIR</a>
+  <!-- POPUP DETAIL INVOICE/SPK -->
+  <div class="popup popup-detail-invoice">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg bg-dark-gray-medium"></div>
+          <div class="navbar-inner sliding">
+            <div class="title" style="color: white; font-weight: bold;">
+              <span id="popup_spk_no" style="font-weight: 700; color: white;font-size: 14px;">-</span> |
+              <span id="popup_client" style="color: white;font-size: 14px;">-</span>
+            </div>
+            <div class="right">
+              <a href="#" class="link popup-close">
+                <i class="f7-icons" style="font-size: 28px; color: white;">xmark</i>
+              </a>
+            </div>
+          </div>
         </div>
-        <!-- <div class="col col-border text-bold"><a class="text-add-colour-white" href="/absensi">ABSENSI</a>
-        </div> -->
-      </div>
-    </div>
+
+        <div class="page-content">
+          <div class="block" style="margin: 0; padding: 10px;">
+
+            <!-- ========================================== -->
+            <!-- FOTO UPLOAD CARD -->
+            <!-- ========================================== -->
+            <div class="card"
+              style="margin: 0px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+              <div class="card-content" style="padding: 0;">
+
+                <!-- Preview Image - Full Width -->
+                <div id="foto_preview_container"
+                  style="position: relative; width: 100%; background-color: #f5f7fa; cursor: pointer;"
+                  onclick="viewFullInvoiceImage()">
+                  <img id="foto_preview" onclick="zoom_view(this.src);"
+                    src="https://tasindo-sale-webservice.digiseminar.id/foto_invoice/no_image_invoice.png"
+                    style="width: 100%; height: auto; max-height: 250px; object-fit: contain; display: block;"
+                    alt="Preview Foto">
+
+                  <!-- Placeholder (hidden by default) -->
+                  <div id="foto_placeholder" style="width: 100%; height: 250px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+                   border: 3px dashed #667eea; display: none; 
+                   flex-direction: column; align-items: center; justify-content: center; color: #667eea;">
+                    <i class="f7-icons" style="font-size: 64px; margin-bottom: 10px;">camera_on_rectangle</i>
+                    <p style="margin: 0; font-size: 14px; font-weight: 500;">Tap upload untuk menambah foto</p>
+                  </div>
+                </div>
+
+                <!-- Input Section with Padding -->
+                <div style="padding: 6px;">
+
+                  <!-- Hidden File Input -->
+                  <input type="file" id="file_bukti_pembayaran" accept="image/*" style="display: none;"
+                    onchange="previewFotoBukti(event)">
+
+                  <!-- Upload Buttons -->
+                  <div class="row no-gap-sop">
+                    <!-- Button FOTO (Camera) -->
+                    <div class="col-50">
+                      <button
+                        class="button button-fill button-raised btn-function  bg-dark-gray-young text-add-colour-black-soft"
+                        style="margin-bottom:6px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);"
+                        onclick="openCameraForInvoice()">
+                        <div
+                          style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                          <span style="font-size: 14px; line-height: 1.2;">FOTO</span>
+                        </div>
+                      </button>
+                    </div>
+
+                    <!-- Button FILE (Gallery) -->
+                    <div class="col-50">
+                      <button
+                        class="button button-fill button-raised btn-function bg-dark-gray-young text-add-colour-black-soft"
+                        style="margin-bottom:6px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);"
+                        onclick="openGalleryForInvoice()">
+                        <div
+                          style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                          <span style="font-size: 14px; line-height: 1.2;">FILE</span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Text Validasi Foto -->
+                  <div id="error_foto"
+                    style="display: none; color: red; font-size: 12px; font-weight: 600; margin-top: -10px; margin-bottom: 6px;">
+                    <i class="f7-icons"
+                      style="font-size: 14px; vertical-align: middle;">exclamationmark_triangle_fill</i>
+                    Foto bukti pembayaran harus diupload!
+                  </div>
+
+                  <!-- NO. Invoice -->
+                  <div style="position: relative; margin-bottom: 6px;">
+                    <input type="text" id="detail_no_invoice" placeholder="-" style="text-align: right; background-color: white; border-radius: 8px;
+           padding: 10px 15px 10px 85px;
+           font-weight: 700; color: #28a745; font-size: 16px;
+           border: 2px solid #667eea; width: 100%; box-sizing: border-box;">
+                    <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+               font-weight: 600; font-size: 14px; color: #333333; pointer-events: none;">
+                      No. Invoice
+                    </span>
+                  </div>
+
+                  <!-- Text Validasi No. Invoice -->
+                  <div id="error_no_invoice" style="display: none; color: red; font-size: 12px; font-weight: 600;
+         margin-top: -10px; margin-bottom: 6px;">
+                    <i class="f7-icons" style="font-size: 14px; vertical-align: middle;">
+                      exclamationmark_triangle_fill
+                    </i>
+                    No. Invoice harus diisi!
+                  </div>
+
+                  <!-- NO. SJ -->
+                  <div style="position: relative; margin-bottom: 6px;">
+                    <input type="text" id="detail_no_sj" placeholder="-" style="text-align: right; background-color: white; border-radius: 8px;
+           padding: 10px 15px 10px 85px;
+           font-weight: 700; color: #28a745; font-size: 16px;
+           border: 2px solid #667eea; width: 100%; box-sizing: border-box;">
+                    <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+               font-weight: 600; font-size: 14px; color: #333333; pointer-events: none;">
+                      No. SJ
+                    </span>
+                  </div>
+
+                  <!-- Text Validasi No. SJ -->
+                  <div id="error_sj" style="display: none; color: red; font-size: 12px; font-weight: 600;
+         margin-top: -10px; margin-bottom: 6px;">
+                    <i class="f7-icons" style="font-size: 14px; vertical-align: middle;">
+                      exclamationmark_triangle_fill
+                    </i>
+                    No. SJ harus diisi!
+                  </div>
+
+                  <!-- NOMINAL with Label Inside Input -->
+                  <div style="position: relative; margin-bottom: 6px;">
+                    <input type="text" id="detail_nominal_bayar_invoice" placeholder="0" oninput="onNominalChange()"
+                      style="text-align: right; background-color: white; border-radius: 8px; padding: 10px 15px 10px 85px; 
+                           font-weight: 700; color: #28a745; font-size: 16px; 
+                           border: 2px solid #667eea; width: 100%; box-sizing: border-box;">
+                    <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); 
+                               font-weight: 600; font-size: 14px; color: #333333; pointer-events: none;">
+                      Nominal
+                    </span>
+                  </div>
+
+                  <!-- Text Validasi Nominal -->
+                  <div id="error_nominal"
+                    style="display: none; color: red; font-size: 12px; font-weight: 600; margin-top: -10px; margin-bottom: 6px;">
+                    <i class="f7-icons"
+                      style="font-size: 14px; vertical-align: middle;">exclamationmark_triangle_fill</i>
+                    Nominal invoice harus diisi!
+                  </div>
+
+                  <!-- KETERANGAN (OPTIONAL) -->
+                  <div style="position: relative; margin-bottom: 10px;">
+                    <textarea id="detail_keterangan_invoice" rows="3" placeholder="-" style="width: 100%; box-sizing: border-box;
+           background-color: white; border-radius: 8px;
+           padding: 12px 15px 12px 85px;
+           font-weight: 500; color: #111827; font-size: 14px;
+           border: 2px solid #667eea; resize: vertical;text-align: right;"></textarea>
+
+                    <span style="position: absolute; left: 15px; top: 14px;
+               font-weight: 600; font-size: 14px; color: #333333;
+               pointer-events: none;">
+                      Keterangan
+                    </span>
+                  </div>
 
 
-    <div class="card" style=" width:98%; margin-top:-6px;margin-bottom: 0px;">
-      <table width="98%;" cellspacing="0" cellpadding="1" style="border-color:gray;">
-        <tr class="bg-dark-gray-young">
-          <th style="padding:4px;" colspan="7" align="left" width="70%">
-            Data Produksi
-          </th>
-          <!-- <th align="right" width="15%">
-            <button data-popup=".produksi-selesai-popup-cabang" class="popup-open"
-              onclick="produksiSelesaiPopupCabang();"
-              style="background-color: #4242d6; font-weight:bold; border-radius: 4px; color:white;">Selesai</button>
-          </th> -->
-          <th align="right" width="15%">
-            <i class="text-align-right f7-icons" id="arsipBtn" onclick="arsipSalesLocalstorage();"
-              style="font-size:30px;">alarm</i>
-          </th>
-          <th style="padding-right:20px;" align="right" width="15%">
-            <i class="text-align-right f7-icons" onclick="refreshDataCabang();"
-              style="font-size:30px; color:white; margin-right:-9px;">arrow_2_circlepath_circle_fill</i>
-          </th>
-        </tr>
-      </table>
-    </div>
-    <div class="card-content">
-      <div style="height:55px;width:96%; margin-left:8px;">
-        <table cellspacing="1" cellpadding="1" style=" border-collapse: collapse; border-color:gray;" width="100%">
-          <thead class="bg-dark-gray-medium text-align-center">
-            <tr>
-              <th colspan="2" style="padding:5px;">
-                <center>
-                  <input onkeyup="doSearchProduksiByPerusahaanCabang()" type="text"
-                    style="border-radius:3px; padding:6px; width:100%;  color:black; background-color:lightgray;"
-                    id="perusahaan_produksi_filter_cabang" name="perusahaan_produksi_filter_cabang"
-                    placeholder="Cari Perusahaan">
-                </center>
-              </th>
-              <th colspan="1" style="padding:5px;">
-                <center>
-                  <input onkeyup="doSearchProduksiTypeCabang()" type="text" placeholder="Cari Type"
-                    style="border-radius:3px; padding:6px; width:100%; color:black; background-color:lightgray;"
-                    id="type_produksi_filter_cabang" name="type_produksi_filter_cabang" />
-                </center>
-              </th>
-              <!-- 
-              <th colspan="2" style="padding:5px;">
-                <center>
-                  <input readonly="readonly" type="text" placeholder="Tgl Selesai Produksi"
-                    style="border-radius:3px; padding:6px; width:100%; color:black; background-color:lightgray;"
-                    id="range-produksi-cabang" name="range-produksi-cabang" />
-                </center>
-              </th>
-            -->
-            </tr>
-          </thead>
-        </table>
-      </div>
-      <div style="overflow-x:auto;width:96%; margin-top:-12px; margin-left:8px;">
-        <table cellspacing="0" cellpadding="0" style=" border-collapse: collapse; border-color:gray;" width="1200px">
-          <thead class="bg-dark-gray-medium text-align-center">
-            <tr>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                align="center" width="5%">Shipment</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                align="center" width="3%">No</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="5%">
-                Dateline</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="9%">
-                SPK</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;" width="9%">
-                Nama</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="13%">
-                Type</th>
-              <th align="center" class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="13%">Spesifikasi</th>
-              <th align="center" class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="14%">Keterangan</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="5%">Jumlah</th>
-              <th align="center" class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="5%">Sisa</th>
-              <!-- <th align="center" class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="8%">Wilayah</th> -->
-              <th align="center" class="label-cell" colspan="2"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="6%">Upload</th>
-              <th align="center" class="label-cell"
-                style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                width="6%">History</th>
-            </tr>
-          </thead>
-          <tbody class="text-align-center" id="produk_data_cabang">
-          </tbody>
-        </table>
-        <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
+                  <!-- Button SIMPAN -->
+                  <button class="button button-fill button-raised button-large btn-function" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+                       text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);"
+                    onclick="simpanPembayaran()">
+                    <i class="f7-icons" style="font-size: 18px; margin-right: 8px;">checkmark_circle_fill</i>
+                    SIMPAN
+                  </button>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- Detail Items Card -->
+            <!-- ========================================== -->
+            <div class="card" style="margin: 10px 0; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <div class="card-header bg-dark-gray-medium header-card-table" style="border-bottom: 1px solid #e9ecef;">
+                <h3 style="margin: 0; font-size: 16px; font-weight: bold; color: white;">
+                  <i class="f7-icons" style="vertical-align: middle; color: white;">list_bullet</i>
+                  Detail Items
+                </h3>
+              </div>
+              <div class="card-content" style="padding: 0;">
+                <div style="overflow-x:auto;">
+                  <table cellspacing="0" cellpadding="0" width="100%"
+                    style="font-size: 12px; border-collapse: collapse;">
+                    <thead class="bg-dark-gray-medium">
+                      <tr>
+                        <th
+                          style="border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; text-align: center; padding: 10px; font-weight: 700;">
+                          No</th>
+                        <th
+                          style="border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; text-align: left; padding: 10px; font-weight: 700;">
+                          Produk</th>
+                        <th
+                          style="border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; text-align: center; padding: 10px; font-weight: 700;">
+                          Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody id="popup_detail_items">
+                      <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <div class="page-content theme-dark">
+    <div class="card">
+      <div class="display-flex flex-direction-column no-gap">
+
+        <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
+          <div onclick="chooseDataProduksiCabangRedirect('pusat');"
+            class="col col-border text-bold surabayaFilterCabangBtn bg-dark-gray-medium"><a
+              class="text-add-colour-white" href="/cabang">XTRA</a></div>
+          <div onclick="chooseDataProduksiCabangRedirect('extra');"
+            class="col col-border text-bold extraFilterCabangBtn">
+            <a class="text-add-colour-white">GROSIR</a>
+          </div>
+        </div>
+
+        <div class="display-flex justify-content-space-between align-items-center bg-dark-gray-medium"
+          style="border-radius: 4px 4px 0 0; height: 48px; padding: 0 6px; margin-top: 6px;">
+          <div style="font-size: 16px; font-weight: bold;">Data | <span id="count_data">0</span></div>
+          <div class="display-flex flex-direction-row align-items-center" style="gap: 4px;">
+            <i class="text-align-right f7-icons" id="arsipBtn" onclick="arsipSalesLocalstorage();"
+              style="font-size:30px;">alarm</i>
+            <i class="text-align-right f7-icons" onclick="refreshDataCabang();"
+              style="font-size:30px; color:forestgreen; background: #fff; border-radius: 15px;">arrow_2_circlepath_circle_fill</i>
+            <div id="btnKardusKlaim"
+              style="display: flex; justify-content: center; align-items: center; background: #fff; margin-right: -6px; height: 48px; width: 48px; border-radius: 0 4px 0 0;">
+              <img src="/www/img/icon/icon-box.png" alt="" style="width: 30px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="display-flex align-items-center justify-content-space-between" style="gap: 4px;">
+          <input onkeyup="doSearchProduksiByPerusahaanCabang()" type="text"
+            style="border-radius: 3px; margin: 2px 0; padding: 4px; width:100%; color:black; background-color:lightgray;"
+            id="perusahaan_produksi_filter_cabang" name="perusahaan_produksi_filter_cabang"
+            placeholder="Cari Perusahaan">
+          <input onkeyup="doSearchProduksiTypeCabang()" type="text" placeholder="Cari Type"
+            style="border-radius: 3px; margin: 2px 0; padding: 4px; width:100%; color:black; background-color:lightgray;"
+            id="type_produksi_filter_cabang" name="type_produksi_filter_cabang" />
+        </div>
+
+        <div style="overflow-x:auto; width:100%;">
+          <table cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-color:gray;" width="1200px">
+            <thead class="bg-dark-gray-medium text-align-center">
+              <tr>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  align="center" width="5%">Shipment</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  align="center" width="3%">No</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="5%">Dateline</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="9%">SPK</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="9%">Nama</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="13%">Type</th>
+                <th align="center" class="label-cell"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="13%">Spesifikasi</th>
+                <th align="center" class="label-cell"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="14%">Keterangan</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="5%">Jumlah</th>
+                <th align="center" class="label-cell"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="5%">Sisa</th>
+                <th align="center" class="label-cell" colspan="2"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="6%">Upload</th>
+                <th align="center" class="label-cell"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="6%">History</th>
+
+                <!-- KOLOM INVOICE - Hanya muncul jika lokasi_pabrik = 'Jakarta' -->
+                <th align="center" class="label-cell invoice-column"
+                  style="border-top: solid 1px; border-bottom: solid 1px; border-left: solid 1px; border-color:gray; font-weight:bold;"
+                  width="6%">Invoice</th>
+              </tr>
+            </thead>
+            <tbody class="text-align-center" id="produk_data_cabang">
+            </tbody>
+          </table>
+          <div style="margin:5px; font-size:20px;" id="pagination_button" class="text-align-center">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -17,10 +17,10 @@ var SpkWarningConfig = {
     lastCheckTime: null,
 
     // ===== DEBUG MODE =====
-    debugMode: true, // <-- UBAH KE false SETELAH SELESAI STYLING
+    debugMode: false, // <-- UBAH KE false SETELAH SELESAI STYLING
 
     // ===== Scheduled Popup Config =====
-    scheduledHours: [8, 13],
+    scheduledHours: [9, 13],
     scheduledTriggered: {},
 
     // ===== Sound Config =====
