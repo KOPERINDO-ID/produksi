@@ -256,8 +256,8 @@ function previewFotoBukti(event) {
 
     if (file) {
         // Validasi ukuran file (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            app.dialog.alert('Ukuran file terlalu besar! Maksimal 5MB');
+        if (file.size > 10 * 1024 * 1024) {
+            app.dialog.alert('Ukuran file terlalu besar! Maksimal 10MB');
             return;
         }
 

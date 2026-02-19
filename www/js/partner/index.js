@@ -1003,10 +1003,10 @@ $(document).on('change', '#photo_upload_input', function (e) {
 	}
 
 	// Validate file size (max 5MB)
-	const maxSize = 5 * 1024 * 1024;
+	const maxSize = 10 * 1024 * 1024;
 	if (file.size > maxSize) {
 		console.log('✗ File too large:', file.size);
-		showAlert('Ukuran file maksimal 5MB', 'Error');
+		showAlert('Ukuran file maksimal 10MB', 'Error');
 		$(this).val('');
 		return;
 	}
