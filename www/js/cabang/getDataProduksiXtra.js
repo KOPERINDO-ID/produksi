@@ -7,6 +7,8 @@ function getDataExtraCabang() {
     // Tampilkan kolom wilayah (berbeda dengan getDataProduksiCabang)
     jQuery(".wilayah-column").show();
 
+    jQuery("#count_data").text("-");
+
     // Ambil nilai filter dari form
     const filters = getExtraFilterValues();
 
@@ -78,6 +80,8 @@ function fetchExtraProduksiData(filters) {
         success: function (data) {
             app.dialog.close();
             console.log(data.data);
+
+            jQuery("#count_data").text(data.data.length);
 
             const htmlContent = generateExtraProduksiHTML(data);
             jQuery('#produk_data_cabang').html(htmlContent);
@@ -351,25 +355,25 @@ function generateExtraPackingButton(val) {
  * @returns {string} HTML string
  */
 function generateExtraDataColumns(val, index, backgroundColor, warnaTelatInfo, sisaKirimSJ, allData, now) {
+    const isMandiriOwner = val.is_mandiri_owner == 1;
+    const mandiriOwnerBackground = isMandiriOwner ? '#ea480a' : backgroundColor;
+
     let html = '';
 
     // Kolom jenis penjualan dengan tombol status
     html += generateExtraJenisColumn(val, index, warnaTelatInfo);
 
     // Kolom spesifikasi
-    html += generateExtraSpesifikasiColumn(val, backgroundColor);
+    html += generateExtraSpesifikasiColumn(val, mandiriOwnerBackground);
 
     // Kolom keterangan
-    html += generateExtraKeteranganColumn(val, backgroundColor);
+    html += generateExtraKeteranganColumn(val, mandiriOwnerBackground);
 
     // Kolom qty produksi
-    const isMandiriOwner = val.is_mandiri_owner == 1;
-    const jumlahBg = isMandiriOwner ? 'white' : backgroundColor;
-    const jumlahColor = isMandiriOwner ? 'color:#1d1d1c;' : '';
-    html += `<td style="background:${jumlahBg}; ${jumlahColor}border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="right">${parseInt(val.penjualan_qty) - parseInt(val.stok)}</td>`;
+    html += `<td style="background:${mandiriOwnerBackground}; color:white; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="right">${parseInt(val.penjualan_qty) - parseInt(val.stok)}</td>`;
 
     // Kolom sisa
-    html += generateExtraSisaColumn(val, backgroundColor, sisaKirimSJ);
+    html += generateExtraSisaColumn(val, mandiriOwnerBackground, sisaKirimSJ);
 
     // Kolom foto, SJC, dan tujuan kirim (hanya jika status selesai)
     if (val.status_produksi === 'selesai') {
@@ -435,13 +439,8 @@ function generateExtraSpesifikasiColumn(val, backgroundColor) {
         spesifikasi = '- ' + val.produk_keterangan_kustom.split('\n')[0];
     }
 
-    // Jika rekening Mandiri Owner: background putih, teks #1d1d1c
-    const isMandiriOwner = val.is_mandiri_owner == 1;
-    const cellBg = isMandiriOwner ? 'white' : backgroundColor;
-    const fontColor = isMandiriOwner ? '#1d1d1c' : 'white';
-
-    return `<td style="border-bottom: solid 1px; border-left: solid 1px; border-color:gray; background:${cellBg};" class="label-cell" align="left">
-		<font style="color:${fontColor};" class="text-add-colour-black-soft popup-open" data-popup=".detail-custom-keterangan-cabang" onclick="keteranganCustomCabang('${val.penjualan_detail_performa_id}')">${spesifikasi}</font>
+    return `<td style="border-bottom: solid 1px; border-left: solid 1px; border-color:gray; background:${backgroundColor};" class="label-cell" align="left">
+		<font style="color: white;" class="text-add-colour-black-soft popup-open" data-popup=".detail-custom-keterangan-cabang" onclick="keteranganCustomCabang('${val.penjualan_detail_performa_id}')">${spesifikasi}</font>
 	</td>`;
 }
 
@@ -452,20 +451,15 @@ function generateExtraSpesifikasiColumn(val, backgroundColor) {
  * @returns {string} HTML string
  */
 function generateExtraKeteranganColumn(val, backgroundColor) {
-    // Jika rekening Mandiri Owner: background putih, teks #1d1d1c
-    const isMandiriOwner = val.is_mandiri_owner == 1;
-    const cellBg = isMandiriOwner ? 'white' : backgroundColor;
-    const fontColor = isMandiriOwner ? '#1d1d1c' : 'white';
-
     if (val.keterangan === null || val.keterangan === "") {
-        return `<td style="background:${cellBg}; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="center">-</td>`;
+        return `<td style="background:${backgroundColor}; color: white; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="center"></td>`;
     }
 
     const keterangan = val.keterangan;
     const truncated = keterangan.length > 15 ? keterangan.substring(0, 15) + '<span style="font-size:25px;"> .....</span>' : keterangan;
 
-    return `<td style="background:${cellBg}; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="left">
-		<p style="color:${fontColor}; margin:0px;" class="text-add-colour-black-soft popup-open" data-popup=".detail-keterangan-cabang" onclick="keteranganCabang('${val.penjualan_detail_performa_id}')">${truncated}</p>
+    return `<td style="background:${backgroundColor}; color: white; border-bottom: solid 1px; border-left: solid 1px; border-color:gray;" class="label-cell" align="left">
+		<p style="margin:0px;" class="text-add-colour-white popup-open" data-popup=".detail-keterangan-cabang" onclick="keteranganCabang('${val.penjualan_detail_performa_id}')">${truncated}</p>
 	</td>`;
 }
 
@@ -485,12 +479,7 @@ function generateExtraSisaColumn(val, backgroundColor, sisaKirimSJ) {
         sisaValue = (parseInt(val.penjualan_qty) - parseInt(val.stok)) - parseFloat(val.total_terima_pabrik);
     }
 
-    // Jika rekening Mandiri Owner: background putih, teks #1d1d1c
-    const isMandiriOwner = val.is_mandiri_owner == 1;
-    const cellBg = isMandiriOwner ? 'white' : backgroundColor;
-    const fontColor = isMandiriOwner ? 'color:#1d1d1c;' : '';
-
-    return `<td style="background:${cellBg}; ${fontColor}border-left: solid gray 1px; border-bottom: solid gray 1px;" class="label-cell" align="right">${sisaValue}</td>`;
+    return `<td style="background:${backgroundColor}; color: white; border-left: solid gray 1px; border-bottom: solid gray 1px;" class="label-cell" align="right">${sisaValue}</td>`;
 }
 
 /**
@@ -617,7 +606,7 @@ function generateExtraInvoiceButton(val) {
     } else {
         // Sudah ada invoice - button biru untuk lihat detail
         html += ' data-popup=".popup-detail-invoice">';
-        html += `<button class="btn-color-greenWhite button-small col button text-bold" style="width: 85px;" onclick="viewInvoiceDetail('${val.penjualan_id}','${val.penjualan_detail_performa_id}')">Invoice</button>`;
+        html += `<button class="btn-color-greenWhite button-small col button text-bold" style="width: 85px; display: none;" onclick="viewInvoiceDetail('${val.penjualan_id}','${val.penjualan_detail_performa_id}')">Invoice</button>`;
     }
 
     html += '</td>';

@@ -1122,6 +1122,231 @@
     </div>
   </div>
 
+  <!-- POPUP UTAMA: DAFTAR SPK KARDUS -->
+  <div class="popup popup-kardus-produksi" id="popupKardusProduksi">
+    <div class="view">
+      <div class="page">
+
+        <div class="navbar">
+          <div class="navbar-bg bg-dark-gray-medium"></div>
+          <div class="navbar-inner">
+            <div class="left">
+              <div class="title" style="color:white; font-weight:bold; font-size:18px;">Kardus</div>
+            </div>
+            <div class="right">
+              <a href="#" class="link popup-close" style="color:white;" data-popup=".popup-kardus-produksi">
+                <i class="icon f7-icons" style="font-size:28px;">xmark</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content card" style="background:#000;">
+
+          <!-- SUMMARY CARDS -->
+          <div class="row no-gap"
+            style="background:#1565C0; border-radius:8px; overflow:hidden; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+            <div class="col-50" style="border-right:1px solid #e0e0e0;">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Klaim</div>
+                <div id="totalKlaimProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+            <div class="col-50">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Terima</div>
+                <div id="totalTerimaProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+            <div class="col-100" style="border-top:1px solid #e0e0e0;">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Sisa</div>
+                <div id="totalSisaProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HEADER SECTION -->
+          <div class="display-flex flex-direction-row justify-content-space-between bg-dark-gray-medium"
+            style="align-items: center; border-radius: 8px 8px 0 0; padding: 12px; margin-top: 6px;">
+            <div style="font-size: 16px; font-weight: bold; color: #fff;">Data | <span id="countDataProduksi">0</span>
+            </div>
+            <div class="display-flex flex-direction-row justify-content-end align-items-center" style="gap:4px;">
+              <i id="btnRefreshKardusProduksi" class="f7-icons"
+                style="font-size:30px; color:forestgreen; background:#fff; border-radius:15px;">
+                arrow_2_circlepath_circle_fill
+              </i>
+              <i id="btnRiwayatKardusProduksi" class="icon f7-icons"
+                style="font-size:30px; color:#ea480a; background:#fff; border-radius:15px; cursor:pointer;"
+                title="Riwayat Klaim">
+                clock_fill
+              </i>
+            </div>
+          </div>
+
+          <div class="display-flex flex-direction-row no-gap">
+            <div style="flex: 1;">
+              <select id="filterBulanKardusProduksi"
+                class="bg-dark-gray-young text-add-colour-black-soft text-align-center text-bold"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd;">
+                <!-- Options will be populated by JS -->
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <select id="filterTahunKardusProduksi"
+                class="bg-dark-gray-young text-add-colour-black-soft text-align-center text-bold"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd;">
+                <!-- Options will be populated by JS -->
+              </select>
+            </div>
+          </div>
+
+          <input type="text" id="searchKardusProduksi" placeholder="Cari data..."
+            style="width: 100%; padding: 8px; border: 1px solid #ddd; background: #f9f9f9; color: #1d1d1c;">
+
+          <!-- TABEL SPK -->
+          <div style="overflow-x:auto; background:#111; box-shadow:0 2px 4px rgba(0,0,0,0.3);">
+            <table style="width:100%; border-collapse:collapse;">
+              <thead>
+                <tr style="background:#1565C0; color:white;">
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2); width:36px;">
+                    No</th>
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2);">
+                    Tgl</th>
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2);">
+                    SPK</th>
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2);">
+                    Perusahaan</th>
+                  <th style="padding:10px 8px; text-align:center; font-size:13px;">Jumlah</th>
+                </tr>
+              </thead>
+              <tbody id="tableKardusBodyProduksi">
+                <!-- diisi oleh JS -->
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /page-content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP RIWAYAT KLAIM KARDUS - PRODUKSI (VIEW ONLY) -->
+  <div class="popup popup-riwayat-kardus-produksi" id="popupRiwayatKardusProduksi">
+    <div class="view">
+      <div class="page">
+
+        <div class="navbar">
+          <div class="navbar-bg bg-dark-gray-medium"></div>
+          <div class="navbar-inner">
+            <div class="left">
+              <div class="title" style="color:white; font-weight:bold; font-size:18px;">Riwayat Klaim</div>
+            </div>
+            <div class="right">
+              <a href="#" class="link popup-close" style="color:white;" data-popup=".popup-riwayat-kardus-produksi">
+                <i class="icon f7-icons" style="font-size:28px;">xmark</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content card" style="background:#000;">
+
+          <!-- SUMMARY CARDS -->
+          <div class="row no-gap"
+            style="background:#1565C0; border-radius:8px; overflow:hidden; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+            <div class="col-50" style="border-right:1px solid #e0e0e0;">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Klaim</div>
+                <div id="totalKlaimRiwayatProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+            <div class="col-50">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Terima</div>
+                <div id="totalTerimaRiwayatProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+            <div class="col-100" style="border-top:1px solid #e0e0e0;">
+              <div style="padding:4px; text-align:center;">
+                <div style="color:#fff; font-size:12px; margin-bottom:2px;">Sisa</div>
+                <div id="totalSisaRiwayatProduksi" style="color:#fff; font-size:24px; font-weight:bold;">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HEADER TABEL -->
+          <div class="display-flex flex-direction-row justify-content-space-between bg-dark-gray-medium"
+            style="align-items:center; border-radius:8px 8px 0 0; padding:12px; margin-top:6px;">
+            <div style="font-size:16px; font-weight:bold; color:#fff;">
+              Data | <span id="countRiwayatProduksi">0</span>
+            </div>
+            <i id="btnRefreshRiwayatProduksi" class="f7-icons"
+              style="font-size:30px; color:forestgreen; background:#fff; border-radius:15px; cursor:pointer;">
+              arrow_2_circlepath_circle_fill
+            </i>
+          </div>
+
+          <!-- TABEL RIWAYAT -->
+          <div style="overflow-x:auto; background:#111; box-shadow:0 2px 4px rgba(0,0,0,0.3);">
+            <table style="width:100%; border-collapse:collapse;">
+              <thead>
+                <tr style="background:#1565C0; color:white;">
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2); width:36px;">
+                    No</th>
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2);">
+                    Periode</th>
+                  <th
+                    style="padding:10px 8px; text-align:center; font-size:13px; border-right:1px solid rgba(255,255,255,0.2);">
+                    Jumlah</th>
+                  <th style="padding:10px 8px; text-align:center; font-size:13px; width:60px;">Bukti</th>
+                </tr>
+              </thead>
+              <tbody id="tableRiwayatBodyProduksi">
+                <!-- diisi oleh JS -->
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /page-content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP FOTO BUKTI - PRODUKSI -->
+  <div class="popup popup-foto-bukti-kardus-produksi" id="popupFotoBuktiKardusProduksi">
+    <div class="view">
+      <div class="page">
+
+        <div class="navbar">
+          <div class="navbar-bg bg-dark-gray-medium"></div>
+          <div class="navbar-inner">
+            <div class="left">
+              <div class="title" style="color:white; font-weight:bold; font-size:18px;">Foto Bukti Klaim</div>
+            </div>
+            <div class="right">
+              <a href="#" class="link popup-close" style="color:white;" data-popup=".popup-foto-bukti-kardus-produksi">
+                <i class="icon f7-icons" style="font-size:28px;">xmark</i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content display-flex justify-content-center align-items-center" style="background:#000;">
+          <img id="imgFotoBuktiKardusProduksi" src=""
+            style="width:100%; max-height:80vh; object-fit:contain; border-radius:8px;">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <div class="page-content theme-dark">
     <div class="card">
       <div class="display-flex flex-direction-column no-gap">
@@ -1146,7 +1371,7 @@
               style="font-size:30px; color:forestgreen; background: #fff; border-radius: 15px;">arrow_2_circlepath_circle_fill</i>
             <div id="btnKardusKlaim"
               style="display: flex; justify-content: center; align-items: center; background: #fff; margin-right: -6px; height: 48px; width: 48px; border-radius: 0 4px 0 0;">
-              <img src="/www/img/icon/icon-box.png" alt="" style="width: 30px;">
+              <img src="/img/icon/icon-box.png" alt="" style="width: 30px;">
             </div>
           </div>
         </div>

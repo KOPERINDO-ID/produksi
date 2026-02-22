@@ -230,6 +230,7 @@ $$(document).on('page:afterin', '.page[data-name="cabang"]', function (e) {
   dateRangeDeclarationProduksiCabang();
   getYearHistoryPointProduksi();
   localStorage.removeItem('arsip');
+  kardusProduksi.init();
 })
 
 $$(document).on('page:afterin', '.page[data-name="purchasing"]', function (e) {
