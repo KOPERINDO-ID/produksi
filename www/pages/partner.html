@@ -1,94 +1,112 @@
 <div class="page" data-name="partner" class="theme-dark">
+  <!-- SCROLLABLE PAGE CONTENT-->
   <div class="page-content theme-dark">
-    <!-- Menu Section -->
-    <div class="card">
-      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
-        <div class="col col-border  text-bold"><a class="text-add-colour-white" href="/produksi_pusat">SPK</a></div>
-        <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-makasar.digiseminar.id/api');"
-          class="col col-border text-bold jakartaFilterCabangBtn"><a class="text-add-colour-white"
-            href="/cabang_pusat">IND-BAR</a></div>
-        <div class="col col-border text-bold bg-dark-gray-medium"><a class="text-add-colour-white"
-            href="/partner">PARTNER</a></div>
-      </div>
-      <div style="text-align: center;" class="row no-gap bg-dark-gray-young">
-        <div class="col col-border bg-dark-gray-medium  text-bold"><a class="text-add-colour-white"
-            href="/partner">Laporan</a></div>
-        <div class="col col-border text-bold"><a class="text-add-colour-gray" href="/purchasing">Partner</a></div>
-      </div>
-    </div>
-
-    <!-- Main Section -->
-    <div class="card">
-      <!-- Table Header -->
-      <div class="col-100 bg-dark-gray-young" style="padding:10px; font-size:18px; font-weight:bold;">
-        <div class="display-flex justify-content-space-between align-items-center"
-          style="margin-bottom:4px; padding: 4px 0px;">
-          <div class="display-flex justify-content-start align-items-center"
-            style="font-size:20px; font-weight:bold; color:#1C1C1D;">
-            <span style="border-right: 1px solid #1C1C1D; padding-right: 16px; margin-right: 16px;">Data</span>
-            <span id="jumlah_data_laporan">0</span>
+    <!-- MAIN CONTENT -->
+    <div class="card display-flex flex-direction-column" style="gap: 6px;">
+      <!-- MENU -->
+      <div class="display-flex flex-direction-column">
+        <!-- MAIN MENU -->
+        <div class="display-flex flex-direction-row no-gap bg-dark-gray-young">
+          <div class="display-flex justify-content-center align-items-center text-bold"
+            style="height: 36px; flex: 1; border: 1px solid white;">
+            <a class="text-add-colour-white" href="/produksi_pusat">SPK</a>
           </div>
-          <div class="display-flex justify-content-space-between align-items-center" style="gap:4px;">
+          <div onclick="chooseDataProduksiCabangRedirect('https://tasindo-sale-webservice-makasar.digiseminar.id/api');"
+            class="display-flex justify-content-center align-items-center text-bold jakartaFilterCabangBtnPusat"
+            style="height: 36px; flex: 1; border: 1px solid white;">
+            <a class="text-add-colour-white" href="/cabang_pusat">IND-BAR</a>
+          </div>
+          <div class="display-flex justify-content-center align-items-center bg-dark-gray-medium text-bold"
+            style="height: 36px; flex: 1; border: 1px solid white;">
+            <a class="text-add-colour-white" href="/partner">PARTNER</a>
+          </div>
+        </div>
+        <div class="display-flex flex-direction-row no-gap bg-dark-gray-young nav-jakarta">
+          <div class="display-flex justify-content-center align-items-center bg-dark-gray-medium text-bold"
+            style="height: 36px; flex: 1; border: 1px solid white;">
+            <a class="text-add-colour-white" href="/partner">Laporan</a>
+          </div>
+          <div class="display-flex justify-content-center align-items-center bg-dark-gray-young text-bold"
+            style="height: 36px; flex: 1; border: 1px solid white;">
+            <a class="text-add-colour-white" href="/purchasing">Partner</a>
+          </div>
+        </div>
+      </div>
+      <!-- MAIN TABLE -->
+      <div class="display-flex flex-direction-column no-gap">
+        <!-- TABLE HEADER -->
+        <div class="display-flex justify-content-space-between align-items-center bg-dark-gray-medium"
+          style="padding: 0 6px; height: 48px; border-radius: 4px 4px 0 0;">
+          <header class="text-bold f-s-16">Data | <span id="jumlah_data_laporan">0</span></header>
+          <div class="display-flex justify-content-space-between align-items-center" style="gap: 4px;">
             <i class="f7-icons" style="font-size:30px; color:#fff;" onclick="bukaHistoryLaporan()">clock_fill</i>
-            <i class="f7-icons" style="font-size:30px; color:#009100;"
+            <i class="f7-icons" style="font-size:30px; color:#fff;"
               onclick="refreshLaporanData()">arrow_2_circlepath_circle_fill</i>
           </div>
         </div>
-        <!-- Search Boxes -->
-        <div class="display-flex flex-direction-row justify-content-space-between align-items-center">
-          <input onkeyup="doSearchPartnerLaporan()" type="text"
-            style="font-size:14px; margin-right: 4px; border-radius:3px; padding:6px; width:100%;  color:#1C1C1D; background-color:lightgray;"
-            id="partner_laporan_filter_search" name="partner_laporan_filter_search" placeholder="Cari Partner">
-          <input onkeyup="doSearchCustomerLaporan()" type="text"
-            style="font-size:14px; border-radius:3px; padding:6px; width:100%;  color:#1C1C1D; background-color:lightgray;"
-            id="partner_customer_filter_search" name="partner_customer_filter_search" placeholder="Cari Customer">
+        <!-- TABLE SEARCH BOX -->
+        <div class="display-flex flex-direction-row" style="gap: 2px; overflow: hidden;">
+          <div style="flex: 1; min-width: 0;">
+            <input onkeyup="doSearchPartnerLaporan()" type="text"
+              style="width: 100%; box-sizing: border-box; padding: 6px; color: black; background-color: lightgray;"
+              id="partner_laporan_filter_search" name="partner_laporan_filter_search" placeholder="Cari Partner">
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <input onkeyup="doSearchCustomerLaporan()" type="text"
+              style="width: 100%; box-sizing: border-box; padding: 6px; color: black; background-color: lightgray;"
+              id="partner_customer_filter_search" name="partner_customer_filter_search" placeholder="Cari Customer">
+          </div>
+        </div>
+        <!-- TABLE CONTENT -->
+        <div class="card-content" style="overflow-x:auto;">
+          <table id="tabel_laporan_partner" cellspacing="1" cellpadding="1" width="100%">
+            <thead class="bg-dark-gray-medium text-align-center">
+              <tr style="height: 32px;">
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
+                  align="center">No</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Spk</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Partner</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Customer</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Item</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Jumlah</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Tanggal</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Deadline</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Selesai</th>
+                <th class="label-cell"
+                  style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
+                  Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="text-align-center" id="data_laporan_partner">
+            </tbody>
+          </table>
+        </div>
+        <!-- TABLE PAGINATIONS -->
+        <div id="tombol_paginasi" class="text-align-center" style="font-size:16px; width: 100%; display: block;">
         </div>
       </div>
-      <!-- Table Content -->
-      <div class="col-100" style="overflow-x: auto;">
-        <table id="tabel_laporan_partner" cellspacing="1" cellpadding="1" width="100%">
-          <thead class="bg-dark-gray-medium text-align-center">
-            <tr>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;"
-                align="center">No</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Spk</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Partner</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Customer</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Item</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Jumlah</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Tanggal</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Deadline</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Selesai</th>
-              <th class="label-cell"
-                style="border-top: solid 1px; border-left: solid 1px;  border-color:gray; font-weight:bold;">
-                Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="text-align-center" id="data_laporan_partner">
-          </tbody>
-        </table>
-      </div>
-      <!-- Pagination Buttons -->
-      <div id="tombol_paginasi" class="text-align-center" style="font-size:16px; width: 100%; display: block;">
-      </div>
     </div>
+
+    <!------------------->
+    <!-- GOUP of POPUP -->
+    <!------------------->
 
     <!-- Popup Item Detail Gambar -->
     <div class="popup item-detail-gambar">
