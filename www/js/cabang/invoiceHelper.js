@@ -48,7 +48,7 @@ function viewInvoiceDetail(penjualanId, perfomaId) {
  */
 function resetInvoiceForm() {
     // Reset preview foto
-    jQuery('#foto_preview').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/foto_invoice/no_image_invoice.png');
+    jQuery('#foto_preview').attr('src', 'https://indokoper.com/foto_invoice/no_image_invoice.png');
     jQuery('#foto_preview_container').show();
     jQuery('#foto_placeholder').hide();
 
@@ -100,8 +100,8 @@ function loadInvoiceItems(penjualanId) {
 
                 jQuery.each(data.data.details, function (index, item) {
                     var path_image = item.gambar.substring(0, 5) == "koper"
-                        ? 'https://tasindo-sale-webservice.digiseminar.id/product_image_new'
-                        : 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+                        ? 'https://indokoper.com/product_image_new'
+                        : 'https://indokoper.com/performa_image';
                     var image = path_image + '/' + item.gambar;
 
                     itemsHtml += '<tr>';
@@ -291,7 +291,7 @@ function previewFotoBukti(event) {
  */
 function viewFullInvoiceImage() {
     const imgSrc = jQuery('#foto_preview').attr('src');
-    if (imgSrc && imgSrc !== 'https://tasindo-sale-webservice.digiseminar.id/foto_invoice/no_image_invoice.png') {
+    if (imgSrc && imgSrc !== 'https://indokoper.com/foto_invoice/no_image_invoice.png') {
         zoom_view(imgSrc);
     }
 }
@@ -351,7 +351,7 @@ function simpanPembayaran() {
     const isNewInvoice = localStorage.getItem('invoice_mode') === 'input';
 
     // Foto wajib untuk invoice baru
-    if (isNewInvoice && (!fotoBase64 || fotoSrc === 'https://tasindo-sale-webservice.digiseminar.id/foto_invoice/no_image_invoice.png')) {
+    if (isNewInvoice && (!fotoBase64 || fotoSrc === 'https://indokoper.com/foto_invoice/no_image_invoice.png')) {
         jQuery('#error_foto').show();
         isValid = false;
     } else {

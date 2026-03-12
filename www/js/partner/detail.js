@@ -11,8 +11,8 @@ const LAPORAN_CONFIG = {
     apiEndpoint: '/get-data-partner-laporan',
     apiImageEndpoint: '/get-item-detail-gambar',
     imagePath: {
-        koper: 'https://tasindo-sale-webservice.digiseminar.id/product_image_new',
-        performa: 'https://tasindo-sale-webservice.digiseminar.id/performa_image'
+        koper: 'https://indokoper.com/product_image_new',
+        performa: 'https://indokoper.com/performa_image'
     },
     searchDelay: 1000,
     dateFormat: {

@@ -313,7 +313,7 @@ function getLogoPurchase(penjualan_detail_performa_id, foto_resin_selesai) {
 	if (foto_resin_selesai != 'null') {
 		jQuery('#file_foto_purchase_view_now').attr('src', BASE_PATH_IMAGE_BUKTI_PURCHASE_RISEN + '/' + foto_resin_selesai);
 	} else {
-		jQuery('#file_foto_purchase_view_now').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_foto_purchase_view_now').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 }
 
@@ -675,9 +675,9 @@ function detailPenjualanPointProduksi(penjualan_id) {
 					}
 
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 					detail_sales_data += ' <tr>';
 					detail_sales_data += '   <td colspan="1" class="label-cell text-align-center" width="40%">' + val.penjualan_jenis + '<br><img data-image-src="' + path_image + '/' + val.gambar + '" class="pb-popup-dark" src="' + path_image + '/' + val.gambar + '" width="100%"></td>';
@@ -1195,9 +1195,9 @@ function detailPenjualanProduksi(penjualan_id) {
 						var keterangan_fix = '';
 					}
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 					if (val.kode_warna != null) {
 						var kode_warna = val.kode_warna;
@@ -1311,9 +1311,9 @@ function detailPenjualanProduksiProses(penjualan_id) {
 					detail_sales_data += ' <tr>';
 
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 					detail_sales_data += '   <td colspan="1" class="label-cell text-align-center" width="40%">' + val.penjualan_jenis + '<br><img data-image-src-proses="' + path_image + '/' + val.gambar + '" class="pb-popup-dark-proses" src="' + path_image + '/' + val.gambar + '" width="100%"></td>';
 					if (val.style != null && val.style != 'none') {
@@ -1439,9 +1439,9 @@ function detailPenjualanProduksiSelesai(penjualan_id) {
 					}
 
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 					detail_sales_data += ' <tr>';
 					detail_sales_data += '   <td colspan="1" class="label-cell text-align-center" width="40%">' + val.penjualan_jenis + '<br><img data-image-src-selesai="' + path_image + '/' + val.gambar + '" class="pb-popup-dark-selesai" src="' + path_image + '/' + val.gambar + '" width="100%"></td>';
@@ -1554,9 +1554,9 @@ function detailPenjualanProduksiHarian(penjualan_id) {
 					}
 
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 					detail_sales_data += ' <tr>';
 					detail_sales_data += '   <td colspan="1" class="label-cell text-align-center" width="40%">' + val.penjualan_jenis + '<br><img data-image-src-harian="' + path_image + '/' + val.gambar + '" class="pb-popup-dark-harian" src="' + path_image + '/' + val.gambar + '" width="100%"></td>';
@@ -2409,7 +2409,7 @@ function getDataFotoProduksiSelesai(penjualan_detail_performa_id, foto_produksi_
 	if (foto_produksi_selesai != 'null') {
 		jQuery('#file_foto_produksi_view_now').attr('src', BASE_PATH_IMAGE_BUKTI_PRODUKSI + '/' + foto_produksi_selesai);
 	} else {
-		jQuery('#file_foto_produksi_view_now').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_foto_produksi_view_now').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 }
 
@@ -3660,9 +3660,9 @@ function spkPo(penjualan_id_primary, performa_id_relation, performa_header_id, b
 
 
 					if (val.gambar.substring(0, 5) == "koper") {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
+						var path_image = 'https://indokoper.com/product_image_new';
 					} else {
-						var path_image = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
+						var path_image = 'https://indokoper.com/performa_image';
 					}
 
 					invoice_penjualan += '		<tr>';
@@ -3754,17 +3754,17 @@ function spkPo(penjualan_id_primary, performa_id_relation, performa_header_id, b
 				invoice_penjualan += '          <td style="border-top: solid 1px;  border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center">Logo Tambah</td>';
 				invoice_penjualan += '      </tr>';
 				invoice_penjualan += '      <tr>';
-				invoice_penjualan += '          <td style=" border-left: solid 1px; border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://tasindo-sale-webservice.digiseminar.id/customer_logo/' + data.data[0].customer_logo + '" width="80%" /></td>';
+				invoice_penjualan += '          <td style=" border-left: solid 1px; border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://indokoper.com/customer_logo/' + data.data[0].customer_logo + '" width="80%" /></td>';
 
 				if (data.data[0].customer_logo_bordir != "") {
-					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://tasindo-sale-webservice.digiseminar.id/customer_logo/' + data.data[0].customer_logo_bordir + '" width="80%" /> </td>';
+					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://indokoper.com/customer_logo/' + data.data[0].customer_logo_bordir + '" width="80%" /> </td>';
 				} else {
 					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center">Tidak Ada Gambar</td>';
 
 				}
 
 				if (data.data[0].customer_logo_tambahan != "") {
-					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://tasindo-sale-webservice.digiseminar.id/customer_logo/' + data.data[0].customer_logo_tambahan + '" width="80%" /> </td>';
+					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center"><img src="https://indokoper.com/customer_logo/' + data.data[0].customer_logo_tambahan + '" width="80%" /> </td>';
 				} else {
 					invoice_penjualan += '          <td style=" border-right: solid 1px; border-bottom: solid 1px; font-weight:bold;" width="33%" align="center">Tidak Ada Gambar</td>';
 
@@ -4525,7 +4525,7 @@ function updateFotoProduksiSelesaiProcessPusat() {
 
 function getDataFotoProduksiSelesaiPusat(penjualan_detail_performa_id, penjualan_id, foto_produksi_selesai, status) {
 
-	var BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://tasindo-sale-webservice.digiseminar.id/foto_produksi';
+	var BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://indokoper.com/foto_produksi';
 
 	jQuery('#penjualan_detail_performa_id_foto_produksi_selesai_pusat').val(penjualan_detail_performa_id);
 	jQuery('#status_produksi_pusat').val(status);
@@ -4538,6 +4538,6 @@ function getDataFotoProduksiSelesaiPusat(penjualan_detail_performa_id, penjualan
 	if (foto_produksi_selesai != 'null') {
 		jQuery('#file_foto_produksi_view_now_pusat').attr('src', BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG + '/' + foto_produksi_selesai);
 	} else {
-		jQuery('#file_foto_produksi_view_now_pusat').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_foto_produksi_view_now_pusat').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 }

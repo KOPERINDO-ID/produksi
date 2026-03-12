@@ -458,7 +458,7 @@ function doSearchProduksiByPerusahaanCabang(text) {
 }
 
 function chooseDataProduksiCabangRedirect(cabang_value) {
-	var pusat = 'https://tasindo-sale-webservice.digiseminar.id/api';
+	var pusat = 'https://indokoper.com/api';
 	localStorage.setItem('server_pilihan_cabang', pusat);
 	console.log(cabang_value);
 
@@ -520,13 +520,13 @@ function getDataFotoProduksiCabang(
 	var image_path_cabang = localStorage.getItem("server_pilihan_cabang");
 
 	var BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = "";
-	if (image_path_cabang == 'https://tasindo-sale-webservice.digiseminar.id/api') {
-		BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://tasindo-sale-webservice.digiseminar.id/foto_produksi';
+	if (image_path_cabang == 'https://indokoper.com/api') {
+		BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://indokoper.com/foto_produksi';
 	} else {
 		BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = image_path_cabang.replace('/api', '') + '/foto_produksi';
 	}
 
-	var NO_IMAGE = 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg';
+	var NO_IMAGE = 'https://indokoper.com/noimage.jpg';
 
 	function safeFormatTanggal(tgl) {
 		if (!tgl || tgl === 'null' || tgl === '-' || tgl === '0000-00-00') {
@@ -582,10 +582,10 @@ function getDataFotoSjcSelesaiCabang(penjualan_detail_performa_id, foto_sjc_sele
 
 	localStorage.removeItem('file_foto_sjc');
 	var image_path_cabang = localStorage.getItem("server_pilihan_cabang");
-	if (image_path_cabang == 'https://tasindo-sale-webservice.digiseminar.id/api') {
-		var BASE_PATH_IMAGE_BUKTI_SJC_CABANG = 'https://tasindo-sale-webservice.digiseminar.id/file_foto_sjc';
-	} else if (image_path_cabang == 'https://tasindo-sale-webservice.digiseminar.id/api') {
-		var BASE_PATH_IMAGE_BUKTI_SJC_CABANG = 'https://tasindo-sale-webservice.digiseminar.id/file_foto_sjc';
+	if (image_path_cabang == 'https://indokoper.com/api') {
+		var BASE_PATH_IMAGE_BUKTI_SJC_CABANG = 'https://indokoper.com/file_foto_sjc';
+	} else if (image_path_cabang == 'https://indokoper.com/api') {
+		var BASE_PATH_IMAGE_BUKTI_SJC_CABANG = 'https://indokoper.com/file_foto_sjc';
 	}
 	// $$('#text_file_path_sjc').html('Upload');
 	console.log(image_path_cabang);
@@ -597,7 +597,7 @@ function getDataFotoSjcSelesaiCabang(penjualan_detail_performa_id, foto_sjc_sele
 	if (foto_sjc_selesai != 'null') {
 		jQuery('#file_foto_sjc_view_now_cabang').attr('src', BASE_PATH_IMAGE_BUKTI_SJC_CABANG + '/' + foto_sjc_selesai);
 	} else {
-		jQuery('#file_foto_sjc_view_now_cabang').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_foto_sjc_view_now_cabang').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 
 
@@ -1042,7 +1042,7 @@ function getBuktiTerima(id_terima_qty_pabrik, bukti) {
 	if (bukti != 'null') {
 		jQuery('#file_bukti_terima_view_now').attr('src', BASE_PATH_IMAGE_URL + '/' + bukti);
 	} else {
-		jQuery('#file_bukti_terima_view_now').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_bukti_terima_view_now').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 }
 
@@ -1620,7 +1620,7 @@ function updateFotoProduksiSelesaiProcessCabang() {
 
 function getDataFotoProduksiSelesaiCabang(penjualan_detail_performa_id, penjualan_id, foto_produksi_selesai, status) {
 
-	var BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://tasindo-sale-webservice.digiseminar.id/foto_produksi';
+	var BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG = 'https://indokoper.com/foto_produksi';
 
 	jQuery('#penjualan_detail_performa_id_foto_produksi_selesai_cabang').val(penjualan_detail_performa_id);
 	jQuery('#status_produksi_cabang').val(status);
@@ -1633,6 +1633,6 @@ function getDataFotoProduksiSelesaiCabang(penjualan_detail_performa_id, penjuala
 	if (foto_produksi_selesai != 'null') {
 		jQuery('#file_foto_produksi_view_now_cabang').attr('src', BASE_PATH_IMAGE_BUKTI_PRODUKSI_CABANG + '/' + foto_produksi_selesai);
 	} else {
-		jQuery('#file_foto_produksi_view_now_cabang').attr('src', 'https://tasindo-sale-webservice.digiseminar.id/noimage.jpg');
+		jQuery('#file_foto_produksi_view_now_cabang').attr('src', 'https://indokoper.com/noimage.jpg');
 	}
 }

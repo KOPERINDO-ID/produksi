@@ -23,18 +23,17 @@ function checkConnection() {
 }
 
 var BASE_API = 'https://indokoper.com/api'; /** Production Base API */
-// var BASE_API = 'https://tasindo-sale-webservice.digiseminar.id/api'; /** Production Base API */
-// var BASE_API = 'https://tasindo-service-staging.digiseminar.id/api'; /** Staging Base API */
-// var BASE_API = 'http://127.0.0.1:8000/api' /** Development Base API */
+// var BASE_API = 'https://staging.indokoper.com/api'; /** Staging Base API */
+// var BASE_API = 'http://127.0.0.1:8000/api' /** Local Base API */
 
-var BASE_PATH_IMAGE = 'https://tasindo-sale-webservice.digiseminar.id/kunjungan';
-var BASE_PATH_IMAGE_PERFORMA = 'https://tasindo-sale-webservice.digiseminar.id/performa_image';
-var BASE_PATH_IMAGE_CUSTOMER = 'https://tasindo-sale-webservice.digiseminar.id/customer_logo';
-var BASE_PATH_IMAGE_PRODUCT = 'https://tasindo-sale-webservice.digiseminar.id/product_image';
-var BASE_PATH_IMAGE_PRODUCT_NEW = 'https://tasindo-sale-webservice.digiseminar.id/product_image_new';
-var BASE_PATH_IMAGE_BUKTI_PRODUKSI = 'https://tasindo-sale-webservice.digiseminar.id/foto_produksi';
-var BASE_PATH_IMAGE_BUKTI_PURCHASE = 'https://tasindo-sale-webservice.digiseminar.id/foto_purchasing_logo';
-var BASE_PATH_IMAGE_BUKTI_PURCHASE_RISEN = 'https://tasindo-sale-webservice.digiseminar.id/foto_purchasing_resin';
+var BASE_PATH_IMAGE = 'https://indokoper.com/kunjungan';
+var BASE_PATH_IMAGE_PERFORMA = 'https://indokoper.com/performa_image';
+var BASE_PATH_IMAGE_CUSTOMER = 'https://indokoper.com/customer_logo';
+var BASE_PATH_IMAGE_PRODUCT = 'https://indokoper.com/product_image';
+var BASE_PATH_IMAGE_PRODUCT_NEW = 'https://indokoper.com/product_image_new';
+var BASE_PATH_IMAGE_BUKTI_PRODUKSI = 'https://indokoper.com/foto_produksi';
+var BASE_PATH_IMAGE_BUKTI_PURCHASE = 'https://indokoper.com/foto_purchasing_logo';
+var BASE_PATH_IMAGE_BUKTI_PURCHASE_RISEN = 'https://indokoper.com/foto_purchasing_resin';
 
 function refreshPage() {
 	return app.views.main.router.navigate(app.views.main.router.currentRoute.url, { reloadCurrent: true, ignoreCache: true, });
